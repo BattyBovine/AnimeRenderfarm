@@ -15,15 +15,18 @@ SOURCES += main.cpp\
     consoleoutput.cpp \
     subclasses/qprojectslistmodel.cpp \
     aboutapplication.cpp \
-    rendersettings.cpp
+    rendersettings.cpp \
+    serversettings.cpp
 
 HEADERS  += animerenderfarm.h \
     consoleoutput.h \
     subclasses/qprojectslistmodel.h \
     aboutapplication.h \
-    rendersettings.h
+    rendersettings.h \
+    serversettings.h
 
 FORMS    += animerenderfarm.ui \
     consoleoutput.ui \
     aboutapplication.ui \
-    rendersettings.ui
+    rendersettings.ui \
+    serversettings.ui
