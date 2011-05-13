@@ -22,9 +22,9 @@ public:
 private:
     Ui::RenderSettings *ui;
 
-    QSettings settings;
+    void closeEvent(QCloseEvent *);
 
-    void folderOpened(QString);
+    QSettings settings;
 
 signals:
 

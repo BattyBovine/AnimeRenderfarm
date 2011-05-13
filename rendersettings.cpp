@@ -15,6 +15,11 @@ RenderSettings::~RenderSettings()
     delete ui;
 }
 
+void RenderSettings::closeEvent(QCloseEvent *)
+{
+    this->saveSettings();
+}
+
 
 
 void RenderSettings::showOpenOutputDirectoryDialogue()
@@ -26,20 +31,13 @@ void RenderSettings::showOpenOutputDirectoryDialogue()
     );
 
     if(!folder.isEmpty())
-        folderOpened(folder);
-}
-
-void RenderSettings::folderOpened(QString folder)
-{
-    ui->editOutputDirectory->setText(folder);
+        ui->editOutputDirectory->setText(folder);
 }
 
 
 
 bool RenderSettings::loadSettings()
 {
-    settings.beginGroup("RenderSettings");
-
     ui->editOutputDirectory->setText(settings.value("OutputDirectory", "").toString());
     ui->comboOutputFormat->setCurrentIndex(settings.value("OutputFormat", 0).toInt());
 
@@ -58,15 +56,11 @@ bool RenderSettings::loadSettings()
     ui->checkDoNotPremultiplyAlpha->setChecked(settings.value("DoNotPremultiplyAlpha",false).toBool());
     ui->checkVariableLineWidths->setChecked(settings.value("VariableLineWidths",true).toBool());
 
-    settings.endGroup();
-
     return true;
 }
 
 bool RenderSettings::saveSettings()
 {
-    settings.beginGroup("RenderSettings");
-
     settings.setValue("OutputDirectory", ui->editOutputDirectory->text());
     settings.setValue("OutputFormat", ui->comboOutputFormat->currentIndex());
 
@@ -84,8 +78,6 @@ bool RenderSettings::saveSettings()
     settings.setValue("UseNTSCSafeColours", ui->checkUseNTSCSafeColours->isChecked());
     settings.setValue("DoNotPremultiplyAlpha", ui->checkDoNotPremultiplyAlpha->isChecked());
     settings.setValue("VariableLineWidths", ui->checkVariableLineWidths->isChecked());
-
-    settings.endGroup();
 
     return true;
 }
