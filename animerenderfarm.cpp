@@ -182,7 +182,7 @@ void AnimeRenderfarm::renderProjects() {
        settings.value("OutputDirectory","").toString().isEmpty()) {
         QMessageBox::information(this,
             tr("Set An Output Directory"),
-            tr("<p>You must first set your default options, particularly the"
+            tr("<p>You must first set your default options, particularly the "
                "folder where you want your rendered files to be saved.</p>"));
         this->openRenderSettings();
         settings.endGroup();
