@@ -127,13 +127,19 @@ void AnimeRenderfarm::openRenderSettings()
 
 void AnimeRenderfarm::openAboutApplication()
 {
-    if(winAboutApplication != NULL) {
-        if(winAboutApplication->isVisible())
-            return;
-        winAboutApplication->deleteLater();
-    }
-    winAboutApplication = new AboutApplication(this);
-    winAboutApplication->show();
+//    if(winAboutApplication != NULL) {
+//        if(winAboutApplication->isVisible())
+//            return;
+//        winAboutApplication->deleteLater();
+//    }
+//    winAboutApplication = new AboutApplication(this);
+//    winAboutApplication->show();
+
+    QMessageBox::about(this, tr("About ")+qApp->applicationName(),
+        qApp->applicationName().prepend("<center><h1>").append("</h1>") +
+        qApp->applicationVersion().prepend(tr("Version ").prepend("<p>")).append("</p>") +
+        qApp->organizationName().prepend("<p>© 2011 ").append("<br/>") +
+        tr("All Rights Reserved").append("</p></center>"));
 }
 
 
@@ -141,8 +147,10 @@ void AnimeRenderfarm::openAboutApplication()
 bool AnimeRenderfarm::messageRemoveProjectsConfirm() {
     QMessageBox::StandardButton response;
     response = QMessageBox::question(this, tr("Are you sure?"),
-        tr("<p>Are you sure you wish to remove the selected items from the render queue?</p>")+
-        tr("<p>Note that this will not delete your project files from your hard drive.</p>"),
+        tr("Are you sure you wish to remove the selected items from the render queue?")
+            .prepend("<p>").append("</p>") +
+        tr("Note that this will not delete your project files from your hard drive.")
+            .prepend("<p>").append("</p>"),
         QMessageBox::Yes | QMessageBox::No);
     return (response==QMessageBox::Yes);
 }
