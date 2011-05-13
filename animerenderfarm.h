@@ -13,6 +13,7 @@
 #include <QUrl>
 
 #include "rendersettings.h"
+#include "serversettings.h"
 #include "aboutapplication.h"
 #include "subclasses/qprojectslistmodel.h"
 
@@ -39,6 +40,7 @@ private:
     qProjectsListModel *listProjectsModel;
 
     RenderSettings *winRenderSettings;
+    ServerSettings *winServerSettings;
 
     bool fileIsProject(QString);
 
@@ -56,6 +58,7 @@ private slots:
     void showOpenProjectsDialogue();
 
     void openRenderSettings();
+    void openServerSettings();
     void openAboutApplication();
     void openAboutQt();
 

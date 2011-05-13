@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include <QSettings>
+
 namespace Ui {
     class ServerSettings;
 }
@@ -17,6 +19,19 @@ public:
 
 private:
     Ui::ServerSettings *ui;
+
+    void closeEvent(QCloseEvent *);
+
+    QSettings settings;
+
+signals:
+
+public slots:
+
+private slots:
+    bool loadSettings();
+    bool saveSettings();
+
 };
 
 #endif // SERVERSETTINGS_H

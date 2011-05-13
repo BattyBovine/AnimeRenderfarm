@@ -13,14 +13,15 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    if(!settings.contains("geometry") ||
-       !settings.contains("state")) {
-        this->setGeometry((qApp->desktop()->screenGeometry().width()/2)-(this->geometry().width()/2),
-                          (qApp->desktop()->screenGeometry().height()/2)-(this->geometry().height()/2),
-                           NULL, NULL);
+    if(!settings.contains("Geometry") ||
+       !settings.contains("State")) {
+        this->setGeometry(
+            (qApp->desktop()->screenGeometry().width()/2)-(this->geometry().width()/2),
+            (qApp->desktop()->screenGeometry().height()/2)-(this->geometry().height()/2),
+            NULL, NULL);
     } else {
-        restoreGeometry(settings.value("geometry").toByteArray());
-        restoreState(settings.value("state").toByteArray(), 0);
+        restoreGeometry(settings.value("Geometry").toByteArray());
+        restoreState(settings.value("State").toByteArray(), 0);
     }
 
     listProjectsModel = new qProjectsListModel(ui->listProjects);
@@ -28,6 +29,7 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
     ui->listProjects->setModel(listProjectsModel);
 
     winRenderSettings = NULL;
+    winServerSettings = NULL;
 }
 
 AnimeRenderfarm::~AnimeRenderfarm()
@@ -78,8 +80,8 @@ void AnimeRenderfarm::dropEvent(QDropEvent *event)
 
 void AnimeRenderfarm::closeEvent(QCloseEvent *)
 {
-    settings.setValue("geometry", saveGeometry());
-    settings.setValue("state", saveState(0));
+    settings.setValue("Geometry", saveGeometry());
+    settings.setValue("State", saveState(0));
 }
 
 
@@ -122,6 +124,17 @@ void AnimeRenderfarm::openRenderSettings()
     }
     winRenderSettings = new RenderSettings(this);
     winRenderSettings->show();
+}
+
+void AnimeRenderfarm::openServerSettings()
+{
+    if(winServerSettings != NULL) {
+        if(winServerSettings->isVisible())
+            return;
+        winServerSettings->deleteLater();
+    }
+    winServerSettings = new ServerSettings(this);
+    winServerSettings->show();
 }
 
 void AnimeRenderfarm::openAboutApplication()
@@ -193,7 +206,8 @@ void AnimeRenderfarm::renderProjects() {
     QList< QPair<QString,QString> > lProjects = listProjectsModel->getList();
     if(lProjects.size()<=0) {
         QMessageBox::information(this, tr("?"),
-            tr("<p>The project list is empty. I don't know what you thought would happen, but...it's this. This is what happens.</p>"));
+            tr("<p>The project list is empty. I don't know what you thought would "
+               "happen, but...it's this. This is what happens.</p>"));
         return;
     }
     QString sFilesToRender;

@@ -72,6 +72,7 @@
     </property>
     <addaction name="actionOpenProjectFiles"/>
     <addaction name="actionRenderSettings"/>
+    <addaction name="actionServerOptions"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -119,6 +120,14 @@
    </property>
    <property name="shortcut">
     <string>Meta+/</string>
+   </property>
+  </action>
+  <action name="actionServerOptions">
+   <property name="text">
+    <string>Server Options</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
    </property>
   </action>
  </widget>
@@ -205,6 +214,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionServerOptions</sender>
+   <signal>triggered()</signal>
+   <receiver>AnimeRenderfarm</receiver>
+   <slot>openServerSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>showOpenProjectsDialogue()</slot>
@@ -212,5 +237,6 @@
   <slot>openAboutApplication()</slot>
   <slot>openRenderSettings()</slot>
   <slot>openAboutQt()</slot>
+  <slot>openServerSettings()</slot>
  </slots>
 </ui>
