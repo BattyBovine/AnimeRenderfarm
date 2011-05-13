@@ -13,9 +13,6 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    winRenderSettings = NULL;
-    winAboutApplication = NULL;
-
     if(!settings.contains("geometry") ||
        !settings.contains("state")) {
         this->setGeometry((qApp->desktop()->screenGeometry().width()/2)-(this->geometry().width()/2),
@@ -29,6 +26,8 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
     listProjectsModel = new qProjectsListModel(ui->listProjects);
     ui->listProjects->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->listProjects->setModel(listProjectsModel);
+
+    winRenderSettings = NULL;
 }
 
 AnimeRenderfarm::~AnimeRenderfarm()
@@ -127,19 +126,16 @@ void AnimeRenderfarm::openRenderSettings()
 
 void AnimeRenderfarm::openAboutApplication()
 {
-//    if(winAboutApplication != NULL) {
-//        if(winAboutApplication->isVisible())
-//            return;
-//        winAboutApplication->deleteLater();
-//    }
-//    winAboutApplication = new AboutApplication(this);
-//    winAboutApplication->show();
-
     QMessageBox::about(this, tr("About ")+qApp->applicationName(),
-        qApp->applicationName().prepend("<center><h1>").append("</h1>") +
+        qApp->applicationName().prepend("<center><h2>").append("</h2>") +
         qApp->applicationVersion().prepend(tr("Version ").prepend("<p>")).append("</p>") +
         qApp->organizationName().prepend("<p>© 2011 ").append("<br/>") +
         tr("All Rights Reserved").append("</p></center>"));
+}
+
+void AnimeRenderfarm::openAboutQt()
+{
+    qApp->aboutQt();
 }
 
 

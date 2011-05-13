@@ -36,10 +36,9 @@ private:
 
     QSettings settings;
 
-    RenderSettings *winRenderSettings;
-    AboutApplication *winAboutApplication;
-
     qProjectsListModel *listProjectsModel;
+
+    RenderSettings *winRenderSettings;
 
     bool fileIsProject(QString);
 
@@ -58,6 +57,7 @@ private slots:
 
     void openRenderSettings();
     void openAboutApplication();
+    void openAboutQt();
 
     void renderProjects();
 };

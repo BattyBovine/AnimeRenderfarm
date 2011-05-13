@@ -78,6 +78,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionAboutApplication"/>
+    <addaction name="actionAboutQt"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -110,6 +111,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+,</string>
+   </property>
+  </action>
+  <action name="actionAboutQt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+/</string>
    </property>
   </action>
  </widget>
@@ -180,11 +189,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAboutQt</sender>
+   <signal>triggered()</signal>
+   <receiver>AnimeRenderfarm</receiver>
+   <slot>openAboutQt()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>showOpenProjectsDialogue()</slot>
   <slot>renderProjects()</slot>
   <slot>openAboutApplication()</slot>
   <slot>openRenderSettings()</slot>
+  <slot>openAboutQt()</slot>
  </slots>
 </ui>
