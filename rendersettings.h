@@ -33,6 +33,7 @@ public slots:
 private slots:
     bool loadSettings();
     bool saveSettings();
+    void showOpenAnimeStudioDialogue();
     void showOpenOutputDirectoryDialogue();
 
 };

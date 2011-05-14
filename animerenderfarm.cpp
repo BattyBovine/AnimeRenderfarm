@@ -123,6 +123,7 @@ void AnimeRenderfarm::openRenderSettings()
         winRenderSettings->deleteLater();
     }
     winRenderSettings = new RenderSettings(this);
+    winRenderSettings->setModal(true);
     winRenderSettings->show();
 }
 
@@ -134,6 +135,7 @@ void AnimeRenderfarm::openServerSettings()
         winServerSettings->deleteLater();
     }
     winServerSettings = new ServerSettings(this);
+    winServerSettings->setModal(true);
     winServerSettings->show();
 }
 
@@ -190,12 +192,24 @@ bool AnimeRenderfarm::fileIsProject(QString file) {
 
 
 void AnimeRenderfarm::renderProjects() {
+    if(!settings.contains("AnimeStudioPath") ||
+       settings.value("AnimeStudioPath","").toString().isEmpty()) {
+        QMessageBox::information(this,
+            tr("Set Anime Studio Path"),
+            tr("<p>You must first set your default options, particularly the "
+               "location of the Anime Studio executable and the folder where "
+               "you want your rendered files to be saved.</p>"));
+        this->openRenderSettings();
+        return;
+    }
+
     if(!settings.contains("OutputDirectory") ||
        settings.value("OutputDirectory","").toString().isEmpty()) {
         QMessageBox::information(this,
             tr("Set An Output Directory"),
             tr("<p>You must first set your default options, particularly the "
-               "folder where you want your rendered files to be saved.</p>"));
+               "location of the Anime Studio executable and the folder where "
+               "you want your rendered files to be saved.</p>"));
         this->openRenderSettings();
         return;
     }

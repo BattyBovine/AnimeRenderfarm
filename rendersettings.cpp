@@ -22,6 +22,17 @@ void RenderSettings::closeEvent(QCloseEvent *)
 
 
 
+void RenderSettings::showOpenAnimeStudioDialogue()
+{
+    QString exe = QFileDialog::getOpenFileName(
+        this, tr("Open Anime Studio Executable"),
+        QDir::toNativeSeparators(QDir::rootPath())
+    );
+
+    if(exe.length()>0)
+        ui->editAnimeStudioPath->setText(QDir::toNativeSeparators(exe));
+}
+
 void RenderSettings::showOpenOutputDirectoryDialogue()
 {
     QString folder = QFileDialog::getExistingDirectory(
@@ -31,13 +42,14 @@ void RenderSettings::showOpenOutputDirectoryDialogue()
     );
 
     if(!folder.isEmpty())
-        ui->editOutputDirectory->setText(folder);
+        ui->editOutputDirectory->setText(QDir::toNativeSeparators(folder));
 }
 
 
 
 bool RenderSettings::loadSettings()
 {
+    ui->editAnimeStudioPath->setText(settings.value("AnimeStudioPath", "").toString());
     ui->editOutputDirectory->setText(settings.value("OutputDirectory", "").toString());
     ui->comboOutputFormat->setCurrentIndex(settings.value("OutputFormat", 0).toInt());
 
@@ -61,6 +73,7 @@ bool RenderSettings::loadSettings()
 
 bool RenderSettings::saveSettings()
 {
+    settings.setValue("AnimeStudioPath", ui->editAnimeStudioPath->text());
     settings.setValue("OutputDirectory", ui->editOutputDirectory->text());
     settings.setValue("OutputFormat", ui->comboOutputFormat->currentIndex());
 

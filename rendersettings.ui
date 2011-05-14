@@ -7,25 +7,58 @@
     <x>0</x>
     <y>0</y>
     <width>312</width>
-    <height>247</height>
+    <height>278</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>312</width>
-    <height>247</height>
+    <height>278</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>312</width>
-    <height>247</height>
+    <height>278</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Render Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="labelAnimeStudioPath">
+       <property name="text">
+        <string>Anime Studio Path:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="editAnimeStudioPath"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonAnimeStudioPath">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>32</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
@@ -37,7 +70,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Output Directory:</string>
+        <string>Output Folder:</string>
        </property>
       </widget>
      </item>
@@ -292,8 +325,8 @@
    <slot>showOpenOutputDirectoryDialogue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>296</x>
-     <y>22</y>
+     <x>301</x>
+     <y>63</y>
     </hint>
     <hint type="destinationlabel">
      <x>319</x>
@@ -302,242 +335,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>editOutputDirectory</sender>
-   <signal>textEdited(QString)</signal>
+   <sender>buttonAnimeStudioPath</sender>
+   <signal>clicked()</signal>
    <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
+   <slot>showOpenAnimeStudioDialogue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>107</x>
-     <y>15</y>
+     <x>285</x>
+     <y>18</y>
     </hint>
     <hint type="destinationlabel">
-     <x>108</x>
+     <x>267</x>
      <y>2</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>comboOutputFormat</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>234</x>
-     <y>50</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>280</x>
-     <y>1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>groupSetFrameRange</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>13</x>
-     <y>88</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>6</x>
-     <y>-3</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinnerStartFrame</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>93</x>
-     <y>95</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>48</x>
-     <y>2</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinnerEndFrame</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>282</x>
-     <y>93</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>263</x>
-     <y>6</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkAntialiasedEdges</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>11</x>
-     <y>139</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>2</x>
-     <y>92</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkApplyLayerEffects</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>18</x>
-     <y>158</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1</x>
-     <y>126</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkRenderAtHalfFramerate</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>30</x>
-     <y>180</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>0</x>
-     <y>161</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkExtraSmoothImages</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>60</x>
-     <y>207</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1</x>
-     <y>195</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkDoNotPremultiplyAlpha</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>15</x>
-     <y>228</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1</x>
-     <y>230</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkApplyShapeEffects</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>310</x>
-     <y>136</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>322</x>
-     <y>89</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkRenderAtHalfDimensions</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>299</x>
-     <y>162</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>322</x>
-     <y>126</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkReducedParticles</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>264</x>
-     <y>182</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>322</x>
-     <y>156</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkUseNTSCSafeColours</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>311</x>
-     <y>203</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>321</x>
-     <y>191</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkVariableLineWidths</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>RenderSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>299</x>
-     <y>227</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>323</x>
-     <y>223</y>
     </hint>
    </hints>
   </connection>
@@ -545,5 +354,6 @@
  <slots>
   <slot>showOpenOutputDirectoryDialogue()</slot>
   <slot>saveSettings()</slot>
+  <slot>showOpenAnimeStudioDialogue()</slot>
  </slots>
 </ui>
