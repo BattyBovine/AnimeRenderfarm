@@ -78,7 +78,18 @@ Qt::ItemFlags qProjectsListModel::flags(const QModelIndex &index) const
 
 
 
-QList< QPair<QString,QString> > qProjectsListModel::getList()
+QStringList qProjectsListModel::getList()
+{
+    QStringList projects;
+    QPair<QString,QString> projectitem;
+    foreach(projectitem, listProjects) {
+        projects << (projectitem.first+projectitem.second);
+    }
+
+    return projects;
+}
+
+QList< QPair<QString,QString> > qProjectsListModel::getListPairs()
 {
     return listProjects;
 }

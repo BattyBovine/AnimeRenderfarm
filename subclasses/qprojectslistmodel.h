@@ -20,7 +20,8 @@ public:
 
     bool addRowAtEnd(QString);
 
-    QList< QPair<QString,QString> > getList();
+    QStringList getList();
+    QList< QPair<QString,QString> > getListPairs();
     bool contains(QString);
 
 private:
