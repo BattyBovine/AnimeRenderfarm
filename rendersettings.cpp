@@ -29,6 +29,13 @@ void RenderSettings::showOpenAnimeStudioDialogue()
         QDir::toNativeSeparators(QDir::rootPath())
     );
 
+    if(!QFileInfo(exe).isExecutable()) {
+        QMessageBox::critical(this, tr("Not An Executable"),
+                              tr("This is not an executable file. Please make sure to "
+                                 "select the Anime Studio executable file."));
+        return;
+    }
+
     if(exe.length()>0)
         ui->editAnimeStudioPath->setText(QDir::toNativeSeparators(exe));
 }
