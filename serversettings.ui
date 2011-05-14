@@ -106,8 +106,8 @@
    <slot>saveSettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>62</x>
-     <y>16</y>
+     <x>114</x>
+     <y>54</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -122,8 +122,8 @@
    <slot>saveSettings()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>233</x>
-     <y>13</y>
+     <x>251</x>
+     <y>51</y>
     </hint>
     <hint type="destinationlabel">
      <x>252</x>
@@ -131,8 +131,41 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboRenderServer</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>ServerSettings</receiver>
+   <slot>renderServerStatus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>151</x>
+     <y>2</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboRenderServer</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>ServerSettings</receiver>
+   <slot>saveSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>170</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>130</x>
+     <y>33</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>saveSettings()</slot>
+  <slot>renderServerStatus()</slot>
  </slots>
 </ui>

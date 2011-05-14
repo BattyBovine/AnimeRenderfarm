@@ -8,6 +8,8 @@ ServerSettings::ServerSettings(QWidget *parent) :
     ui->setupUi(this);
 
     this->loadSettings();
+
+    this->renderServerStatus();
 }
 
 ServerSettings::~ServerSettings()
@@ -15,15 +17,23 @@ ServerSettings::~ServerSettings()
     delete ui;
 }
 
-void ServerSettings::closeEvent(QCloseEvent *)
+
+void ServerSettings::renderServerStatus()
 {
-    this->saveSettings();
+    bool serverstatus = (ui->comboRenderServer->currentIndex()<=0?false:true);
+
+    ui->labelServer->setVisible(serverstatus);
+    ui->labelPort->setVisible(serverstatus);
+    ui->editServer->setVisible(serverstatus);
+    ui->spinnerPort->setVisible(serverstatus);
 }
 
 
 
 bool ServerSettings::loadSettings()
 {
+    ui->comboRenderServer->setCurrentIndex(settings.value("RenderServer", 0).toInt());
+
     ui->editServer->setText(settings.value("Server","127.0.0.1").toString());
     ui->spinnerPort->setValue(settings.value("Port", "26463").toInt());
 
@@ -32,6 +42,8 @@ bool ServerSettings::loadSettings()
 
 bool ServerSettings::saveSettings()
 {
+    settings.setValue("RenderServer", ui->comboRenderServer->currentIndex());
+
     settings.setValue("Server", ui->editServer->text());
     settings.setValue("Port", ui->spinnerPort->value());
 

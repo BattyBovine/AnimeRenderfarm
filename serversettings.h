@@ -20,8 +20,6 @@ public:
 private:
     Ui::ServerSettings *ui;
 
-    void closeEvent(QCloseEvent *);
-
     QSettings settings;
 
 signals:
@@ -29,6 +27,8 @@ signals:
 public slots:
 
 private slots:
+    void renderServerStatus();
+
     bool loadSettings();
     bool saveSettings();
 
