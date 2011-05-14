@@ -190,7 +190,6 @@ bool AnimeRenderfarm::fileIsProject(QString file) {
 
 
 void AnimeRenderfarm::renderProjects() {
-    settings.beginGroup("RenderSettings");
     if(!settings.contains("OutputDirectory") ||
        settings.value("OutputDirectory","").toString().isEmpty()) {
         QMessageBox::information(this,
@@ -198,10 +197,8 @@ void AnimeRenderfarm::renderProjects() {
             tr("<p>You must first set your default options, particularly the "
                "folder where you want your rendered files to be saved.</p>"));
         this->openRenderSettings();
-        settings.endGroup();
         return;
     }
-    settings.endGroup();
 
     QList< QPair<QString,QString> > lProjects = listProjectsModel->getList();
     if(lProjects.size()<=0) {
