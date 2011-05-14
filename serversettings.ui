@@ -100,38 +100,6 @@
  <resources/>
  <connections>
   <connection>
-   <sender>editServer</sender>
-   <signal>textEdited(QString)</signal>
-   <receiver>ServerSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>114</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>5</x>
-     <y>2</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinnerPort</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>ServerSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>251</x>
-     <y>51</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>252</x>
-     <y>3</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>comboRenderServer</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>ServerSettings</receiver>
@@ -147,25 +115,10 @@
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>comboRenderServer</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>ServerSettings</receiver>
-   <slot>saveSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>170</x>
-     <y>19</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>130</x>
-     <y>33</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
  <slots>
   <slot>saveSettings()</slot>
   <slot>renderServerStatus()</slot>
+  <slot>validateServer(QString)</slot>
  </slots>
 </ui>

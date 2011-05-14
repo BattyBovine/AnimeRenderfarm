@@ -20,6 +20,8 @@ public:
 private:
     Ui::ServerSettings *ui;
 
+    void closeEvent(QCloseEvent *);
+
     QSettings settings;
 
 signals:
@@ -28,9 +30,20 @@ public slots:
 
 private slots:
     void renderServerStatus();
+    int validateServer(QString);
 
     bool loadSettings();
     bool saveSettings();
+
+
+
+public:
+    enum IPStatus {
+        OK,
+        EMPTY,
+        INVALID_LENGTH,
+        EXTERNAL_IP
+    };
 
 };
 
