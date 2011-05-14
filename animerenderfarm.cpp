@@ -173,7 +173,7 @@ void AnimeRenderfarm::filesOpened(QStringList files)
     files.sort();
     QList< QPair<QString,QString> > lCurrent = listProjectsModel->getList();
     for(int i=0; i<files.count(); i++) {
-        QString file = files.at(i);
+        QString file = QDir::toNativeSeparators(files.at(i));
 
         if(fileIsProject(file) && !listProjectsModel->contains(file))
             listProjectsModel->addRowAtEnd(file);
