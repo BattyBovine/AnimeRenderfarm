@@ -5,6 +5,7 @@
 #include <QDesktopWidget>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QProcess>
 
 #include <QDragEnterEvent>
 #include <QDropEvent>

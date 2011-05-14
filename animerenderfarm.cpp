@@ -142,10 +142,9 @@ void AnimeRenderfarm::openServerSettings()
 void AnimeRenderfarm::openAboutApplication()
 {
     QMessageBox::about(this, tr("About ")+qApp->applicationName(),
-        qApp->applicationName().prepend("<center><h2>").append("</h2>") +
-        qApp->applicationVersion().prepend(tr("Version ").prepend("<p>")).append("</p>") +
-        qApp->organizationName().prepend("<p>© 2011 ").append("<br/>") +
-        tr("All Rights Reserved").append("</p></center>"));
+        "<center><h2>"+qApp->applicationName()+"</h2>" +
+        "<p>"+tr("Version ")+qApp->applicationVersion()+"</p>" +
+        "<p>© 2011 "+qApp->organizationName()+". "+tr("All Rights Reserved.")+"</p></center>");
 }
 
 void AnimeRenderfarm::openAboutQt()
@@ -158,10 +157,10 @@ void AnimeRenderfarm::openAboutQt()
 bool AnimeRenderfarm::messageRemoveProjectsConfirm() {
     QMessageBox::StandardButton response;
     response = QMessageBox::question(this, tr("Are you sure?"),
-        tr("Are you sure you wish to remove the selected items from the render queue?")
-            .prepend("<p>").append("</p>") +
-        tr("Note that this will not delete your project files from your hard drive.")
-            .prepend("<p>").append("</p>"),
+        "<p>"+tr("Are you sure you wish to remove the "
+                 "selected items from the render queue?")+"</p>" +
+        "<p>"+tr("Note that this will not delete your "
+                 "project files from your hard drive.")+"</p>",
         QMessageBox::Yes | QMessageBox::No);
     return (response==QMessageBox::Yes);
 }
@@ -171,10 +170,8 @@ bool AnimeRenderfarm::messageRemoveProjectsConfirm() {
 void AnimeRenderfarm::filesOpened(QStringList files)
 {
     files.sort();
-    QList< QPair<QString,QString> > lCurrent = listProjectsModel->getList();
     for(int i=0; i<files.count(); i++) {
         QString file = QDir::toNativeSeparators(files.at(i));
-
         if(fileIsProject(file) && !listProjectsModel->contains(file))
             listProjectsModel->addRowAtEnd(file);
     }
@@ -192,32 +189,23 @@ bool AnimeRenderfarm::fileIsProject(QString file) {
 
 
 void AnimeRenderfarm::renderProjects() {
-    if((!settings.contains("AnimeStudioPath")||settings.value("AnimeStudioPath").toString().isEmpty()) ||
-       (!settings.contains("OutputDirectory")||settings.value("OutputDirectory").toString().isEmpty())) {
+    if((!settings.contains("AnimeStudioPath")||
+            settings.value("AnimeStudioPath").toString().isEmpty()) ||
+       (!settings.contains("OutputDirectory")||
+            settings.value("OutputDirectory").toString().isEmpty())) {
         QMessageBox::information(this, tr("Set Default Options"),
-                                 tr("You must first set your default options, particularly "
-                                    "the location of the Anime Studio executable and the "
-                                    "folder where you want your rendered files to be saved.")
-                                 .prepend("<p>").append("</p>"));
+            "<p>"+tr("You must first set your default options, particularly "
+            "the location of the Anime Studio executable and the folder "
+            "where you want your rendered files to be saved.")+"</p>");
         this->openRenderSettings();
         return;
     }
 
-    QList< QPair<QString,QString> > lProjects = listProjectsModel->getList();
+    QList< QPair<QString,QString> > lProjects = listProjectsModel->getListPairs();
     if(lProjects.size()<=0) {
         QMessageBox::information(this, tr("Eh?"),
-            tr("<p>The project list is empty. I don't know what you thought would "
-               "happen, but...it's this. This is what happens.</p>"));
+            "<p>"+tr("The project list is empty. I don't know what you thought would "
+            "happen, but...it's this. This is what happens.")+"</p>");
         return;
     }
-    QString sFilesToRender;
-    for(int i=0; i<lProjects.count(); i++) {
-        QPair<QString,QString> project = lProjects.at(i);
-        sFilesToRender.append(project.second+(i<lProjects.count()-1?", ":""));
-    }
-
-    QMessageBox::information(this,
-        tr("Rendering..."),
-        tr("<p>The following files will be rendered:</p>")+
-        QString("<p>")+sFilesToRender+QString("</p>"));
 }
