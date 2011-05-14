@@ -192,31 +192,20 @@ bool AnimeRenderfarm::fileIsProject(QString file) {
 
 
 void AnimeRenderfarm::renderProjects() {
-    if(!settings.contains("AnimeStudioPath") ||
-       settings.value("AnimeStudioPath","").toString().isEmpty()) {
-        QMessageBox::information(this,
-            tr("Set Anime Studio Path"),
-            tr("<p>You must first set your default options, particularly the "
-               "location of the Anime Studio executable and the folder where "
-               "you want your rendered files to be saved.</p>"));
-        this->openRenderSettings();
-        return;
-    }
-
-    if(!settings.contains("OutputDirectory") ||
-       settings.value("OutputDirectory","").toString().isEmpty()) {
-        QMessageBox::information(this,
-            tr("Set An Output Directory"),
-            tr("<p>You must first set your default options, particularly the "
-               "location of the Anime Studio executable and the folder where "
-               "you want your rendered files to be saved.</p>"));
+    if((!settings.contains("AnimeStudioPath")||settings.value("AnimeStudioPath").toString().isEmpty()) ||
+       (!settings.contains("OutputDirectory")||settings.value("OutputDirectory").toString().isEmpty())) {
+        QMessageBox::information(this, tr("Set Default Options"),
+                                 tr("You must first set your default options, particularly "
+                                    "the location of the Anime Studio executable and the "
+                                    "folder where you want your rendered files to be saved.")
+                                 .prepend("<p>").append("</p>"));
         this->openRenderSettings();
         return;
     }
 
     QList< QPair<QString,QString> > lProjects = listProjectsModel->getList();
     if(lProjects.size()<=0) {
-        QMessageBox::information(this, tr("?"),
+        QMessageBox::information(this, tr("Eh?"),
             tr("<p>The project list is empty. I don't know what you thought would "
                "happen, but...it's this. This is what happens.</p>"));
         return;
