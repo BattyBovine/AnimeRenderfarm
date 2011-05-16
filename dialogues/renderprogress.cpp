@@ -13,7 +13,7 @@ RenderProgress::RenderProgress(QWidget *parent) :
 
     timer.setInterval(10);
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateProgressBarValue()));
-    connect(this, SIGNAL(finished(int)), this, SLOT(close()));
+    connect(this, SIGNAL(renderFinished()), this, SLOT(close()));
 }
 
 RenderProgress::~RenderProgress()
@@ -21,30 +21,46 @@ RenderProgress::~RenderProgress()
     delete ui;
 }
 
-void RenderProgress::closeEvent(QCloseEvent *)
+void RenderProgress::closeEvent(QCloseEvent *e)
 {
-    timer.stop();
+    if(ui->progressRender->value() < ui->progressRender->maximum()) {
+        QMessageBox::StandardButton response;
+        response = QMessageBox::question(this, tr("Are you sure?"),
+            "<p>"+tr("Are you sure you wish to cancel the render job?")+"</p>",
+            QMessageBox::Yes | QMessageBox::No);
 
+        if(response==QMessageBox::No) {
+            e->ignore();
+            return;
+        }
+    }
+
+    emit renderCanceled();
+
+    timer.stop();
 #ifdef Q_WS_WIN
     emit stateChanged(TBPF_NOPROGRESS);
 #endif
+    e->accept();
 }
 
 
 
-void RenderProgress::start() {
+void RenderProgress::start()
+{
     timer.start();
     emit stateChanged(TBPF_INDETERMINATE);
 }
 
 
 
-void RenderProgress::updateProgressBarValue() {
+void RenderProgress::updateProgressBarValue()
+{
     int value = ui->progressRender->value()+1;
     ui->progressRender->setValue(value);
 
     if(value >= ui->progressRender->maximum()) {
-        emit finished(value);
+        emit renderFinished();
         return;
     }
 

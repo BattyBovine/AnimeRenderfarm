@@ -184,6 +184,12 @@ void AnimeRenderfarm::openAboutQt()
     qApp->aboutQt();
 }
 
+void AnimeRenderfarm::renderFinished()
+{
+    listProjectsModel->clearall();
+    ui->listProjects->setEnabled(true);
+}
+
 
 
 #ifdef Q_WS_WIN
@@ -293,6 +299,7 @@ void AnimeRenderfarm::renderProjects() {
 
 //    QMessageBox::information(this, tr("Complete!"), tr("Finished with all files."));
 
+    ui->listProjects->setEnabled(false);
     RenderProgress *winRenderProgress = new RenderProgress(this);
     winRenderProgress->show();
     winRenderProgress->start();
@@ -300,4 +307,8 @@ void AnimeRenderfarm::renderProjects() {
             this, SLOT(updateTaskbarState(TBPFLAG)));
     connect(winRenderProgress, SIGNAL(progressChanged(int,int)),
             this, SLOT(updateTaskbarProgress(int,int)));
+    connect(winRenderProgress, SIGNAL(renderFinished()),
+            this, SLOT(renderFinished()));
+    connect(winRenderProgress, SIGNAL(renderCanceled()),
+            this, SLOT(renderFinished()));
 }

@@ -78,6 +78,8 @@ private slots:
     void openAboutApplication();
     void openAboutQt();
 
+    void renderFinished();
+
 #ifdef Q_WS_WIN
     void updateTaskbarState(TBPFLAG state);
     void updateTaskbarProgress(int,int);

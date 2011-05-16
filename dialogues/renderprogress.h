@@ -2,6 +2,9 @@
 #define RENDERPROGRESS_H
 
 #include <QDialog>
+#include <QMessageBox>
+
+#include <QCloseEvent>
 #include <QTimer>
 
 #ifdef Q_WS_WIN
@@ -33,6 +36,8 @@ private:
 signals:
     void stateChanged(TBPFLAG);
     void progressChanged(int,int);
+    void renderFinished();
+    void renderCanceled();
 
 public slots:
 

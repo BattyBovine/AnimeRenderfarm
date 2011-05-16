@@ -17,6 +17,7 @@ public:
     bool setData(const QModelIndex &, const QVariant &, int);
     bool insertRows(int, int, const QModelIndex &);
     bool removeRows(int, int, const QModelIndex &);
+    bool clearall();
 
     bool addRowAtEnd(QString);
 

@@ -68,6 +68,13 @@ bool qProjectsListModel::setData(const QModelIndex &index, const QVariant &value
     return false;
 }
 
+bool qProjectsListModel::clearall()
+{
+    listProjects.clear();
+
+    return (listProjects.isEmpty());
+}
+
 Qt::ItemFlags qProjectsListModel::flags(const QModelIndex &index) const
 {
     if(!index.isValid())
