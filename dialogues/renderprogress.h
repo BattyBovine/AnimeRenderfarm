@@ -2,6 +2,11 @@
 #define RENDERPROGRESS_H
 
 #include <QDialog>
+#include <QTimer>
+
+#ifdef Q_WS_WIN
+#include <ShObjIdl.h>
+#endif
 
 namespace Ui {
     class RenderProgress;
@@ -15,8 +20,24 @@ public:
     explicit RenderProgress(QWidget *parent = 0);
     ~RenderProgress();
 
+    void start();
+
+protected:
+    void closeEvent(QCloseEvent *);
+
 private:
     Ui::RenderProgress *ui;
+
+    QTimer timer;
+
+signals:
+    void stateChanged(TBPFLAG);
+    void progressChanged(int,int);
+
+public slots:
+
+private slots:
+    void updateProgressBarValue();
 };
 
 #endif // RENDERPROGRESS_H

@@ -30,12 +30,46 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
 
     winRenderSettings = NULL;
     winServerSettings = NULL;
+
+#ifdef Q_WS_WIN
+    taskbarInterface = NULL;
+    taskbarID = RegisterWindowMessage(L"TaskbarButtonCreated");
+#endif
 }
 
 AnimeRenderfarm::~AnimeRenderfarm()
 {
+#ifdef Q_WS_WIN
+    if(taskbarInterface)
+        taskbarInterface->Release();
+#endif
+
     delete ui;
 }
+
+#ifdef Q_WS_WIN
+bool AnimeRenderfarm::winEvent(MSG *message, long *result)
+{
+    if(message->message == taskbarID) {
+        HRESULT hr = CoCreateInstance(CLSID_TaskbarList, NULL,
+                                      CLSCTX_INPROC_SERVER,
+                                      IID_ITaskbarList3,
+                                      reinterpret_cast<void**>(&taskbarInterface));
+        if(SUCCEEDED(hr)) {
+            hr = taskbarInterface->HrInit();
+            updateTaskbarState(TBPF_NORMAL);
+
+            if(FAILED(hr)) {
+                taskbarInterface->Release();
+                taskbarInterface = NULL;
+            }
+        }
+        *result = hr;
+        return true;
+    }
+    return false;
+}
+#endif
 
 void AnimeRenderfarm::changeEvent(QEvent *e)
 {
@@ -152,6 +186,22 @@ void AnimeRenderfarm::openAboutQt()
 
 
 
+#ifdef Q_WS_WIN
+void AnimeRenderfarm::updateTaskbarState(TBPFLAG state)
+{
+    if(taskbarInterface)
+        taskbarInterface->SetProgressState(this->winId(), state);
+}
+
+void AnimeRenderfarm::updateTaskbarProgress(int value, int max)
+{
+    if(taskbarInterface)
+        taskbarInterface->SetProgressValue(this->winId(), value, max);
+}
+#endif
+
+
+
 bool AnimeRenderfarm::messageRemoveProjectsConfirm() {
     QMessageBox::StandardButton response;
     response = QMessageBox::question(this, tr("Are you sure?"),
@@ -245,4 +295,9 @@ void AnimeRenderfarm::renderProjects() {
 
     RenderProgress *winRenderProgress = new RenderProgress(this);
     winRenderProgress->show();
+    winRenderProgress->start();
+    connect(winRenderProgress, SIGNAL(stateChanged(TBPFLAG)),
+            this, SLOT(updateTaskbarState(TBPFLAG)));
+    connect(winRenderProgress, SIGNAL(progressChanged(int,int)),
+            this, SLOT(updateTaskbarProgress(int,int)));
 }

@@ -19,6 +19,11 @@
 #include "dialogues/serversettings.h"
 #include "dialogues/renderprogress.h"
 
+#ifdef Q_WS_WIN
+#include <Windows.h>
+#include <ShObjIdl.h>
+#endif
+
 namespace Ui {
     class AnimeRenderfarm;
 }
@@ -34,6 +39,10 @@ protected:
     void keyPressEvent(QKeyEvent *);
     void closeEvent(QCloseEvent *);
 
+#ifdef Q_WS_WIN
+    bool winEvent(MSG *message, long *result);
+#endif
+
 private:
     Ui::AnimeRenderfarm *ui;
 
@@ -43,6 +52,11 @@ private:
 
     RenderSettings *winRenderSettings;
     ServerSettings *winServerSettings;
+
+#ifdef Q_WS_WIN
+    unsigned int taskbarID;
+    ITaskbarList3 *taskbarInterface;
+#endif
 
     bool fileIsProject(QString);
 
@@ -63,6 +77,11 @@ private slots:
     void openServerSettings();
     void openAboutApplication();
     void openAboutQt();
+
+#ifdef Q_WS_WIN
+    void updateTaskbarState(TBPFLAG state);
+    void updateTaskbarProgress(int,int);
+#endif
 
     void renderProjects();
 };
