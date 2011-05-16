@@ -13,9 +13,9 @@
 #include <QSettings>
 #include <QUrl>
 
-#include "rendersettings.h"
-#include "serversettings.h"
-#include "aboutapplication.h"
+#include "dialogues/rendersettings.h"
+#include "dialogues/serversettings.h"
+#include "dialogues/renderprogress.h"
 #include "subclasses/qprojectslistmodel.h"
 
 namespace Ui {

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RenderSettings</class>
+ <widget class="QDialog" name="RenderSettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>312</width>
+    <height>278</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>312</width>
+    <height>278</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>312</width>
+    <height>278</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Render Options</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="labelAnimeStudioPath">
+       <property name="text">
+        <string>Anime Studio Path:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="editAnimeStudioPath"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonAnimeStudioPath">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>32</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="labelOutputDirectory">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Output Folder:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="editOutputDirectory">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonOutputDirectory">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>32</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="labelOutputFormat">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Output Format:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboOutputFormat">
+       <item>
+        <property name="text">
+         <string>JPEG Sequence (.jpg)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Windows Bitmap Sequence (.bmp)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Targa Sequence (.tga)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>PNG Sequence (.png)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Photoshop Image Sequence (.psd)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>AVI Movie (.avi)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>QuickTime Movie (.mov)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Adobe Flash (.swf)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupSetFrameRange">
+     <property name="title">
+      <string>Set frame range</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelStartFrame">
+        <property name="maximumSize">
+         <size>
+          <width>64</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Start frame:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="spinnerStartFrame"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="labelEndFrame">
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>End frame:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QSpinBox" name="spinnerEndFrame"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="checkAntialiasedEdges">
+       <property name="text">
+        <string>Antialiased edges</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="checkReducedParticles">
+       <property name="text">
+        <string>Reduced particles</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="checkApplyShapeEffects">
+       <property name="text">
+        <string>Apply shape effects</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="checkExtraSmoothImages">
+       <property name="text">
+        <string>Extra-smooth images</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="checkApplyLayerEffects">
+       <property name="text">
+        <string>Apply layer effects</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="checkUseNTSCSafeColours">
+       <property name="text">
+        <string>Use NTSC-safe colours</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QCheckBox" name="checkRenderAtHalfDimensions">
+       <property name="text">
+        <string>Render at half dimensions</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="checkDoNotPremultiplyAlpha">
+       <property name="text">
+        <string>Do not premultiply alpha</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="checkRenderAtHalfFramerate">
+       <property name="text">
+        <string>Render at half frame rate</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="checkVariableLineWidths">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Variable line widths</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonOutputDirectory</sender>
+   <signal>clicked()</signal>
+   <receiver>RenderSettings</receiver>
+   <slot>showOpenOutputDirectoryDialogue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>63</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonAnimeStudioPath</sender>
+   <signal>clicked()</signal>
+   <receiver>RenderSettings</receiver>
+   <slot>showOpenAnimeStudioDialogue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>2</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>showOpenOutputDirectoryDialogue()</slot>
+  <slot>saveSettings()</slot>
+  <slot>showOpenAnimeStudioDialogue()</slot>
+ </slots>
+</ui>
