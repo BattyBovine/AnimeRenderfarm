@@ -13,10 +13,11 @@
 #include <QSettings>
 #include <QUrl>
 
+#include "subclasses/qprojectslistmodel.h"
+
 #include "dialogues/rendersettings.h"
 #include "dialogues/serversettings.h"
 #include "dialogues/renderprogress.h"
-#include "subclasses/qprojectslistmodel.h"
 
 namespace Ui {
     class AnimeRenderfarm;

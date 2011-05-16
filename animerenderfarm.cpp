@@ -123,7 +123,6 @@ void AnimeRenderfarm::openRenderSettings()
         winRenderSettings->deleteLater();
     }
     winRenderSettings = new RenderSettings(this);
-    winRenderSettings->setModal(true);
     winRenderSettings->show();
 }
 
@@ -135,7 +134,6 @@ void AnimeRenderfarm::openServerSettings()
         winServerSettings->deleteLater();
     }
     winServerSettings = new ServerSettings(this);
-    winServerSettings->setModal(true);
     winServerSettings->show();
 }
 
@@ -244,4 +242,7 @@ void AnimeRenderfarm::renderProjects() {
 //    }
 
 //    QMessageBox::information(this, tr("Complete!"), tr("Finished with all files."));
+
+    RenderProgress *winRenderProgress = new RenderProgress(this);
+    winRenderProgress->show();
 }
