@@ -24,25 +24,28 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
         restoreState(settings.value("State").toByteArray(), 0);
     }
 
-    listProjectsModel = new qProjectsListModel(ui->listProjects);
-    ui->listProjects->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    ui->listProjects->setModel(listProjectsModel);
-
-    winRenderSettings = NULL;
-    winServerSettings = NULL;
-
 #ifdef Q_WS_WIN
     taskbarInterface = NULL;
     taskbarID = RegisterWindowMessage(L"TaskbarButtonCreated");
 #endif
+
+    listProjectsModel = new qProjectsListModel(ui->listProjects);
+    ui->listProjects->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->listProjects->setModel(listProjectsModel);
+
+    winRenderProgress = NULL;
+    winRenderSettings = NULL;
+    winServerSettings = NULL;
 }
 
 AnimeRenderfarm::~AnimeRenderfarm()
 {
-#ifdef Q_WS_WIN
-    if(taskbarInterface)
-        taskbarInterface->Release();
-#endif
+    if(winRenderProgress)
+        winRenderProgress->deleteLater();
+    if(winRenderSettings)
+        winRenderSettings->deleteLater();
+    if(winServerSettings)
+        winServerSettings->deleteLater();
 
     delete ui;
 }
@@ -57,7 +60,6 @@ bool AnimeRenderfarm::winEvent(MSG *message, long *result)
                                       reinterpret_cast<void**>(&taskbarInterface));
         if(SUCCEEDED(hr)) {
             hr = taskbarInterface->HrInit();
-            updateTaskbarState(TBPF_NORMAL);
 
             if(FAILED(hr)) {
                 taskbarInterface->Release();
@@ -151,7 +153,7 @@ void AnimeRenderfarm::showOpenProjectsDialogue()
 
 void AnimeRenderfarm::openRenderSettings()
 {
-    if(winRenderSettings != NULL) {
+    if(winRenderSettings) {
         if(winRenderSettings->isVisible())
             return;
         winRenderSettings->deleteLater();
@@ -162,7 +164,7 @@ void AnimeRenderfarm::openRenderSettings()
 
 void AnimeRenderfarm::openServerSettings()
 {
-    if(winServerSettings != NULL) {
+    if(winServerSettings) {
         if(winServerSettings->isVisible())
             return;
         winServerSettings->deleteLater();
@@ -184,27 +186,19 @@ void AnimeRenderfarm::openAboutQt()
     qApp->aboutQt();
 }
 
-void AnimeRenderfarm::renderFinished()
+
+
+void AnimeRenderfarm::renderCompleted()
 {
     listProjectsModel->clearall();
+    renderEnd();
+}
+void AnimeRenderfarm::renderEnd()
+{
     ui->listProjects->setEnabled(true);
+
+    this->disconnect(winRenderProgress);
 }
-
-
-
-#ifdef Q_WS_WIN
-void AnimeRenderfarm::updateTaskbarState(TBPFLAG state)
-{
-    if(taskbarInterface)
-        taskbarInterface->SetProgressState(this->winId(), state);
-}
-
-void AnimeRenderfarm::updateTaskbarProgress(int value, int max)
-{
-    if(taskbarInterface)
-        taskbarInterface->SetProgressValue(this->winId(), value, max);
-}
-#endif
 
 
 
@@ -263,52 +257,53 @@ void AnimeRenderfarm::renderProjects() {
         return;
     }
 
-//    if(winRenderSettings==NULL)
-//        winRenderSettings = new RenderSettings(this);
-//    foreach(QString proj, slProjects) {
-//        QStringList args;
-//        args << "-r" << proj << "-v" << "-f" << winRenderSettings->getOutputFormat();
-//        if(winRenderSettings->getFrameRange()) {
-//            args << "-start" << winRenderSettings->getStartFrame() <<
-//                    "-end" << winRenderSettings->getEndFrame();
-//        }
-//        args << "-aa" << winRenderSettings->getAntialiasedEdges() <<
-//                "-shapefx" << winRenderSettings->getApplyShapeEffects() <<
-//                "-layerfx" << winRenderSettings->getApplyLayerEffects() <<
-//                "-halfsize" << winRenderSettings->getRenderAtHalfDimensions() <<
-//                "-halffps" << winRenderSettings->getRenderAtHalfFramerate() <<
-//                "-fewparticles" << winRenderSettings->getReducedParticles() <<
-//                "-extrasmooth" << winRenderSettings->getExtraSmoothImages() <<
-//                "-ntscsafe" << winRenderSettings->getUseNTSCSafeColours() <<
-//                "-premultiply" << winRenderSettings->getDoNotPremultiplyAlpha() <<
-//                "-variablewidths" << winRenderSettings->getVariableLineWidths();
+/*    if(winRenderSettings==NULL)
+        winRenderSettings = new RenderSettings(this);
+    foreach(QString proj, slProjects) {
+        QStringList args;
+        args << "-r" << proj << "-v" << "-f" << winRenderSettings->getOutputFormat();
+        if(winRenderSettings->getFrameRange()) {
+            args << "-start" << winRenderSettings->getStartFrame() <<
+                    "-end" << winRenderSettings->getEndFrame();
+        }
+        args << "-aa" << winRenderSettings->getAntialiasedEdges() <<
+                "-shapefx" << winRenderSettings->getApplyShapeEffects() <<
+                "-layerfx" << winRenderSettings->getApplyLayerEffects() <<
+                "-halfsize" << winRenderSettings->getRenderAtHalfDimensions() <<
+                "-halffps" << winRenderSettings->getRenderAtHalfFramerate() <<
+                "-fewparticles" << winRenderSettings->getReducedParticles() <<
+                "-extrasmooth" << winRenderSettings->getExtraSmoothImages() <<
+                "-ntscsafe" << winRenderSettings->getUseNTSCSafeColours() <<
+                "-premultiply" << winRenderSettings->getDoNotPremultiplyAlpha() <<
+                "-variablewidths" << winRenderSettings->getVariableLineWidths();
 
-//        QProcess *renderjob = new QProcess(this);
-//        renderjob->start(winRenderSettings->getAnimeStudioPath(),args);
-//        renderjob->waitForFinished(-1);
+        QProcess *renderjob = new QProcess(this);
+        renderjob->start(winRenderSettings->getAnimeStudioPath(),args);
+        renderjob->waitForFinished(-1);
 
-//        QString r_stdout = renderjob->readAllStandardOutput();
-//        QString r_stderr = renderjob->readAllStandardError();
-//        if(!r_stdout.isEmpty() || !r_stderr.isEmpty()) {
-//            if(!r_stdout.isEmpty())
-//                QMessageBox::information(this, tr("Output for ")+proj, r_stdout);
-//            if(!r_stderr.isEmpty())
-//                QMessageBox::critical(this, tr("Errors for ")+proj, r_stderr);
-//        }
-//    }
+        QString r_stdout = renderjob->readAllStandardOutput();
+        QString r_stderr = renderjob->readAllStandardError();
+        if(!r_stdout.isEmpty() || !r_stderr.isEmpty()) {
+            if(!r_stdout.isEmpty())
+                QMessageBox::information(this, tr("Output for ")+proj, r_stdout);
+            if(!r_stderr.isEmpty())
+                QMessageBox::critical(this, tr("Errors for ")+proj, r_stderr);
+        }
+    }
 
-//    QMessageBox::information(this, tr("Complete!"), tr("Finished with all files."));
+    QMessageBox::information(this, tr("Complete!"), tr("Finished with all files."));*/
 
     ui->listProjects->setEnabled(false);
-    RenderProgress *winRenderProgress = new RenderProgress(this);
-    winRenderProgress->show();
+    if(!winRenderProgress) {
+        winRenderProgress = new RenderProgress(this);
+#ifdef Q_WS_WIN
+        winRenderProgress->initTaskbarInterface(this->winId(), taskbarInterface);
+#endif
+    }
     winRenderProgress->start();
-    connect(winRenderProgress, SIGNAL(stateChanged(TBPFLAG)),
-            this, SLOT(updateTaskbarState(TBPFLAG)));
-    connect(winRenderProgress, SIGNAL(progressChanged(int,int)),
-            this, SLOT(updateTaskbarProgress(int,int)));
+
     connect(winRenderProgress, SIGNAL(renderFinished()),
-            this, SLOT(renderFinished()));
+            this, SLOT(renderCompleted()));
     connect(winRenderProgress, SIGNAL(renderCanceled()),
-            this, SLOT(renderFinished()));
+            this, SLOT(renderEnd()));
 }

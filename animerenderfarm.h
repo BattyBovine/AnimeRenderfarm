@@ -35,10 +35,9 @@ public:
     ~AnimeRenderfarm();
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *);
     void keyPressEvent(QKeyEvent *);
     void closeEvent(QCloseEvent *);
-
 #ifdef Q_WS_WIN
     bool winEvent(MSG *message, long *result);
 #endif
@@ -50,6 +49,7 @@ private:
 
     qProjectsListModel *listProjectsModel;
 
+    RenderProgress *winRenderProgress;
     RenderSettings *winRenderSettings;
     ServerSettings *winServerSettings;
 
@@ -78,12 +78,8 @@ private slots:
     void openAboutApplication();
     void openAboutQt();
 
-    void renderFinished();
-
-#ifdef Q_WS_WIN
-    void updateTaskbarState(TBPFLAG state);
-    void updateTaskbarProgress(int,int);
-#endif
+    void renderCompleted();
+    void renderEnd();
 
     void renderProjects();
 };

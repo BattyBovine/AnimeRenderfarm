@@ -14,10 +14,19 @@ RenderProgress::RenderProgress(QWidget *parent) :
     timer.setInterval(10);
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateProgressBarValue()));
     connect(this, SIGNAL(renderFinished()), this, SLOT(close()));
+
+#ifdef Q_WS_WIN
+    taskbarInterface = NULL;
+#endif
 }
 
 RenderProgress::~RenderProgress()
 {
+#ifdef Q_WS_WIN
+    if(taskbarInterface)
+        taskbarInterface->Release();
+#endif
+
     delete ui;
 }
 
@@ -39,17 +48,49 @@ void RenderProgress::closeEvent(QCloseEvent *e)
 
     timer.stop();
 #ifdef Q_WS_WIN
-    emit stateChanged(TBPF_NOPROGRESS);
+    updateTaskbarProgress(ui->progressRender->minimum());
+    updateTaskbarState(TBPF_NOPROGRESS);
 #endif
     e->accept();
 }
 
 
 
+#ifdef Q_WS_WIN
+bool RenderProgress::initTaskbarInterface(WId win, ITaskbarList3 *tb)
+{
+    winMain = win;
+    taskbarInterface = tb;
+    return (winMain && taskbarInterface);
+}
+#endif
+
 void RenderProgress::start()
 {
     timer.start();
-    emit stateChanged(TBPF_INDETERMINATE);
+#ifdef Q_WS_WIN
+    updateTaskbarState(TBPF_INDETERMINATE);
+#endif
+    this->show();
+}
+
+
+
+#ifdef Q_WS_WIN
+void RenderProgress::updateTaskbarState(TBPFLAG state)
+{
+    if(taskbarInterface)
+        taskbarInterface->SetProgressState(winMain, state);
+}
+#endif
+
+void RenderProgress::updateTaskbarProgress(int value)
+{
+    ui->progressRender->setValue(value);
+#ifdef Q_WS_WIN
+    if(taskbarInterface)
+        taskbarInterface->SetProgressValue(winMain, value, ui->progressRender->maximum());
+#endif
 }
 
 
@@ -57,15 +98,13 @@ void RenderProgress::start()
 void RenderProgress::updateProgressBarValue()
 {
     int value = ui->progressRender->value()+1;
-    ui->progressRender->setValue(value);
+    updateTaskbarProgress(value);
+#ifdef Q_WS_WIN
+    updateTaskbarState(TBPF_NORMAL);
+#endif
 
     if(value >= ui->progressRender->maximum()) {
         emit renderFinished();
         return;
     }
-
-#ifdef Q_WS_WIN
-    emit stateChanged(TBPF_NORMAL);
-    emit progressChanged(value, ui->progressRender->maximum());
-#endif
 }

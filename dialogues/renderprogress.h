@@ -8,6 +8,7 @@
 #include <QTimer>
 
 #ifdef Q_WS_WIN
+#include <Windows.h>
 #include <ShObjIdl.h>
 #endif
 
@@ -23,6 +24,10 @@ public:
     explicit RenderProgress(QWidget *parent = 0);
     ~RenderProgress();
 
+#ifdef Q_WS_WIN
+    bool initTaskbarInterface(WId,ITaskbarList3*);
+#endif
+
     void start();
 
 protected:
@@ -33,9 +38,15 @@ private:
 
     QTimer timer;
 
+#ifdef Q_WS_WIN
+    WId winMain;
+    ITaskbarList3 *taskbarInterface;
+
+    void updateTaskbarState(TBPFLAG state);
+#endif
+    void updateTaskbarProgress(int);
+
 signals:
-    void stateChanged(TBPFLAG);
-    void progressChanged(int,int);
     void renderFinished();
     void renderCanceled();
 
