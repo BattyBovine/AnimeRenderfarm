@@ -47,6 +47,11 @@ AnimeRenderfarm::~AnimeRenderfarm()
     if(winServerSettings)
         winServerSettings->deleteLater();
 
+#ifdef Q_WS_WIN
+    if(taskbarInterface)
+        taskbarInterface->Release();
+#endif
+
     delete ui;
 }
 
@@ -197,7 +202,10 @@ void AnimeRenderfarm::renderEnd()
 {
     ui->listProjects->setEnabled(true);
 
-    this->disconnect(winRenderProgress);
+    if(winRenderProgress) {
+        winRenderProgress->deleteLater();
+        winRenderProgress = NULL;
+    }
 }
 
 
@@ -299,11 +307,10 @@ void AnimeRenderfarm::renderProjects() {
 #ifdef Q_WS_WIN
         winRenderProgress->initTaskbarInterface(this->winId(), taskbarInterface);
 #endif
+        connect(winRenderProgress, SIGNAL(renderFinished()),
+                this, SLOT(renderCompleted()));
+        connect(winRenderProgress, SIGNAL(renderCanceled()),
+                this, SLOT(renderEnd()));
     }
     winRenderProgress->start();
-
-    connect(winRenderProgress, SIGNAL(renderFinished()),
-            this, SLOT(renderCompleted()));
-    connect(winRenderProgress, SIGNAL(renderCanceled()),
-            this, SLOT(renderEnd()));
 }

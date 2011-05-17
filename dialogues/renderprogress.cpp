@@ -22,11 +22,6 @@ RenderProgress::RenderProgress(QWidget *parent) :
 
 RenderProgress::~RenderProgress()
 {
-#ifdef Q_WS_WIN
-    if(taskbarInterface)
-        taskbarInterface->Release();
-#endif
-
     delete ui;
 }
 
@@ -47,10 +42,6 @@ void RenderProgress::closeEvent(QCloseEvent *e)
     emit renderCanceled();
 
     timer.stop();
-#ifdef Q_WS_WIN
-    updateTaskbarProgress(ui->progressRender->minimum());
-    updateTaskbarState(TBPF_NOPROGRESS);
-#endif
     e->accept();
 }
 
