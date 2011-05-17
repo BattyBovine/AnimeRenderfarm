@@ -39,9 +39,12 @@ void RenderProgress::closeEvent(QCloseEvent *e)
         }
     }
 
+#ifdef Q_WS_WIN
+    updateTaskbarState(TBPF_NOPROGRESS);
+#endif
+    timer.stop();
     emit renderCanceled();
 
-    timer.stop();
     e->accept();
 }
 
