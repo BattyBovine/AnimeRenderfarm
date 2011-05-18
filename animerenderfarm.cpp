@@ -1,4 +1,4 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                         *
  *  Anime Renderfarm - A remote batch renderer for Anime Studio            *
  *  Copyright (C) 2011 Batty Bovine Productions                            *
@@ -110,11 +110,11 @@ void AnimeRenderfarm::changeEvent(QEvent *e)
     }
 }
 
-void AnimeRenderfarm::keyPressEvent(QKeyEvent *event)
+void AnimeRenderfarm::keyPressEvent(QKeyEvent *e)
 {
-    if(event->key() == Qt::Key_Delete ||
-       event->key() == Qt::Key_Backspace) {
-        if(this->messageRemoveProjectsConfirm()) {
+    if(e->key() == Qt::Key_Delete ||
+       e->key() == Qt::Key_Backspace) {
+        if(messageRemoveProjectsConfirm()) {
             QModelIndexList indices;
             while((indices = ui->listProjects->selectionModel()->selectedIndexes()).size()) {
                 listProjectsModel->removeRow(indices.first().row());
@@ -123,16 +123,16 @@ void AnimeRenderfarm::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void AnimeRenderfarm::dragEnterEvent(QDragEnterEvent *event)
+void AnimeRenderfarm::dragEnterEvent(QDragEnterEvent *e)
 {
-    if(event->mimeData()->hasFormat("text/uri-list"))
-        event->acceptProposedAction();
+    if(e->mimeData()->hasFormat("text/uri-list"))
+        e->acceptProposedAction();
 }
 
-void AnimeRenderfarm::dropEvent(QDropEvent *event)
+void AnimeRenderfarm::dropEvent(QDropEvent *e)
 {
     QStringList slItems;
-    QList<QUrl> lText = event->mimeData()->urls();
+    QList<QUrl> lText = e->mimeData()->urls();
     foreach(QUrl url, lText)
         slItems << QDir::toNativeSeparators(url.toLocalFile());
 
@@ -203,7 +203,7 @@ void AnimeRenderfarm::openAboutApplication()
     QMessageBox::about(this, tr("About ")+qApp->applicationName(),
         "<center><h2>"+qApp->applicationName()+"</h2>" +
         "<p>"+tr("Version ")+qApp->applicationVersion()+"</p>" +
-        "<p>� 2011 "+qApp->organizationName()+". "+tr("All Rights Reserved.")+"</p></center>");
+        "<p>© 2011 "+qApp->organizationName()+". "+tr("All Rights Reserved.")+"</p></center>");
 }
 
 void AnimeRenderfarm::openAboutQt()
