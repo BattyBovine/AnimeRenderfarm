@@ -285,42 +285,6 @@ void AnimeRenderfarm::renderProjects() {
         return;
     }
 
-/*    if(winRenderSettings==NULL)
-        winRenderSettings = new RenderSettings(this);
-    foreach(QString proj, slProjects) {
-        QStringList args;
-        args << "-r" << proj << "-v" << "-f" << winRenderSettings->getOutputFormat();
-        if(winRenderSettings->getFrameRange()) {
-            args << "-start" << winRenderSettings->getStartFrame() <<
-                    "-end" << winRenderSettings->getEndFrame();
-        }
-        args << "-aa" << winRenderSettings->getAntialiasedEdges() <<
-                "-shapefx" << winRenderSettings->getApplyShapeEffects() <<
-                "-layerfx" << winRenderSettings->getApplyLayerEffects() <<
-                "-halfsize" << winRenderSettings->getRenderAtHalfDimensions() <<
-                "-halffps" << winRenderSettings->getRenderAtHalfFramerate() <<
-                "-fewparticles" << winRenderSettings->getReducedParticles() <<
-                "-extrasmooth" << winRenderSettings->getExtraSmoothImages() <<
-                "-ntscsafe" << winRenderSettings->getUseNTSCSafeColours() <<
-                "-premultiply" << winRenderSettings->getDoNotPremultiplyAlpha() <<
-                "-variablewidths" << winRenderSettings->getVariableLineWidths();
-
-        QProcess *renderjob = new QProcess(this);
-        renderjob->start(winRenderSettings->getAnimeStudioPath(),args);
-        renderjob->waitForFinished(-1);
-
-        QString r_stdout = renderjob->readAllStandardOutput();
-        QString r_stderr = renderjob->readAllStandardError();
-        if(!r_stdout.isEmpty() || !r_stderr.isEmpty()) {
-            if(!r_stdout.isEmpty())
-                QMessageBox::information(this, tr("Output for ")+proj, r_stdout);
-            if(!r_stderr.isEmpty())
-                QMessageBox::critical(this, tr("Errors for ")+proj, r_stderr);
-        }
-    }
-
-    QMessageBox::information(this, tr("Complete!"), tr("Finished with all files."));*/
-
     ui->listProjects->setEnabled(false);
     if(!winRenderProgress) {
         winRenderProgress = new RenderProgress(this);
