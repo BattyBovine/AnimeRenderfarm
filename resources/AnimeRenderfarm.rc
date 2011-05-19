@@ -1,1 +1,24 @@
 IDI_ICON1	ICON	DISCARDABLE	"AnimeRenderfarm.ico"
+
+1 VERSIONINFO
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "FFFF0000"
+    BEGIN
+      VALUE "FileVersion", "0.1"
+      VALUE "ProductVersion", "0.1"
+      VALUE "CompanyName", "Batty Bovine Productions, LLC"
+      VALUE "FileDescription", "Anime Renderfarm is an application."
+      VALUE "InternalName", "AnimeRenderfarm"
+      VALUE "LegalCopyright", "© 2011 Batty Bovine Productions, LLC. Some Rights Reserved."
+      VALUE "LegalTrademarks", ""
+      VALUE "OriginalFilename", "AnimeRenderfarm.exe"
+      VALUE "ProductName", "Anime Renderfarm"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0xFFFF, 0x0000
+  END
+END
