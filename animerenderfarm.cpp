@@ -149,25 +149,22 @@ void AnimeRenderfarm::closeEvent(QCloseEvent *)
 
 void AnimeRenderfarm::showOpenProjectsDialogue()
 {
-    QString sSupported;
+    QString supported;
 
-    sSupported += tr("All supported formats"); sSupported += " (";
-    sSupported += SUPPORTED_FORMATS_PROJECTS; sSupported += ");;";
+    supported += tr("All supported formats") + " (*.anme *.moho);;";
 
-    sSupported += tr("Anime Studio Projects"); sSupported += " (";
-    sSupported += SUPPORTED_FORMATS_PROJECTS_ANME; sSupported += ");;";
-    sSupported += tr("Moho Projects"); sSupported += " (";
-    sSupported += SUPPORTED_FORMATS_PROJECTS_MOHO; sSupported += ");;";
+    supported += tr("Anime Studio Projects") + " (*.anme);;";
+    supported += tr("Moho Projects") + " (*.moho);;";
 
-    sSupported.replace(".", "*.");
+    supported.replace(".", "*.");
 
-    sSupported += tr("All files");sSupported += " (*.*);;";
+    supported += tr("All files") += " (*.*);;";
 
     QStringList files = QFileDialog::getOpenFileNames(
         this,
         tr("Open Anime Studio Projects"),
         QDir::toNativeSeparators(QDir::homePath()),
-        sSupported
+        supported
     );
 
     if(files.length()>0)
