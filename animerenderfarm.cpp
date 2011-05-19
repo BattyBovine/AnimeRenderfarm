@@ -215,7 +215,14 @@ void AnimeRenderfarm::openAboutQt()
 
 void AnimeRenderfarm::renderCompleted()
 {
+    qApp->alert(this, 0);
+
     listProjectsModel->clearall();
+
+    if(this->isMinimized())
+        QMessageBox::information(this, tr("Render Complete!"),
+            "<p>"+tr("All projects have successfully finished rendering.")+"</p>");
+
     renderEnd();
 }
 void AnimeRenderfarm::renderEnd()
