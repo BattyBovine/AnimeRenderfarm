@@ -44,15 +44,33 @@ void RenderSettings::closeEvent(QCloseEvent *)
 
 void RenderSettings::showOpenAnimeStudioDialogue()
 {
+    QString supported = "";
+#if defined Q_WS_WIN32
+    supported = "Executable Files (*.exe);;";
+#elif defined Q_WS_MACX
+    supported = "Application Bundles (*.app);;";
+#endif
+    supported += "All files (*.*);;";
+
+    QString startpath = QDir::toNativeSeparators(ui->editAnimeStudioPath->text());
+    if(startpath.isEmpty())
+        startpath = QDir::rootPath();
+    else
+        startpath = startpath.mid(0,startpath.lastIndexOf(QDir::separator())+1);
+
     QString exe = QFileDialog::getOpenFileName(
         this, tr("Open Anime Studio Executable"),
-        QDir::toNativeSeparators(QDir::rootPath())
+        startpath, supported
     );
 
+    if(exe.isEmpty())
+        return;
+
     if(!QFileInfo(exe).isExecutable()) {
-        QMessageBox::critical(this, tr("Not An Executable"),
-                              tr("This is not an executable file. Please make sure to "
-                                 "select the Anime Studio executable file."));
+        QMessageBox::critical(this, tr("Not An Executable File"),
+                              tr("This is not an executable file. Please select the Anime Studio "
+                                 "executable file, and make sure you have the necessary "
+                                 "permissions to run it."));
         return;
     }
 
@@ -62,14 +80,19 @@ void RenderSettings::showOpenAnimeStudioDialogue()
 
 void RenderSettings::showOpenOutputDirectoryDialogue()
 {
+    QString startpath = QDir::toNativeSeparators(ui->editOutputDirectory->text());
+    if(startpath.isEmpty())
+        startpath = QDesktopServices::storageLocation(QDesktopServices::MoviesLocation);
+
     QString folder = QFileDialog::getExistingDirectory(
         this, tr("Open Output Folder"),
-        QDir::toNativeSeparators(QDir::homePath()),
-        QFileDialog::ShowDirsOnly
+        startpath, QFileDialog::ShowDirsOnly
     );
 
     if(!folder.isEmpty())
         ui->editOutputDirectory->setText(QDir::toNativeSeparators(folder));
+    else
+        ui->editOutputDirectory->setText(startpath);
 }
 
 

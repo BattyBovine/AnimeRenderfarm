@@ -23,6 +23,7 @@
 
 #include <QDialog>
 #include <QDesktopWidget>
+#include <QDesktopServices>
 #include <QMessageBox>
 
 #include <QSettings>
