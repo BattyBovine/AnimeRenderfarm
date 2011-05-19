@@ -16,14 +16,16 @@ SOURCES += main.cpp\
     dialogues/rendersettings.cpp \
     dialogues/serversettings.cpp \
     dialogues/consoleoutput.cpp \
-    dialogues/renderprogress.cpp
+    dialogues/renderprogress.cpp \
+    objects/renderthread.cpp
 
 HEADERS  += animerenderfarm.h \
     subclasses/qprojectslistmodel.h \
     dialogues/rendersettings.h \
     dialogues/serversettings.h \
     dialogues/consoleoutput.h \
-    dialogues/renderprogress.h
+    dialogues/renderprogress.h \
+    objects/renderthread.h
 
 FORMS    += animerenderfarm.ui \
     dialogues/rendersettings.ui \
