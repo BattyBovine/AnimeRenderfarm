@@ -27,13 +27,11 @@ RenderProgress::RenderProgress(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->progressRender->setValue(0);
     ui->progressRender->setMinimum(0);
-    ui->progressRender->setMaximum(1000);
+    ui->progressRender->setMaximum(0);
+    ui->progressRender->reset();
 
-    timer.setInterval(10);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(updateProgressBarValue()));
-    connect(this, SIGNAL(renderFinished()), this, SLOT(close()));
+    ui->labelProgressInfo->setText(tr("Waiting for projects to render..."));
 
 #ifdef Q_WS_WIN
     taskbarInterface = NULL;
@@ -62,7 +60,6 @@ void RenderProgress::closeEvent(QCloseEvent *e)
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_NOPROGRESS);
 #endif
-    timer.stop();
     emit renderCanceled();
 
     e->accept();
@@ -79,9 +76,14 @@ bool RenderProgress::initTaskbarInterface(WId win, ITaskbarList3 *tb)
 }
 #endif
 
+void RenderProgress::setProjects(QList<QPair<QString, QString> > input)
+{
+    listProjects = input;
+}
+
 void RenderProgress::start()
 {
-    timer.start();
+    ui->labelProgressInfo->setText(tr("Preparing projects for render..."));
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_INDETERMINATE);
 #endif

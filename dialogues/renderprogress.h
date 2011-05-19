@@ -44,6 +44,7 @@ public:
     explicit RenderProgress(QWidget *parent = 0);
     ~RenderProgress();
 
+    void setProjects(QList< QPair<QString,QString> >);
 #ifdef Q_WS_WIN
     bool initTaskbarInterface(WId,ITaskbarList3*);
 #endif
@@ -56,7 +57,7 @@ protected:
 private:
     Ui::RenderProgress *ui;
 
-    QTimer timer;
+    QList< QPair<QString,QString> > listProjects;
 
 #ifdef Q_WS_WIN
     WId winMain;

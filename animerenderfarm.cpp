@@ -300,5 +300,6 @@ void AnimeRenderfarm::renderProjects() {
         connect(winRenderProgress, SIGNAL(renderCanceled()),
                 this, SLOT(renderEnd()));
     }
+    winRenderProgress->setProjects(listProjectsModel->getListPairs());
     winRenderProgress->start();
 }

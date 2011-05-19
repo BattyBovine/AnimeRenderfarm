@@ -10,6 +10,9 @@ public:
     explicit RenderThread(QObject *parent = 0);
     ~RenderThread();
 
+protected:
+    void run();
+
 signals:
 
 public slots:
