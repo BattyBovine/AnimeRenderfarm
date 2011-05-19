@@ -18,12 +18,12 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "renderprogress.h"
-#include "ui_renderprogress.h"
+#include "rendermanager.h"
+#include "ui_rendermanager.h"
 
-RenderProgress::RenderProgress(QWidget *parent) :
+RenderManager::RenderManager(QWidget *parent) :
     QDialog(parent,Qt::WindowCloseButtonHint),
-    ui(new Ui::RenderProgress)
+    ui(new Ui::RenderManager)
 {
     ui->setupUi(this);
 
@@ -38,12 +38,12 @@ RenderProgress::RenderProgress(QWidget *parent) :
 #endif
 }
 
-RenderProgress::~RenderProgress()
+RenderManager::~RenderManager()
 {
     delete ui;
 }
 
-void RenderProgress::closeEvent(QCloseEvent *e)
+void RenderManager::closeEvent(QCloseEvent *e)
 {
     if(ui->progressRender->value() < ui->progressRender->maximum()) {
         QMessageBox::StandardButton response;
@@ -68,7 +68,7 @@ void RenderProgress::closeEvent(QCloseEvent *e)
 
 
 #ifdef Q_WS_WIN
-bool RenderProgress::initTaskbarInterface(WId win, ITaskbarList3 *tb)
+bool RenderManager::initTaskbarInterface(WId win, ITaskbarList3 *tb)
 {
     winMain = win;
     taskbarInterface = tb;
@@ -76,12 +76,12 @@ bool RenderProgress::initTaskbarInterface(WId win, ITaskbarList3 *tb)
 }
 #endif
 
-void RenderProgress::setProjects(QList<QPair<QString, QString> > input)
+void RenderManager::setProjects(QList<QPair<QString, QString> > input)
 {
     listProjects = input;
 }
 
-void RenderProgress::start()
+void RenderManager::start()
 {
     ui->labelProgressInfo->setText(tr("Preparing projects for render..."));
 #ifdef Q_WS_WIN
@@ -93,14 +93,14 @@ void RenderProgress::start()
 
 
 #ifdef Q_WS_WIN
-void RenderProgress::updateTaskbarState(TBPFLAG state)
+void RenderManager::updateTaskbarState(TBPFLAG state)
 {
     if(taskbarInterface)
         taskbarInterface->SetProgressState(winMain, state);
 }
 #endif
 
-void RenderProgress::updateTaskbarProgress(int value)
+void RenderManager::updateTaskbarProgress(int value)
 {
     ui->progressRender->setValue(value);
 #ifdef Q_WS_WIN
@@ -111,7 +111,7 @@ void RenderProgress::updateTaskbarProgress(int value)
 
 
 
-void RenderProgress::updateProgressBarValue()
+void RenderManager::updateProgressBarValue()
 {
     int value = ui->progressRender->value()+1;
     updateTaskbarProgress(value);

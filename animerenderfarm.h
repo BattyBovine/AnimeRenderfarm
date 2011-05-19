@@ -37,7 +37,7 @@
 
 #include "dialogues/rendersettings.h"
 #include "dialogues/serversettings.h"
-#include "dialogues/renderprogress.h"
+#include "dialogues/rendermanager.h"
 
 #ifdef Q_WS_WIN
 #include <Windows.h>
@@ -69,7 +69,7 @@ private:
 
     qProjectsListModel *listProjectsModel;
 
-    RenderProgress *winRenderProgress;
+    RenderManager *winRenderManager;
     RenderSettings *winRenderSettings;
     ServerSettings *winServerSettings;
 

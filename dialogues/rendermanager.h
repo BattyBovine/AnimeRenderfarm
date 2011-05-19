@@ -18,8 +18,8 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef RENDERPROGRESS_H
-#define RENDERPROGRESS_H
+#ifndef RENDERMANAGER_H
+#define RENDERMANAGER_H
 
 #include <QDialog>
 #include <QMessageBox>
@@ -33,16 +33,16 @@
 #endif
 
 namespace Ui {
-    class RenderProgress;
+    class RenderManager;
 }
 
-class RenderProgress : public QDialog
+class RenderManager : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit RenderProgress(QWidget *parent = 0);
-    ~RenderProgress();
+    explicit RenderManager(QWidget *parent = 0);
+    ~RenderManager();
 
     void setProjects(QList< QPair<QString,QString> >);
 #ifdef Q_WS_WIN
@@ -55,7 +55,7 @@ protected:
     void closeEvent(QCloseEvent *);
 
 private:
-    Ui::RenderProgress *ui;
+    Ui::RenderManager *ui;
 
     QList< QPair<QString,QString> > listProjects;
 
@@ -77,4 +77,4 @@ private slots:
     void updateProgressBarValue();
 };
 
-#endif // RENDERPROGRESS_H
+#endif // RENDERMANAGER_H

@@ -53,15 +53,15 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
     ui->listProjects->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->listProjects->setModel(listProjectsModel);
 
-    winRenderProgress = NULL;
+    winRenderManager = NULL;
     winRenderSettings = NULL;
     winServerSettings = NULL;
 }
 
 AnimeRenderfarm::~AnimeRenderfarm()
 {
-    if(winRenderProgress)
-        winRenderProgress->deleteLater();
+    if(winRenderManager)
+        winRenderManager->deleteLater();
     if(winRenderSettings)
         winRenderSettings->deleteLater();
     if(winServerSettings)
@@ -226,9 +226,9 @@ void AnimeRenderfarm::renderEnd()
 {
     ui->listProjects->setEnabled(true);
 
-    if(winRenderProgress) {
-        winRenderProgress->deleteLater();
-        winRenderProgress = NULL;
+    if(winRenderManager) {
+        winRenderManager->deleteLater();
+        winRenderManager = NULL;
     }
 }
 
@@ -290,16 +290,16 @@ void AnimeRenderfarm::renderProjects() {
     }
 
     ui->listProjects->setEnabled(false);
-    if(!winRenderProgress) {
-        winRenderProgress = new RenderProgress(this);
+    if(!winRenderManager) {
+        winRenderManager = new RenderManager(this);
 #ifdef Q_WS_WIN
-        winRenderProgress->initTaskbarInterface(this->winId(), taskbarInterface);
+        winRenderManager->initTaskbarInterface(this->winId(), taskbarInterface);
 #endif
-        connect(winRenderProgress, SIGNAL(renderFinished()),
+        connect(winRenderManager, SIGNAL(renderFinished()),
                 this, SLOT(renderCompleted()));
-        connect(winRenderProgress, SIGNAL(renderCanceled()),
+        connect(winRenderManager, SIGNAL(renderCanceled()),
                 this, SLOT(renderEnd()));
     }
-    winRenderProgress->setProjects(listProjectsModel->getListPairs());
-    winRenderProgress->start();
+    winRenderManager->setProjects(listProjectsModel->getListPairs());
+    winRenderManager->start();
 }

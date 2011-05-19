@@ -16,7 +16,7 @@ SOURCES += main.cpp\
     dialogues/rendersettings.cpp \
     dialogues/serversettings.cpp \
     dialogues/consoleoutput.cpp \
-    dialogues/renderprogress.cpp \
+    dialogues/rendermanager.cpp \
     objects/renderthread.cpp
 
 HEADERS  += animerenderfarm.h \
@@ -24,14 +24,14 @@ HEADERS  += animerenderfarm.h \
     dialogues/rendersettings.h \
     dialogues/serversettings.h \
     dialogues/consoleoutput.h \
-    dialogues/renderprogress.h \
+    dialogues/rendermanager.h \
     objects/renderthread.h
 
 FORMS    += animerenderfarm.ui \
     dialogues/rendersettings.ui \
     dialogues/serversettings.ui \
     dialogues/consoleoutput.ui \
-    dialogues/renderprogress.ui
+    dialogues/rendermanager.ui
 
 win32:LIBS  += User32.lib \
     Ole32.lib

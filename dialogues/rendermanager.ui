@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RenderProgress</class>
- <widget class="QDialog" name="RenderProgress">
+ <class>RenderManager</class>
+ <widget class="QDialog" name="RenderManager">
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
@@ -97,7 +97,7 @@
   <connection>
    <sender>buttonCancel</sender>
    <signal>clicked()</signal>
-   <receiver>RenderProgress</receiver>
+   <receiver>RenderManager</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
