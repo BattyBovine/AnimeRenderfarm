@@ -22,7 +22,7 @@
 #include "ui_consoleoutput.h"
 
 ConsoleOutput::ConsoleOutput(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent,Qt::WindowCloseButtonHint),
     ui(new Ui::ConsoleOutput)
 {
     ui->setupUi(this);

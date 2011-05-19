@@ -22,7 +22,7 @@
 #include "ui_rendersettings.h"
 
 RenderSettings::RenderSettings(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent,Qt::WindowCloseButtonHint),
     ui(new Ui::RenderSettings)
 {
     ui->setupUi(this);

@@ -22,7 +22,7 @@
 #include "ui_serversettings.h"
 
 ServerSettings::ServerSettings(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent,Qt::WindowCloseButtonHint),
     ui(new Ui::ServerSettings)
 {
     ui->setupUi(this);

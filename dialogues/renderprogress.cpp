@@ -22,7 +22,7 @@
 #include "ui_renderprogress.h"
 
 RenderProgress::RenderProgress(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent,Qt::WindowCloseButtonHint),
     ui(new Ui::RenderProgress)
 {
     ui->setupUi(this);
