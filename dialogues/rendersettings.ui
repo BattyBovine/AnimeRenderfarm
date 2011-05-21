@@ -113,6 +113,9 @@
      </item>
      <item>
       <widget class="QComboBox" name="comboOutputFormat">
+       <property name="currentIndex">
+        <number>3</number>
+       </property>
        <item>
         <property name="text">
          <string>JPEG Sequence (.jpg)</string>
