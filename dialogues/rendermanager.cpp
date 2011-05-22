@@ -27,9 +27,24 @@ RenderManager::RenderManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->progressRender->setMinimum(0);
-    ui->progressRender->setMaximum(0);
-    ui->progressRender->reset();
+    this->setFixedSize(this->sizeHint());
+
+    cRenderThread = new RenderThread(this);
+    cRenderThread->setExe(settings.value("AnimeStudioPath").toString());
+    cRenderThread->setOutputDirectory(settings.value("OutputDirectory").toString());
+    cRenderThread->setSwitches(settings.value("AntialiasedEdges").toBool(),
+                               settings.value("ApplyShapeEffects").toBool(),
+                               settings.value("ApplyLayerEffects").toBool(),
+                               settings.value("RenderAtHalfDimensions").toBool(),
+                               settings.value("RenderAtHalfFramerate").toBool(),
+                               settings.value("ReducedParticles").toBool(),
+                               settings.value("ExtraSmoothImages").toBool(),
+                               settings.value("UseNTSCSafeColours").toBool(),
+                               settings.value("DoNotPremultiplyAlpha").toBool(),
+                               settings.value("VariableLineWidths").toBool());
+
+    connect(cRenderThread, SIGNAL(renderComplete(QPair<QString,QString>)),
+            this, SLOT(renderEnd(QPair<QString,QString>)));
 
     ui->labelProgressInfo->setText(tr("Waiting for projects to render..."));
 
@@ -40,6 +55,13 @@ RenderManager::RenderManager(QWidget *parent) :
 
 RenderManager::~RenderManager()
 {
+#ifdef Q_WS_WIN
+    updateTaskbarState(TBPF_NOPROGRESS);
+#endif
+
+    if(cRenderThread)
+        cRenderThread->deleteLater();
+
     delete ui;
 }
 
@@ -57,9 +79,6 @@ void RenderManager::closeEvent(QCloseEvent *e)
         }
     }
 
-#ifdef Q_WS_WIN
-    updateTaskbarState(TBPF_NOPROGRESS);
-#endif
     emit renderCanceled();
 
     e->accept();
@@ -83,14 +102,43 @@ void RenderManager::setProjects(QList<QPair<QString, QString> > input)
 
 void RenderManager::start()
 {
+    if(listProjects.isEmpty()) {
+        emit renderFailed("Project list is empty");
+        this->close();
+    }
+
     ui->labelProgressInfo->setText(tr("Preparing projects for render..."));
+    ui->progressRender->setMinimum(0);
+    ui->progressRender->setMaximum(0);
+    ui->progressRender->reset();
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_INDETERMINATE);
 #endif
+
+//    ui->progressRender->setMaximum(listProjects.count());
+
+    renderStartNext();
+
     this->show();
 }
 
 
+
+void RenderManager::renderStartNext()
+{
+    cRenderThread->setProject(listProjects.first());
+    listProjects.removeFirst();
+
+    cRenderThread->start();
+}
+void RenderManager::renderEnd(QPair<QString,QString>)
+{
+    if(listProjects.isEmpty()) {
+        emit renderFinished();
+    } else {
+        renderStartNext();
+    }
+}
 
 #ifdef Q_WS_WIN
 void RenderManager::updateTaskbarState(TBPFLAG state)
@@ -118,9 +166,10 @@ void RenderManager::updateProgressBarValue()
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_NORMAL);
 #endif
+}
 
-    if(value >= ui->progressRender->maximum()) {
-        emit renderFinished();
-        return;
-    }
+void RenderManager::updateThreadPriority(int priority)
+{
+    if(cRenderThread && cRenderThread->isRunning())
+        cRenderThread->setPriority((QThread::Priority)priority);
 }

@@ -9,9 +9,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
+    <width>380</width>
     <height>101</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>380</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Render Progress</string>
@@ -101,8 +107,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>347</x>
-     <y>72</y>
+     <x>369</x>
+     <y>112</y>
     </hint>
     <hint type="destinationlabel">
      <x>250</x>
@@ -111,4 +117,7 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>updateThreadPriority(int)</slot>
+ </slots>
 </ui>

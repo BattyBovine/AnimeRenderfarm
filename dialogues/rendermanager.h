@@ -27,6 +27,10 @@
 #include <QCloseEvent>
 #include <QTimer>
 
+#include <QSettings>
+
+#include "objects/renderthread.h"
+
 #ifdef Q_WS_WIN
 #include <Windows.h>
 #include <ShObjIdl.h>
@@ -57,7 +61,10 @@ protected:
 private:
     Ui::RenderManager *ui;
 
+    RenderThread *cRenderThread;
     QList< QPair<QString,QString> > listProjects;
+
+    QSettings settings;
 
 #ifdef Q_WS_WIN
     WId winMain;
@@ -70,11 +77,16 @@ private:
 signals:
     void renderFinished();
     void renderCanceled();
+    void renderFailed(QString);
 
 public slots:
 
 private slots:
+    void renderStartNext();
+    void renderEnd(QPair<QString,QString>);
+
     void updateProgressBarValue();
+    void updateThreadPriority(int);
 };
 
 #endif // RENDERMANAGER_H
