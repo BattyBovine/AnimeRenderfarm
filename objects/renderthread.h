@@ -18,7 +18,7 @@ public:
     void setExe(QString);
     void setProject(QPair<QString,QString>);
     void setOutputDirectory(QString in);
-    void setFormat(QString in="PNG");
+    void setFormat(int in=3);
     void setFrameRange(int start=-1,int end=-1);
     void setSwitches(bool aa=true, bool sfx=true, bool lfx=true, bool hsize=false,
                      bool hfps=false, bool fewpart=false, bool xsmooth=true,
@@ -28,6 +28,10 @@ protected:
     void run();
 
 private:
+    bool isImageSequence();
+    QString indexToFormat(int);
+    QString extension();
+
     QProcess *renderprocess;
     QString exe;
     QPair<QString,QString> project;

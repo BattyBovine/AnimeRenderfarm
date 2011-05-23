@@ -5,7 +5,7 @@ RenderThread::RenderThread(QObject *parent) :
 {
     renderprocess = NULL;
 
-    format = "PNG";
+    format = indexToFormat(3);
     frameStart = frameEnd = -1;
     switchAA = "yes";
     switchShapeFX = "yes";
@@ -47,11 +47,9 @@ void RenderThread::setOutputDirectory(QString in)
     outputDirectory = in;
 }
 
-void RenderThread::setFormat(QString in)
+void RenderThread::setFormat(int in)
 {
-    if(in.isEmpty())
-        emit renderError("Invalid output format");
-    format = in;
+    format = indexToFormat(in);
 }
 
 void RenderThread::setFrameRange(int start, int end)
@@ -82,12 +80,13 @@ void RenderThread::setSwitches(bool aa, bool sfx, bool lfx, bool hsize, bool hfp
 void RenderThread::run()
 {
     QString filename = project.second.mid(0,project.second.lastIndexOf("."));
+    QString outdir = (outputDirectory.isEmpty()?(project.first):(outputDirectory))+
+            QDir::separator()+(isImageSequence()?filename+QDir::separator():"");
+    QDir dirpath;dirpath.mkpath(outdir);
 
     QStringList args;
-    args << "-r" << project.first+project.second << "-v" << "-f" << format <<
-            "-o" << (outputDirectory.isEmpty()?
-                         (project.first):
-                         (outputDirectory))+QDir::separator()+filename+".png";
+    args << "-r" << project.first+project.second << "-v" <<
+            "-f" << format << "-o" << outdir+filename+extension();
     if(frameStart>=0 && frameEnd>=0)
         args << "-start" << QString::number(frameStart) << "-end" << QString::number(frameEnd);
     args << "-aa" << switchAA << "-shapefx" << switchShapeFX << "-layerfx" << switchLayerFX <<
@@ -108,6 +107,7 @@ void RenderThread::executeRenderCommand(QString program, QStringList arguments)
     renderprocess->setStandardOutputFile(QDir::toNativeSeparators(
         QDesktopServices::storageLocation(QDesktopServices::TempLocation))+
         QDir::separator()+project.second+".log");
+
     renderprocess->start(program, arguments);
     connect(renderprocess, SIGNAL(finished(int)), this, SLOT(renderFinished()));
     emit renderStarted(project);
@@ -120,4 +120,46 @@ void RenderThread::renderFinished()
         renderprocess = NULL;
     }
     emit renderComplete(project);
+}
+
+
+
+bool RenderThread::isImageSequence()
+{
+    return (format=="JPEG" || format=="TGA" || format=="BMP" || format=="PNG");
+}
+QString RenderThread::indexToFormat(int index)
+{
+    switch(index) {
+    case 0:
+        return "JPEG";
+    case 1:
+        return "BMP";
+    case 2:
+        return "TGA";
+    case 3:
+    default:
+        return "PNG";
+    case 4:
+        return "QT";
+    case 5:
+        return "SWF";
+    }
+}
+QString RenderThread::extension()
+{
+    if(format=="JPEG")
+        return ".jpg";
+    if(format=="BMP")
+        return ".bmp";
+    if(format=="TGA")
+        return ".tga";
+    if(format=="PNG")
+        return ".png";
+    if(format=="QT")
+        return ".mov";
+    if(format=="SWF")
+        return ".swf";
+
+    return "";
 }

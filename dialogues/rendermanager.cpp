@@ -32,6 +32,7 @@ RenderManager::RenderManager(QWidget *parent) :
     cRenderThread = new RenderThread(this);
     cRenderThread->setExe(settings.value("AnimeStudioPath").toString());
     cRenderThread->setOutputDirectory(settings.value("OutputDirectory").toString());
+    cRenderThread->setFormat(settings.value("OutputFormat").toInt());
     cRenderThread->setSwitches(settings.value("AntialiasedEdges").toBool(),
                                settings.value("ApplyShapeEffects").toBool(),
                                settings.value("ApplyLayerEffects").toBool(),
@@ -133,11 +134,10 @@ void RenderManager::renderStartNext()
 }
 void RenderManager::renderEnd(QPair<QString,QString>)
 {
-    if(listProjects.isEmpty()) {
+    if(listProjects.isEmpty())
         emit renderFinished();
-    } else {
+    else
         renderStartNext();
-    }
 }
 
 #ifdef Q_WS_WIN

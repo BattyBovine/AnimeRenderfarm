@@ -138,16 +138,6 @@
        </item>
        <item>
         <property name="text">
-         <string>Photoshop Image Sequence (.psd)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>AVI Movie (.avi)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>QuickTime Movie (.mov)</string>
         </property>
        </item>
