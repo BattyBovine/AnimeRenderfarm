@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QProcess>
+#include <QTimer>
 #include <QDir>
 #include <QDesktopServices>
 
@@ -41,17 +42,24 @@ private:
     QString switchAA,switchShapeFX,switchLayerFX,switchHalfSize,switchHalfFPS,switchFewParticles,
         switchExtraSmooth,switchNTSCSafe,switchPremultiply,switchVariableWidths;
 
+    QTimer stdouttimer;
+
 signals:
     void cli(QString,QStringList);
 
     void renderStarted(QPair<QString,QString>);
+    void renderProgress(int);
     void renderComplete(QPair<QString,QString>);
+
+    void renderWarning(QString);
     void renderError(QString);
 
 public slots:
+    void renderCancel();
 
 private slots:
     void executeRenderCommand(QString,QStringList);
+    void calculateProgress();
     void renderFinished();
 
 };

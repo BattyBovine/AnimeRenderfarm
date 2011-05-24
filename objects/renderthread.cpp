@@ -4,19 +4,11 @@ RenderThread::RenderThread(QObject *parent) :
     QThread(parent)
 {
     renderprocess = NULL;
+    stdouttimer.setInterval(100);
 
-    format = indexToFormat(3);
-    frameStart = frameEnd = -1;
-    switchAA = "yes";
-    switchShapeFX = "yes";
-    switchLayerFX = "yes";
-    switchHalfSize = "no";
-    switchHalfFPS = "no";
-    switchFewParticles = "no";
-    switchExtraSmooth = "yes";
-    switchNTSCSafe = "no";
-    switchPremultiply = "yes";  // This option is weird.
-    switchVariableWidths = "yes";
+    setFormat();
+    setFrameRange();
+    setSwitches();
 
     connect(this, SIGNAL(cli(QString,QStringList)),
             this, SLOT(executeRenderCommand(QString,QStringList)));
@@ -32,8 +24,6 @@ RenderThread::~RenderThread()
 
 void RenderThread::setExe(QString in)
 {
-    if(in.isEmpty())
-        emit renderError("Anime Studio executable not configured");
     exe = in;
 }
 
@@ -79,10 +69,17 @@ void RenderThread::setSwitches(bool aa, bool sfx, bool lfx, bool hsize, bool hfp
 
 void RenderThread::run()
 {
+    if(exe.isEmpty())
+        emit renderError("Anime Studio executable not configured");
+    if(project.first.isEmpty()||project.second.isEmpty())
+        emit renderError("Project file not set properly");
+    if(outputDirectory.isEmpty())
+        emit renderWarning("Output directory not configured; defaulting to project location");
+
     QString filename = project.second.mid(0,project.second.lastIndexOf("."));
     QString outdir = (outputDirectory.isEmpty()?(project.first):(outputDirectory))+
             QDir::separator()+(isImageSequence()?filename+QDir::separator():"");
-    QDir dirpath;dirpath.mkpath(outdir);
+    QDir dirpath; dirpath.mkpath(outdir);   // This is just silly.
 
     QStringList args;
     args << "-r" << project.first+project.second << "-v" <<
@@ -104,13 +101,45 @@ void RenderThread::executeRenderCommand(QString program, QStringList arguments)
 {
     if(!renderprocess)
         renderprocess = new QProcess(this);
-    renderprocess->setStandardOutputFile(QDir::toNativeSeparators(
-        QDesktopServices::storageLocation(QDesktopServices::TempLocation))+
-        QDir::separator()+project.second+".log");
+//    renderprocess->setStandardOutputFile(QDir::toNativeSeparators(
+//        QDesktopServices::storageLocation(QDesktopServices::TempLocation))+
+//        QDir::separator()+project.second+".log");
 
-    renderprocess->start(program, arguments);
+    connect(renderprocess, SIGNAL(readyReadStandardOutput()), this, SLOT(calculateProgress()));
     connect(renderprocess, SIGNAL(finished(int)), this, SLOT(renderFinished()));
+    renderprocess->setProcessChannelMode(QProcess::MergedChannels);
+    renderprocess->start(program, arguments);
+
+    stdouttimer.start();
+    connect(&stdouttimer, SIGNAL(timeout()), this, SLOT(calculateProgress()));
+
     emit renderStarted(project);
+}
+
+void RenderThread::calculateProgress()
+{
+    if(renderprocess) {
+        QString out;
+        while(!(out=renderprocess->readLine()).isEmpty()) {
+            if(out.contains("Done!")) {
+                emit renderProgress(100);
+                break;
+            } else {
+                QRegExp regex("^Frame \\d+ \\((\\d+)/(\\d+)\\)");
+                if(out.contains(regex)) {
+                    float current = regex.cap(1).toFloat();
+                    float total = regex.cap(2).toFloat();
+                    emit renderProgress(int((current/total)*100.0f));
+                }
+            }
+        }
+    }
+}
+
+void RenderThread::renderCancel()
+{
+    if(renderprocess)
+        renderprocess->kill();
 }
 
 void RenderThread::renderFinished()

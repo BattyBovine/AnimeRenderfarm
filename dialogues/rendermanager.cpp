@@ -27,7 +27,7 @@ RenderManager::RenderManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->setFixedSize(this->sizeHint());
+//    this->setFixedSize(this->sizeHint());
 
     cRenderThread = new RenderThread(this);
     cRenderThread->setExe(settings.value("AnimeStudioPath").toString());
@@ -46,12 +46,18 @@ RenderManager::RenderManager(QWidget *parent) :
 
     connect(cRenderThread, SIGNAL(renderComplete(QPair<QString,QString>)),
             this, SLOT(renderEnd(QPair<QString,QString>)));
+    connect(cRenderThread, SIGNAL(renderProgress(int)), this, SLOT(progressUpdate(int)));
+    connect(this, SIGNAL(renderCanceled()), cRenderThread, SLOT(renderCancel()));
 
     ui->labelProgressInfo->setText(tr("Waiting for projects to render..."));
-
+    ui->progressRender->setMinimum(0);
+    ui->progressRender->setMaximum(0);
+    ui->progressRender->reset();
 #ifdef Q_WS_WIN
     taskbarInterface = NULL;
 #endif
+
+    completecount = 0;
 }
 
 RenderManager::~RenderManager()
@@ -96,7 +102,7 @@ bool RenderManager::initTaskbarInterface(WId win, ITaskbarList3 *tb)
 }
 #endif
 
-void RenderManager::setProjects(QList<QPair<QString, QString> > input)
+void RenderManager::setProjects(QList< QPair<QString,QString> > input)
 {
     listProjects = input;
 }
@@ -108,15 +114,13 @@ void RenderManager::start()
         this->close();
     }
 
-    ui->labelProgressInfo->setText(tr("Preparing projects for render..."));
-    ui->progressRender->setMinimum(0);
-    ui->progressRender->setMaximum(0);
-    ui->progressRender->reset();
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_INDETERMINATE);
 #endif
 
-//    ui->progressRender->setMaximum(listProjects.count());
+    // Give us 100 progress units for all projects (equivalent to percentage of each)
+    ui->progressRender->setMinimum(0);
+    ui->progressRender->setMaximum(listProjects.count()*100);
 
     renderStartNext();
 
@@ -127,18 +131,32 @@ void RenderManager::start()
 
 void RenderManager::renderStartNext()
 {
+    ui->labelProgressInfo->setText("Currently rendering "+listProjects.first().second+"...");
+#ifdef Q_WS_WIN
+    updateTaskbarState(TBPF_NORMAL);
+#endif
+
     cRenderThread->setProject(listProjects.first());
     listProjects.removeFirst();
 
     cRenderThread->start();
 }
+
 void RenderManager::renderEnd(QPair<QString,QString>)
 {
+    completecount++;
     if(listProjects.isEmpty())
         emit renderFinished();
     else
         renderStartNext();
 }
+
+void RenderManager::progressUpdate(int current)
+{
+    updateTaskbarProgress((completecount*100)+current);
+}
+
+
 
 #ifdef Q_WS_WIN
 void RenderManager::updateTaskbarState(TBPFLAG state)
@@ -158,15 +176,6 @@ void RenderManager::updateTaskbarProgress(int value)
 }
 
 
-
-void RenderManager::updateProgressBarValue()
-{
-    int value = ui->progressRender->value()+1;
-    updateTaskbarProgress(value);
-#ifdef Q_WS_WIN
-    updateTaskbarState(TBPF_NORMAL);
-#endif
-}
 
 void RenderManager::updateThreadPriority(int priority)
 {

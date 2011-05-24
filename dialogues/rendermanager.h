@@ -65,6 +65,7 @@ private:
     QList< QPair<QString,QString> > listProjects;
 
     QSettings settings;
+    int completecount;
 
 #ifdef Q_WS_WIN
     WId winMain;
@@ -85,7 +86,8 @@ private slots:
     void renderStartNext();
     void renderEnd(QPair<QString,QString>);
 
-    void updateProgressBarValue();
+    void progressUpdate(int);
+
     void updateThreadPriority(int);
 };
 

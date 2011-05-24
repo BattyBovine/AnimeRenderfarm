@@ -16,7 +16,13 @@
   <property name="minimumSize">
    <size>
     <width>380</width>
-    <height>0</height>
+    <height>101</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>380</width>
+    <height>101</height>
    </size>
   </property>
   <property name="windowTitle">
