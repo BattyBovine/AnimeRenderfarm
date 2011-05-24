@@ -24,6 +24,14 @@ RenderThread::~RenderThread()
 
 void RenderThread::setExe(QString in)
 {
+#ifdef Q_WS_MACX
+    in += "/Contents/MacOS/Anime Studio";
+    if(!QFileInfo(in).isExecutable()) {
+        in += " Pro";
+        if(!QFileInfo(in).isExecutable())
+            emit renderError("No Mac OS X executable found in the application bundle");
+    }
+#endif
     exe = in;
 }
 
