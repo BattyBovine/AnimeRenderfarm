@@ -6,7 +6,7 @@
 
 QT       += network
 
-TARGET = AnimeRenderfarm
+TARGET = "Anime Renderfarm"
 TEMPLATE = app
 
 
