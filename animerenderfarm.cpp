@@ -200,7 +200,7 @@ void AnimeRenderfarm::openAboutApplication()
     QMessageBox::about(this, tr("About ")+qApp->applicationName(),
         "<center><h2>"+qApp->applicationName()+"</h2>" +
         "<p>"+tr("Version ")+qApp->applicationVersion()+"</p>" +
-        "<p>© 2011 "+qApp->organizationName()+". "+tr("All Rights Reserved.")+"</p></center>");
+        "<p>&copy; 2011 "+qApp->organizationName()+". "+tr("All Rights Reserved.")+"</p></center>");
 }
 
 void AnimeRenderfarm::openAboutQt()
