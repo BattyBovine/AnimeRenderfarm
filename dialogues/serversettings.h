@@ -49,7 +49,7 @@ signals:
 public slots:
 
 private slots:
-    void renderServerStatus();
+    void renderServerStatus(int);
     int validateServer(QString);
 
     bool loadSettings();

@@ -27,6 +27,10 @@ RenderSettings::RenderSettings(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Force the size of the window to remain at its created size
+    this->setFixedSize(this->sizeHint());
+
+    // Load the saved settings if they exist
     this->loadSettings();
 }
 
@@ -37,6 +41,7 @@ RenderSettings::~RenderSettings()
 
 void RenderSettings::closeEvent(QCloseEvent *)
 {
+    // Save settings when the window is closed
     this->saveSettings();
 }
 
@@ -46,53 +51,62 @@ void RenderSettings::showOpenAnimeStudioDialogue()
 {
     QString supported = "";
 #if defined Q_WS_WIN32
-    supported = "Executable Files (*.exe);;";
+    // On Win32 systems, we want to locate an executable with the .exe extension
+    supported += "Executable Files (*.exe);;";
 #elif defined Q_WS_MACX
-    supported = "Application Bundles (*.app);;";
+    // On Mac OS X, we want to locate a .app bundle and search it for the executable
+    supported += "Application Bundles (*.app);;";
 #endif
+    // On any other system, we can't guarantee that the executable has a valid extension
     supported += "All files (*.*);;";
 
+    // Use the current executable path value as the starting point, or root if not defined
     QString startpath = QDir::toNativeSeparators(ui->editAnimeStudioPath->text());
     if(startpath.isEmpty())
         startpath = QDir::rootPath();
     else
         startpath = startpath.mid(0,startpath.lastIndexOf(QDir::separator())+1);
 
+    // Load the result of the file browser activity into a QString
     QString exe = QFileDialog::getOpenFileName(
         this, tr("Open Anime Studio Executable"),
         startpath, supported
     );
-
+    // If empty, the user probably canceled; pretend nothing happened
     if(exe.isEmpty())
         return;
 
+    // Check to see if the file is executable; if not, throw an error and pretend nothing happened
     if(!QFileInfo(exe).isExecutable()) {
         QMessageBox::critical(this, tr("Not An Executable File"),
-                              tr("This is not an executable file. Please select the Anime Studio "
-                                 "executable file, and make sure you have the necessary "
-                                 "permissions to run it."));
+                              tr("This is not an executable file. Please select the Anime "
+                                 "Studio executable file, and make sure you have the "
+                                 "necessary permissions to run it."));
         return;
     }
 
+    // We probably don't need to check length now, but whatever, do it and set the value
     if(exe.length()>0)
         ui->editAnimeStudioPath->setText(QDir::toNativeSeparators(exe));
 }
 
 void RenderSettings::showOpenOutputDirectoryDialogue()
 {
+    // Start from the currently set directory or, if empty, the default "Movies" directory
     QString startpath = QDir::toNativeSeparators(ui->editOutputDirectory->text());
     if(startpath.isEmpty())
         startpath = QDesktopServices::storageLocation(QDesktopServices::MoviesLocation);
 
+    // Get the selected folder
     QString folder = QFileDialog::getExistingDirectory(
         this, tr("Open Output Folder"),
         startpath, QFileDialog::ShowDirsOnly
     );
-
+    // Set the path if not empty
     if(!folder.isEmpty())
         ui->editOutputDirectory->setText(QDir::toNativeSeparators(folder));
     else
-        ui->editOutputDirectory->setText(startpath);
+        return;
 }
 
 

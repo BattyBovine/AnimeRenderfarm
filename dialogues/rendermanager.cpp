@@ -27,7 +27,7 @@ RenderManager::RenderManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    this->setFixedSize(this->sizeHint());
+    this->setFixedHeight(this->height());
 
     cRenderThread = new RenderThread(this);
     cRenderThread->setExe(settings.value("AnimeStudioPath").toString());

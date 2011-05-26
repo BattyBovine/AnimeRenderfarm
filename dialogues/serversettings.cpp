@@ -27,9 +27,14 @@ ServerSettings::ServerSettings(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Force the size of the window to remain at its created size
+    this->setFixedSize(this->sizeHint());
+
+    // Load settings
     this->loadSettings();
 
-    this->renderServerStatus();
+    // Check whether to hide server settings based on combo selection
+    this->renderServerStatus(ui->comboRenderServer->currentIndex());
 }
 
 ServerSettings::~ServerSettings()
@@ -39,39 +44,46 @@ ServerSettings::~ServerSettings()
 
 void ServerSettings::closeEvent(QCloseEvent *)
 {
-    this->validateServer(ui->editServer->text());
+    // Save settings when the window is closed
     this->saveSettings();
 }
 
 
-void ServerSettings::renderServerStatus()
+void ServerSettings::renderServerStatus(int i)
 {
-    bool serverstatus = (ui->comboRenderServer->currentIndex()<=0?false:true);
+    // Check whether local or remote rendering is set
+    bool serverstatus = (i<=0?false:true);
 
-    ui->labelServer->setVisible(serverstatus);
-    ui->labelPort->setVisible(serverstatus);
-    ui->editServer->setVisible(serverstatus);
-    ui->spinnerPort->setVisible(serverstatus);
+    // If remote, enable remote server settings
+    ui->labelServer->setEnabled(serverstatus);
+    ui->labelPort->setEnabled(serverstatus);
+    ui->editServer->setEnabled(serverstatus);
+    ui->spinnerPort->setEnabled(serverstatus);
 }
 
 int ServerSettings::validateServer(QString ip)
 {
+    // Check if the input is empty, and if so, set to default values
     if(ip.trimmed().isEmpty()) {
         ui->comboRenderServer->setCurrentIndex(0);
         ui->editServer->setText("127.0.0.1");
         return EMPTY;
     }
 
+    // Check the number of octets, and fail if not equal to four
     QStringList ipocts = ip.trimmed().split(".", QString::SkipEmptyParts);
     if(ipocts.size() != 4)
         return INVALID_LENGTH;
 
+    // Convert octets to unsigned char to ensure they are within valid ranges
     uchar octs[4];
     for(short i=0; i<ipocts.size(); i++)
         octs[i] = ipocts.at(i).toInt();
 
-    if((octs[0]!=192 && octs[0]!=172 && octs[0]!=10) ||
-       (octs[1]!=168 && octs[1]!=(octs[1]&0x1F)))
+    // Check whether this is an external IP
+    if((octs[0]!=192 && octs[1]!=168) &&
+       (octs[0]!=172 && octs[1]!=(octs[1]&0x1F)) &&
+        octs[0]!=10)
         return EXTERNAL_IP;
 
     return OK;
