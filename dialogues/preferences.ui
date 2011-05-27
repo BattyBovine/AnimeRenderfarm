@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
-    <height>348</height>
+    <width>400</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,20 +21,20 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>376</width>
-    <height>348</height>
+    <width>400</width>
+    <height>346</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>376</width>
-    <height>348</height>
+    <width>400</width>
+    <height>346</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Render Options</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QTabWidget" name="tabPreferences">
      <property name="currentIndex">
@@ -44,20 +44,20 @@
       <attribute name="title">
        <string>Render Options</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
           <widget class="QLabel" name="labelAnimeStudioPath">
            <property name="text">
             <string>Anime Studio Path:</string>
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="1">
           <widget class="QLineEdit" name="editAnimeStudioPath"/>
          </item>
-         <item>
+         <item row="0" column="2">
           <widget class="QToolButton" name="buttonAnimeStudioPath">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -70,11 +70,7 @@
            </property>
           </widget>
          </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
+         <item row="1" column="0">
           <widget class="QLabel" name="labelOutputDirectory">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -87,7 +83,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="1">
           <widget class="QLineEdit" name="editOutputDirectory">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -97,7 +93,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="2">
           <widget class="QToolButton" name="buttonOutputDirectory">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -110,11 +106,7 @@
            </property>
           </widget>
          </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
+         <item row="2" column="0">
           <widget class="QLabel" name="labelOutputFormat">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -127,7 +119,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="2" column="1" colspan="2">
           <widget class="QComboBox" name="comboOutputFormat">
            <property name="currentIndex">
             <number>3</number>

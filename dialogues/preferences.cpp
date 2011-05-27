@@ -27,9 +27,6 @@ Preferences::Preferences(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Force the size of the window to remain at its created size
-//    this->setFixedSize(this->sizeHint());
-
     // Load the saved settings if they exist
     this->loadSettings();
 }
