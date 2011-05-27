@@ -18,27 +18,31 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef SERVERSETTINGS_H
-#define SERVERSETTINGS_H
+#ifndef PREFERENCES_H
+#define PREFERENCES_H
 
 #include <QDialog>
+#include <QDesktopWidget>
+#include <QDesktopServices>
+#include <QMessageBox>
 
 #include <QSettings>
+#include <QFileDialog>
 
 namespace Ui {
-    class ServerSettings;
+    class Preferences;
 }
 
-class ServerSettings : public QDialog
+class Preferences : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ServerSettings(QWidget *parent = 0);
-    ~ServerSettings();
+    explicit Preferences(QWidget *parent = 0);
+    ~Preferences();
 
 private:
-    Ui::ServerSettings *ui;
+    Ui::Preferences *ui;
 
     void closeEvent(QCloseEvent *);
 
@@ -49,22 +53,11 @@ signals:
 public slots:
 
 private slots:
-    void renderServerStatus(int);
-    int validateServer(QString);
-
     bool loadSettings();
     bool saveSettings();
-
-
-
-public:
-    enum IPStatus {
-        OK,
-        EMPTY,
-        INVALID_LENGTH,
-        EXTERNAL_IP
-    };
+    void showOpenAnimeStudioDialogue();
+    void showOpenOutputDirectoryDialogue();
 
 };
 
-#endif // SERVERSETTINGS_H
+#endif // PREFERENCES_H

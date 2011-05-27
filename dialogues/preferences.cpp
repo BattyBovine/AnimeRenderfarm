@@ -18,28 +18,28 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "rendersettings.h"
-#include "ui_rendersettings.h"
+#include "preferences.h"
+#include "ui_preferences.h"
 
-RenderSettings::RenderSettings(QWidget *parent) :
+Preferences::Preferences(QWidget *parent) :
     QDialog(parent,Qt::WindowCloseButtonHint),
-    ui(new Ui::RenderSettings)
+    ui(new Ui::Preferences)
 {
     ui->setupUi(this);
 
     // Force the size of the window to remain at its created size
-    this->setFixedSize(this->sizeHint());
+//    this->setFixedSize(this->sizeHint());
 
     // Load the saved settings if they exist
     this->loadSettings();
 }
 
-RenderSettings::~RenderSettings()
+Preferences::~Preferences()
 {
     delete ui;
 }
 
-void RenderSettings::closeEvent(QCloseEvent *)
+void Preferences::closeEvent(QCloseEvent *)
 {
     // Save settings when the window is closed
     this->saveSettings();
@@ -47,10 +47,10 @@ void RenderSettings::closeEvent(QCloseEvent *)
 
 
 
-void RenderSettings::showOpenAnimeStudioDialogue()
+void Preferences::showOpenAnimeStudioDialogue()
 {
     QString supported = "";
-#if defined Q_WS_WIN32
+#if defined Q_WS_WIN
     // On Win32 systems, we want to locate an executable with the .exe extension
     supported += "Executable Files (*.exe);;";
 #elif defined Q_WS_MACX
@@ -90,7 +90,7 @@ void RenderSettings::showOpenAnimeStudioDialogue()
         ui->editAnimeStudioPath->setText(QDir::toNativeSeparators(exe));
 }
 
-void RenderSettings::showOpenOutputDirectoryDialogue()
+void Preferences::showOpenOutputDirectoryDialogue()
 {
     // Start from the currently set directory or, if empty, the default "Movies" directory
     QString startpath = QDir::toNativeSeparators(ui->editOutputDirectory->text());
@@ -111,7 +111,7 @@ void RenderSettings::showOpenOutputDirectoryDialogue()
 
 
 
-bool RenderSettings::loadSettings()
+bool Preferences::loadSettings()
 {
     ui->editAnimeStudioPath->setText(settings.value("AnimeStudioPath", "").toString());
     ui->editOutputDirectory->setText(settings.value("OutputDirectory", "").toString());
@@ -132,10 +132,14 @@ bool RenderSettings::loadSettings()
     ui->checkDoNotPremultiplyAlpha->setChecked(settings.value("DoNotPremultiplyAlpha",false).toBool());
     ui->checkVariableLineWidths->setChecked(settings.value("VariableLineWidths",true).toBool());
 
+    ui->comboRenderServer->setCurrentIndex(settings.value("RenderServer",0).toInt());
+    ui->editServer->setText(settings.value("ServerIP","127.0.0.1").toString());
+    ui->spinnerPort->setValue(settings.value("ServerPort","26463").toInt());
+
     return true;
 }
 
-bool RenderSettings::saveSettings()
+bool Preferences::saveSettings()
 {
     settings.setValue("AnimeStudioPath", ui->editAnimeStudioPath->text());
     settings.setValue("OutputDirectory", ui->editOutputDirectory->text());
@@ -155,6 +159,10 @@ bool RenderSettings::saveSettings()
     settings.setValue("UseNTSCSafeColours", ui->checkUseNTSCSafeColours->isChecked());
     settings.setValue("DoNotPremultiplyAlpha", ui->checkDoNotPremultiplyAlpha->isChecked());
     settings.setValue("VariableLineWidths", ui->checkVariableLineWidths->isChecked());
+
+    settings.setValue("RenderServer", ui->comboRenderServer->currentIndex());
+    settings.setValue("ServerIP",ui->editServer->text());
+    settings.setValue("ServerPort",ui->spinnerPort->value());
 
     return true;
 }

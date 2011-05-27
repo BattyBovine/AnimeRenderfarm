@@ -35,8 +35,7 @@
 
 #include "subclasses/qprojectslistmodel.h"
 
-#include "dialogues/rendersettings.h"
-#include "dialogues/serversettings.h"
+#include "dialogues/preferences.h"
 #include "dialogues/rendermanager.h"
 
 #ifdef Q_WS_WIN
@@ -70,8 +69,7 @@ private:
     qProjectsListModel *listProjectsModel;
 
     RenderManager *winRenderManager;
-    RenderSettings *winRenderSettings;
-    ServerSettings *winServerSettings;
+    Preferences *winPreferences;
 
 #ifdef Q_WS_WIN
     unsigned int taskbarID;
@@ -93,8 +91,7 @@ private slots:
 
     void showOpenProjectsDialogue();
 
-    void openRenderSettings();
-    void openServerSettings();
+    void openPreferences();
     void openAboutApplication();
     void openAboutQt();
 

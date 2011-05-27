@@ -13,23 +13,20 @@ TEMPLATE = app
 SOURCES += main.cpp\
         animerenderfarm.cpp \
     subclasses/qprojectslistmodel.cpp \
-    dialogues/rendersettings.cpp \
-    dialogues/serversettings.cpp \
+    dialogues/preferences.cpp \
     dialogues/consoleoutput.cpp \
     dialogues/rendermanager.cpp \
     objects/renderthread.cpp
 
 HEADERS  += animerenderfarm.h \
     subclasses/qprojectslistmodel.h \
-    dialogues/rendersettings.h \
-    dialogues/serversettings.h \
+    dialogues/preferences.h \
     dialogues/consoleoutput.h \
     dialogues/rendermanager.h \
     objects/renderthread.h
 
 FORMS    += animerenderfarm.ui \
-    dialogues/rendersettings.ui \
-    dialogues/serversettings.ui \
+    dialogues/preferences.ui \
     dialogues/consoleoutput.ui \
     dialogues/rendermanager.ui
 

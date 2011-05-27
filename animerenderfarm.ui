@@ -47,9 +47,9 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="buttonRenderProjects">
+       <widget class="QPushButton" name="buttonRender">
         <property name="text">
-         <string>Render Projects</string>
+         <string>Render</string>
         </property>
        </widget>
       </item>
@@ -71,8 +71,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpenProjectFiles"/>
-    <addaction name="actionRenderSettings"/>
-    <addaction name="actionServerOptions"/>
+    <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -103,15 +102,18 @@
     <string>Ctrl+/</string>
    </property>
   </action>
-  <action name="actionRenderSettings">
+  <action name="actionPreferences">
    <property name="text">
-    <string>Render Options</string>
+    <string>Preferences</string>
    </property>
    <property name="toolTip">
-    <string>Render Options</string>
+    <string>Preferences</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+,</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
    </property>
   </action>
   <action name="actionAboutQt">
@@ -120,14 +122,6 @@
    </property>
    <property name="shortcut">
     <string>Meta+/</string>
-   </property>
-  </action>
-  <action name="actionServerOptions">
-   <property name="text">
-    <string>Server Options</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+.</string>
    </property>
   </action>
  </widget>
@@ -151,7 +145,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonRenderProjects</sender>
+   <sender>buttonRender</sender>
    <signal>clicked()</signal>
    <receiver>AnimeRenderfarm</receiver>
    <slot>renderProjects()</slot>
@@ -183,10 +177,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionRenderSettings</sender>
+   <sender>actionPreferences</sender>
    <signal>triggered()</signal>
    <receiver>AnimeRenderfarm</receiver>
-   <slot>openRenderSettings()</slot>
+   <slot>openPreferences()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -214,28 +208,12 @@
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>actionServerOptions</sender>
-   <signal>triggered()</signal>
-   <receiver>AnimeRenderfarm</receiver>
-   <slot>openServerSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>179</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
  <slots>
   <slot>showOpenProjectsDialogue()</slot>
   <slot>renderProjects()</slot>
   <slot>openAboutApplication()</slot>
-  <slot>openRenderSettings()</slot>
+  <slot>openPreferences()</slot>
   <slot>openAboutQt()</slot>
   <slot>openServerSettings()</slot>
  </slots>

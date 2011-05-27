@@ -34,8 +34,7 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
     ui->setupUi(this);
 
     winRenderManager = NULL;
-    winRenderSettings = NULL;
-    winServerSettings = NULL;
+    winPreferences = NULL;
 
     // Recover window size and position if the data exists, otherwise center the window
     if(!settings.contains("Geometry") ||
@@ -65,10 +64,8 @@ AnimeRenderfarm::~AnimeRenderfarm()
 {
     if(winRenderManager)
         winRenderManager->deleteLater();
-    if(winRenderSettings)
-        winRenderSettings->deleteLater();
-    if(winServerSettings)
-        winServerSettings->deleteLater();
+    if(winPreferences)
+        winPreferences->deleteLater();
 
 #ifdef Q_WS_WIN
     if(taskbarInterface)
@@ -176,28 +173,16 @@ void AnimeRenderfarm::showOpenProjectsDialogue()
 
 
 
-void AnimeRenderfarm::openRenderSettings()
+void AnimeRenderfarm::openPreferences()
 {
     // Create a new settings window if the user tries to open a second one
-    if(winRenderSettings) {
-        if(winRenderSettings->isVisible())
+    if(winPreferences) {
+        if(winPreferences->isVisible())
             return;
-        winRenderSettings->deleteLater();
+        winPreferences->deleteLater();
     }
-    winRenderSettings = new RenderSettings(this);
-    winRenderSettings->show();
-}
-
-void AnimeRenderfarm::openServerSettings()
-{
-    // Create a new settings window if the user tries to open a second one
-    if(winServerSettings) {
-        if(winServerSettings->isVisible())
-            return;
-        winServerSettings->deleteLater();
-    }
-    winServerSettings = new ServerSettings(this);
-    winServerSettings->show();
+    winPreferences = new Preferences(this);
+    winPreferences->show();
 }
 
 void AnimeRenderfarm::openAboutApplication()
@@ -280,7 +265,7 @@ void AnimeRenderfarm::renderProjects() {
             settings.value("AnimeStudioPath").toString().isEmpty())) {
         QMessageBox::information(this, tr("Set Default Options"),
             "<p>"+tr("You must first locate your Anime Studio executable.")+"</p>");
-        this->openRenderSettings();
+        this->openPreferences();
         return;
     }
 
