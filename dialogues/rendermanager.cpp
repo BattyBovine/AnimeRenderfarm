@@ -27,8 +27,10 @@ RenderManager::RenderManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Prevent the window from being vertically resized
     this->setFixedHeight(this->height());
 
+    // Create a new render thread, and set the necessary options
     cRenderThread = new RenderThread(this);
     cRenderThread->setExe(settings.value("AnimeStudioPath").toString());
     cRenderThread->setOutputDirectory(settings.value("OutputDirectory").toString());
@@ -44,11 +46,15 @@ RenderManager::RenderManager(QWidget *parent) :
                                settings.value("DoNotPremultiplyAlpha").toBool(),
                                settings.value("VariableLineWidths").toBool());
 
+    // Connect the render thread's signals and slots to this object
     connect(cRenderThread, SIGNAL(renderComplete(QPair<QString,QString>)),
             this, SLOT(renderEnd(QPair<QString,QString>)));
-    connect(cRenderThread, SIGNAL(renderProgress(int)), this, SLOT(progressUpdate(int)));
-    connect(this, SIGNAL(renderCanceled()), cRenderThread, SLOT(renderCancel()));
+    connect(cRenderThread, SIGNAL(renderProgress(int)),
+            this, SLOT(progressUpdate(int)));
+//    connect(this, SIGNAL(renderCanceled(QList< QPair<QString,QString> >)),
+//            cRenderThread, SLOT(renderCancel()));
 
+    // Default to a busy indicator
     ui->labelProgressInfo->setText(tr("Waiting for projects to render..."));
     ui->progressRender->setMinimum(0);
     ui->progressRender->setMaximum(0);
@@ -56,12 +62,13 @@ RenderManager::RenderManager(QWidget *parent) :
 #ifdef Q_WS_WIN
     taskbarInterface = NULL;
 #endif
-
+    // Reset the completed projects counter
     completecount = 0;
 }
 
 RenderManager::~RenderManager()
 {
+    // Reset the taskbar indicator before being destroyed
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_NOPROGRESS);
 #endif
@@ -74,20 +81,21 @@ RenderManager::~RenderManager()
 
 void RenderManager::closeEvent(QCloseEvent *e)
 {
+    // If we're not done rendering, ask for confirmation before closing the window
     if(ui->progressRender->value() < ui->progressRender->maximum()) {
         QMessageBox::StandardButton response;
         response = QMessageBox::question(this, tr("Are you sure?"),
             "<p>"+tr("Are you sure you wish to cancel the render job?")+"</p>",
             QMessageBox::Yes | QMessageBox::No);
 
+        // If we don't want to cancel after all, ignore the event and continue as usual
         if(response==QMessageBox::No) {
             e->ignore();
             return;
         }
     }
-
-    emit renderCanceled();
-
+    // Otherwise, let other objects know we've been canceled, and accept the event
+    emit renderCanceled(listProjects);
     e->accept();
 }
 
@@ -96,6 +104,7 @@ void RenderManager::closeEvent(QCloseEvent *e)
 #ifdef Q_WS_WIN
 bool RenderManager::initTaskbarInterface(WId win, ITaskbarList3 *tb)
 {
+    // Get the taskbar and window ID from the main window
     winMain = win;
     taskbarInterface = tb;
     return (winMain && taskbarInterface);
@@ -104,55 +113,69 @@ bool RenderManager::initTaskbarInterface(WId win, ITaskbarList3 *tb)
 
 void RenderManager::setProjects(QList< QPair<QString,QString> > input)
 {
+    // Get the list of projects from the main window
     listProjects = input;
 }
 
 void RenderManager::start()
 {
+    // If the projects list is empty, we shouldn't even bother trying
     if(listProjects.isEmpty()) {
         emit renderFailed("Project list is empty");
         this->close();
     }
-
+    // Set the taskbar icon to indeterminate while we wait for results
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_INDETERMINATE);
 #endif
 
-    // Give us 100 progress units for all projects (equivalent to percentage of each)
+    // Give us 100 progress units for all projects
     ui->progressRender->setMinimum(0);
     ui->progressRender->setMaximum(listProjects.count()*100);
 
+    //Finally, begin the first render, and open the window
     renderStartNext();
-
-    this->show();
+    this->open();
 }
 
 
 
 void RenderManager::renderStartNext()
 {
+    // Set the progress label to show which file we're about to render
     ui->labelProgressInfo->setText("Currently rendering "+listProjects.first().second+"...");
+    // Set taskbar state to a standard progress indicator
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_NORMAL);
 #endif
 
+    // Set the first project in the list as the next render...
     cRenderThread->setProject(listProjects.first());
-    listProjects.removeFirst();
 
+    // Finally, start the render
     cRenderThread->start();
 }
 
 void RenderManager::renderEnd(QPair<QString,QString>)
 {
+    // Increase the progress counter
     completecount++;
+
+    // Remove the first project in preparation for the next loop
+    listProjects.removeFirst();
+
+    // Tell other classes we're done if there's nothing left, otherwise start the next render
     if(listProjects.isEmpty())
-        emit renderFinished();
+        emit renderFinished(listProjects);
     else
         renderStartNext();
 }
 
+
+
 void RenderManager::progressUpdate(int current)
 {
+    // Set the current progress to all completed projects, plus the current project's progress
     updateTaskbarProgress((completecount*100)+current);
 }
 
@@ -179,6 +202,7 @@ void RenderManager::updateTaskbarProgress(int value)
 
 void RenderManager::updateThreadPriority(int priority)
 {
+    // Set the priority of the thread, though I'm not sure it makes a difference
     if(cRenderThread && cRenderThread->isRunning())
         cRenderThread->setPriority((QThread::Priority)priority);
 }

@@ -120,6 +120,11 @@ QList< QPair<QString,QString> > qProjectsListModel::getListPairs()
 {
     return listProjects;
 }
+bool qProjectsListModel::setListPairs(QList< QPair<QString,QString> > newlist)
+{
+    listProjects = newlist;
+    return true;
+}
 
 QPair<QString,QString> qProjectsListModel::pairFromPath(QString path)
 {

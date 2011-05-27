@@ -33,6 +33,11 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    winRenderManager = NULL;
+    winRenderSettings = NULL;
+    winServerSettings = NULL;
+
+    // Recover window size and position if the data exists, otherwise center the window
     if(!settings.contains("Geometry") ||
        !settings.contains("State")) {
         this->setGeometry(
@@ -44,18 +49,16 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
         restoreState(settings.value("State").toByteArray(), 0);
     }
 
+    // Initialise the taskbar pointers for later use
 #ifdef Q_WS_WIN
     taskbarInterface = NULL;
     taskbarID = RegisterWindowMessage(L"TaskbarButtonCreated");
 #endif
 
+    // Create and set a new list model based on our custom class
     listProjectsModel = new qProjectsListModel(ui->listProjects);
     ui->listProjects->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->listProjects->setModel(listProjectsModel);
-
-    winRenderManager = NULL;
-    winRenderSettings = NULL;
-    winServerSettings = NULL;
 }
 
 AnimeRenderfarm::~AnimeRenderfarm()
@@ -110,6 +113,7 @@ void AnimeRenderfarm::changeEvent(QEvent *e)
     }
 }
 
+// Delete and Backspace should remove the selected projects from the list
 void AnimeRenderfarm::keyPressEvent(QKeyEvent *e)
 {
     if(e->key() == Qt::Key_Delete ||
@@ -125,22 +129,24 @@ void AnimeRenderfarm::keyPressEvent(QKeyEvent *e)
 
 void AnimeRenderfarm::dragEnterEvent(QDragEnterEvent *e)
 {
+    // If the drag event contains a list of URIs, accept the drag action
     if(e->mimeData()->hasFormat("text/uri-list"))
         e->acceptProposedAction();
 }
-
 void AnimeRenderfarm::dropEvent(QDropEvent *e)
 {
+    // When the dragged items are dropped, compile the list of URIs into a list of paths
     QStringList slItems;
     QList<QUrl> lText = e->mimeData()->urls();
     foreach(QUrl url, lText)
         slItems << QDir::toNativeSeparators(url.toLocalFile());
-
+    // Open the files
     filesOpened(slItems);
 }
 
 void AnimeRenderfarm::closeEvent(QCloseEvent *)
 {
+    // Save the state of the window on exit
     settings.setValue("Geometry", saveGeometry());
     settings.setValue("State", saveState(0));
 }
@@ -149,24 +155,21 @@ void AnimeRenderfarm::closeEvent(QCloseEvent *)
 
 void AnimeRenderfarm::showOpenProjectsDialogue()
 {
+    // Compile a list of supported formats based on the defined macros
     QString supported;
-
-    supported += tr("All supported formats") + " (*.anme *.moho);;";
-
-    supported += tr("Anime Studio Projects") + " (*.anme);;";
-    supported += tr("Moho Projects") + " (*.moho);;";
-
+    supported += tr("All supported formats") + " ("+SUPPORTED_FORMATS_PROJECTS+");;";
+    supported += tr("Anime Studio Projects") + " ("+SUPPORTED_FORMATS_PROJECTS_ANME+");;";
+    supported += tr("Moho Projects") + " ("+SUPPORTED_FORMATS_PROJECTS_MOHO+");;";
     supported.replace(".", "*.");
-
     supported += tr("All files") += " (*.*);;";
 
+    // Open a file browser dialogue
     QStringList files = QFileDialog::getOpenFileNames(
-        this,
-        tr("Open Anime Studio Projects"),
-        QDir::toNativeSeparators(QDir::homePath()),
-        supported
+        this, tr("Open Anime Studio Projects"),
+        QDir::toNativeSeparators(QDir::homePath()), supported
     );
 
+    // Open the files that were selected by the user
     if(files.length()>0)
         filesOpened(files);
 }
@@ -175,6 +178,7 @@ void AnimeRenderfarm::showOpenProjectsDialogue()
 
 void AnimeRenderfarm::openRenderSettings()
 {
+    // Create a new settings window if the user tries to open a second one
     if(winRenderSettings) {
         if(winRenderSettings->isVisible())
             return;
@@ -186,6 +190,7 @@ void AnimeRenderfarm::openRenderSettings()
 
 void AnimeRenderfarm::openServerSettings()
 {
+    // Create a new settings window if the user tries to open a second one
     if(winServerSettings) {
         if(winServerSettings->isVisible())
             return;
@@ -197,31 +202,34 @@ void AnimeRenderfarm::openServerSettings()
 
 void AnimeRenderfarm::openAboutApplication()
 {
+    // Show an "About..." box at the user's request
     QMessageBox::about(this, tr("About ")+qApp->applicationName(),
         "<center><h2>"+qApp->applicationName()+"</h2>" +
         "<p>"+tr("Version ")+qApp->applicationVersion()+"</p>" +
-        "<p>&copy; 2011 "+qApp->organizationName()+". "+tr("All Rights Reserved.")+"</p></center>");
+        "<p>&copy; 2011 "+qApp->organizationName()+". "+tr("All Rights Reserved.")+
+        "</p></center>");
 }
 
 void AnimeRenderfarm::openAboutQt()
 {
+    // Show an "About Qt..." box at the user's request
     qApp->aboutQt();
 }
 
 
 
-void AnimeRenderfarm::renderCompleted()
+void AnimeRenderfarm::renderCompleted(QList< QPair<QString,QString> > newlist)
 {
+    // When the render is completed successfully, send an alert and clean up
     qApp->alert(this, 0);
-
-    listProjectsModel->clearall();
-
-    renderEnd();
+//    listProjectsModel->clearall();
+    renderEnd(newlist);
 }
-void AnimeRenderfarm::renderEnd()
+void AnimeRenderfarm::renderEnd(QList< QPair<QString,QString> > newlist)
 {
+    // Whether completed or canceled, set the new list and re-enable the projects list
+    listProjectsModel->setListPairs(newlist);
     ui->listProjects->setEnabled(true);
-
     if(winRenderManager) {
         winRenderManager->deleteLater();
         winRenderManager = NULL;
@@ -231,6 +239,7 @@ void AnimeRenderfarm::renderEnd()
 
 
 bool AnimeRenderfarm::messageRemoveProjectsConfirm() {
+    // Make sure the user is certain they want to delete projects from the list
     QMessageBox::StandardButton response;
     response = QMessageBox::question(this, tr("Are you sure?"),
         "<p>"+tr("Are you sure you wish to remove the "
@@ -245,7 +254,9 @@ bool AnimeRenderfarm::messageRemoveProjectsConfirm() {
 
 void AnimeRenderfarm::filesOpened(QStringList files)
 {
+    // Sort the received files alphabetically
     files.sort();
+    // For each one, if it's a valid project file, add it to the projects list
     for(int i=0; i<files.count(); i++) {
         QString file = QDir::toNativeSeparators(files.at(i));
         if(fileIsProject(file) && !listProjectsModel->contains(file))
@@ -254,29 +265,26 @@ void AnimeRenderfarm::filesOpened(QStringList files)
 }
 
 bool AnimeRenderfarm::fileIsProject(QString file) {
+    // Return true if the given file has a valid project extension
     QStringList slSupportedList = QString(SUPPORTED_FORMATS_PROJECTS).split(' ');
     foreach(QString ext, slSupportedList) {
-        if(file.endsWith(ext))
-            return true;
-    }
+        if(file.endsWith(ext)) return true; }
     return false;
 }
 
 
 
 void AnimeRenderfarm::renderProjects() {
+    // If the executable path is not set, throw a warning and open the settings dialogue
     if((!settings.contains("AnimeStudioPath")||
-            settings.value("AnimeStudioPath").toString().isEmpty()) ||
-        (!settings.contains("OutputDirectory")||
-            settings.value("OutputDirectory").toString().isEmpty())) {
+            settings.value("AnimeStudioPath").toString().isEmpty())) {
         QMessageBox::information(this, tr("Set Default Options"),
-            "<p>"+tr("You must first set your default options, particularly "
-            "the location of the Anime Studio executable and the folder "
-            "where you want your rendered files to be saved.")+"</p>");
+            "<p>"+tr("You must first locate your Anime Studio executable.")+"</p>");
         this->openRenderSettings();
         return;
     }
 
+    // If the projects list is empty, warn the user
     QStringList slProjects = listProjectsModel->getList();
     if(slProjects.size()<=0) {
         QMessageBox::information(this, tr("Eh?"),
@@ -285,17 +293,22 @@ void AnimeRenderfarm::renderProjects() {
         return;
     }
 
+    // Disable the projects list while the render is in progress, mainly as a formality
     ui->listProjects->setEnabled(false);
     if(!winRenderManager) {
+        // Create a new Render Manager
         winRenderManager = new RenderManager(this);
+        // Give the render manager the ID for this window, and the taskbar interface pointer
 #ifdef Q_WS_WIN
         winRenderManager->initTaskbarInterface(this->winId(), taskbarInterface);
 #endif
-        connect(winRenderManager, SIGNAL(renderFinished()),
-                this, SLOT(renderCompleted()));
-        connect(winRenderManager, SIGNAL(renderCanceled()),
-                this, SLOT(renderEnd()));
+        // Connect our requisite signals and slots
+        connect(winRenderManager, SIGNAL(renderFinished(QList< QPair<QString,QString> >)),
+                this, SLOT(renderCompleted(QList< QPair<QString,QString> >)));
+        connect(winRenderManager, SIGNAL(renderCanceled(QList< QPair<QString,QString> >)),
+                this, SLOT(renderEnd(QList< QPair<QString,QString> >)));
     }
+    // Set our projects list, and begin
     winRenderManager->setProjects(listProjectsModel->getListPairs());
     winRenderManager->start();
 }

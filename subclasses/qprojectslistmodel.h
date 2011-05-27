@@ -43,6 +43,7 @@ public:
 
     QStringList getList();
     QList< QPair<QString,QString> > getListPairs();
+    bool setListPairs(QList< QPair<QString,QString> >);
     bool contains(QString);
 
 private:

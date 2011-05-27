@@ -76,8 +76,8 @@ private:
     void updateTaskbarProgress(int);
 
 signals:
-    void renderFinished();
-    void renderCanceled();
+    void renderFinished(QList< QPair<QString,QString> >);
+    void renderCanceled(QList< QPair<QString,QString> >);
     void renderFailed(QString);
 
 public slots:

@@ -98,8 +98,8 @@ private slots:
     void openAboutApplication();
     void openAboutQt();
 
-    void renderCompleted();
-    void renderEnd();
+    void renderCompleted(QList< QPair<QString,QString> >);
+    void renderEnd(QList< QPair<QString,QString> >);
 
     void renderProjects();
 };

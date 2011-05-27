@@ -4,12 +4,12 @@ RenderThread::RenderThread(QObject *parent) :
     QThread(parent)
 {
     renderprocess = NULL;
-    stdouttimer.setInterval(100);
 
+    // Set options to defaults in case they are somehow not set earlier
     setFormat();
     setFrameRange();
     setSwitches();
-
+    // This is so that the render process actually starts in a new thread instead of 'run()'
     connect(this, SIGNAL(cli(QString,QStringList)),
             this, SLOT(executeRenderCommand(QString,QStringList)));
 }
@@ -24,6 +24,7 @@ RenderThread::~RenderThread()
 
 void RenderThread::setExe(QString in)
 {
+    // On Mac OS X, we need to do a bit of extra work to find the executable in the bundle
 #ifdef Q_WS_MACX
     in += "/Contents/MacOS/Anime Studio";
     if(!QFileInfo(in).isExecutable()) {
@@ -77,18 +78,26 @@ void RenderThread::setSwitches(bool aa, bool sfx, bool lfx, bool hsize, bool hfp
 
 void RenderThread::run()
 {
-    if(exe.isEmpty())
-        emit renderError("Anime Studio executable not configured");
-    if(project.first.isEmpty()||project.second.isEmpty())
-        emit renderError("Project file not set properly");
+    // Check for any possible conditions, and emit errors for each one
+    if(exe.isEmpty()) {
+        emit renderError("Anime Studio executable not configured"); return; }
+    if(project.first.isEmpty()||project.second.isEmpty()) {
+        emit renderError("Project file not set properly"); return; }
     if(outputDirectory.isEmpty())
         emit renderWarning("Output directory not configured; defaulting to project location");
 
+    // Get our separator now, to avoid multiple function calls
+    QString sep = QDir::separator();
+
+    // Separate the filename from the extension
     QString filename = project.second.mid(0,project.second.lastIndexOf("."));
-    QString outdir = (outputDirectory.isEmpty()?(project.first):(outputDirectory))+
-            QDir::separator()+(isImageSequence()?filename+QDir::separator():"");
+
+    // Compile the final output directory, and create it if it doesn't exist
+    QString outdir = (outputDirectory.isEmpty()?(project.first):(outputDirectory+sep))+
+            (isImageSequence()?filename+sep:"");
     QDir dirpath; dirpath.mkpath(outdir);   // This is just silly.
 
+    // Set all of the arguments based on the configuration settings we now have
     QStringList args;
     args << "-r" << project.first+project.second << "-v" <<
             "-f" << format << "-o" << outdir+filename+extension();
@@ -100,6 +109,7 @@ void RenderThread::run()
             "-ntscsafe" << switchNTSCSafe << "-premultiply" << switchPremultiply <<
             "-variablewidths" << switchVariableWidths;
 
+    // Finally, emit the signal to begin the render
     emit cli(exe, args);
 }
 
@@ -107,34 +117,38 @@ void RenderThread::run()
 
 void RenderThread::executeRenderCommand(QString program, QStringList arguments)
 {
+    // Create a new process for the render job
     if(!renderprocess)
         renderprocess = new QProcess(this);
 //    renderprocess->setStandardOutputFile(QDir::toNativeSeparators(
 //        QDesktopServices::storageLocation(QDesktopServices::TempLocation))+
 //        QDir::separator()+project.second+".log");
 
+    // Get regular progress updates from the process, and have it emit a signal when finished
     connect(renderprocess, SIGNAL(readyReadStandardOutput()), this, SLOT(calculateProgress()));
     connect(renderprocess, SIGNAL(finished(int)), this, SLOT(renderFinished()));
-    renderprocess->setProcessChannelMode(QProcess::MergedChannels);
+//    renderprocess->setProcessChannelMode(QProcess::MergedChannels);
+    // Now start the process, and emit a signal saying we've done so
     renderprocess->start(program, arguments);
-
-    stdouttimer.start();
-    connect(&stdouttimer, SIGNAL(timeout()), this, SLOT(calculateProgress()));
-
     emit renderStarted(project);
 }
 
 void RenderThread::calculateProgress()
 {
+    // Calculate the render progress based on the program output
     if(renderprocess) {
         QString out;
+        // Loop through as long as there is data to process
         while(!(out=renderprocess->readLine()).isEmpty()) {
+            // If it says "Done!", we should emit a 100% completion
             if(out.contains("Done!")) {
                 emit renderProgress(100);
                 break;
             } else {
+                // Extract the current and total frames from the output
                 QRegExp regex("^Frame \\d+ \\((\\d+)/(\\d+)\\)");
                 if(out.contains(regex)) {
+                    // Convert to float, then get a percentage from that
                     float current = regex.cap(1).toFloat();
                     float total = regex.cap(2).toFloat();
                     emit renderProgress(int((current/total)*100.0f));
@@ -146,12 +160,17 @@ void RenderThread::calculateProgress()
 
 void RenderThread::renderCancel()
 {
-    if(renderprocess)
+    // If the user cancels the render, kill the process
+    if(renderprocess) {
         renderprocess->kill();
+        renderprocess->deleteLater();
+        renderprocess = NULL;
+    }
 }
 
 void RenderThread::renderFinished()
 {
+    // If we're finished, delete the process and emit a completion signal
     if(renderprocess) {
         renderprocess->deleteLater();
         renderprocess = NULL;
