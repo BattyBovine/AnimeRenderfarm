@@ -138,28 +138,70 @@ bool Preferences::loadSettings()
 
 bool Preferences::saveSettings()
 {
-    settings.setValue("AnimeStudioPath", ui->editAnimeStudioPath->text());
-    settings.setValue("OutputDirectory", ui->editOutputDirectory->text());
-    settings.setValue("OutputFormat", ui->comboOutputFormat->currentIndex());
+    saveAnimeStudioPath();
+    saveOutputDirectory();
+    saveOutputFormat();
 
-    settings.setValue("SetFrameRange", ui->groupSetFrameRange->isChecked());
-    settings.setValue("StartFrame", ui->spinnerStartFrame->value());
-    settings.setValue("EndFrame", ui->spinnerEndFrame->value());
+    saveSetFrameRange();
+    saveStartFrame();
+    saveEndFrame();
 
-    settings.setValue("AntialiasedEdges", ui->checkAntialiasedEdges->isChecked());
-    settings.setValue("ApplyShapeEffects", ui->checkApplyShapeEffects->isChecked());
-    settings.setValue("ApplyLayerEffects", ui->checkApplyLayerEffects->isChecked());
-    settings.setValue("RenderAtHalfDimensions", ui->checkRenderAtHalfDimensions->isChecked());
-    settings.setValue("RenderAtHalfFramerate", ui->checkRenderAtHalfFramerate->isChecked());
-    settings.setValue("ReducedParticles", ui->checkReducedParticles->isChecked());
-    settings.setValue("ExtraSmoothImages", ui->checkExtraSmoothImages->isChecked());
-    settings.setValue("UseNTSCSafeColours", ui->checkUseNTSCSafeColours->isChecked());
-    settings.setValue("DoNotPremultiplyAlpha", ui->checkDoNotPremultiplyAlpha->isChecked());
-    settings.setValue("VariableLineWidths", ui->checkVariableLineWidths->isChecked());
+    saveAntialiasedEdges();
+    saveApplyShapeEffects();
+    saveApplyLayerEffects();
+    saveRenderAtHalfDimensions();
+    saveRenderAtHalfFramerate();
+    saveReducedParticles();
+    saveExtraSmoothImages();
+    saveUseNTSCSafeColours();
+    saveDoNotPremultiplyAlpha();
+    saveVariableLineWidths();
 
-    settings.setValue("RenderServer", ui->comboRenderServer->currentIndex());
-    settings.setValue("ServerIP",ui->editServer->text());
-    settings.setValue("ServerPort",ui->spinnerPort->value());
+    saveRenderServer();
+    saveServerIP();
+    saveServerPort();
 
     return true;
 }
+
+void Preferences::saveAnimeStudioPath() {
+    settings.setValue("AnimeStudioPath", ui->editAnimeStudioPath->text()); }
+void Preferences::saveOutputDirectory() {
+    settings.setValue("OutputDirectory", ui->editOutputDirectory->text()); }
+void Preferences::saveOutputFormat() {
+    settings.setValue("OutputFormat", ui->comboOutputFormat->currentIndex()); }
+
+void Preferences::saveSetFrameRange() {
+    settings.setValue("SetFrameRange", ui->groupSetFrameRange->isChecked()); }
+void Preferences::saveStartFrame() {
+    settings.setValue("StartFrame", ui->spinnerStartFrame->value()); }
+void Preferences::saveEndFrame() {
+    settings.setValue("EndFrame", ui->spinnerEndFrame->value()); }
+
+void Preferences::saveAntialiasedEdges() {
+    settings.setValue("AntialiasedEdges", ui->checkAntialiasedEdges->isChecked()); }
+void Preferences::saveApplyShapeEffects() {
+    settings.setValue("ApplyShapeEffects", ui->checkApplyShapeEffects->isChecked()); }
+void Preferences::saveApplyLayerEffects() {
+    settings.setValue("ApplyLayerEffects", ui->checkApplyLayerEffects->isChecked()); }
+void Preferences::saveRenderAtHalfDimensions() {
+    settings.setValue("RenderAtHalfDimensions", ui->checkRenderAtHalfDimensions->isChecked()); }
+void Preferences::saveRenderAtHalfFramerate() {
+    settings.setValue("RenderAtHalfFramerate", ui->checkRenderAtHalfFramerate->isChecked()); }
+void Preferences::saveReducedParticles() {
+    settings.setValue("ReducedParticles", ui->checkReducedParticles->isChecked()); }
+void Preferences::saveExtraSmoothImages() {
+    settings.setValue("ExtraSmoothImages", ui->checkExtraSmoothImages->isChecked()); }
+void Preferences::saveUseNTSCSafeColours() {
+    settings.setValue("UseNTSCSafeColours", ui->checkUseNTSCSafeColours->isChecked()); }
+void Preferences::saveDoNotPremultiplyAlpha() {
+    settings.setValue("DoNotPremultiplyAlpha", ui->checkDoNotPremultiplyAlpha->isChecked()); }
+void Preferences::saveVariableLineWidths() {
+    settings.setValue("VariableLineWidths", ui->checkVariableLineWidths->isChecked()); }
+
+void Preferences::saveRenderServer() {
+    settings.setValue("RenderServer", ui->comboRenderServer->currentIndex()); }
+void Preferences::saveServerIP() {
+    settings.setValue("ServerIP", ui->editServer->text()); }
+void Preferences::saveServerPort() {
+    settings.setValue("ServerPort", ui->spinnerPort->value()); }

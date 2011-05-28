@@ -435,8 +435,8 @@
    <slot>showOpenAnimeStudioDialogue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>383</x>
-     <y>28</y>
+     <x>312</x>
+     <y>59</y>
     </hint>
     <hint type="destinationlabel">
      <x>179</x>
@@ -451,8 +451,8 @@
    <slot>showOpenOutputDirectoryDialogue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>383</x>
-     <y>56</y>
+     <x>312</x>
+     <y>85</y>
     </hint>
     <hint type="destinationlabel">
      <x>179</x>
@@ -467,12 +467,316 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>346</x>
-     <y>281</y>
+     <x>325</x>
+     <y>339</y>
     </hint>
     <hint type="destinationlabel">
      <x>196</x>
      <y>151</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editAnimeStudioPath</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveAnimeStudioPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>5</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editOutputDirectory</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveOutputDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>166</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>36</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboOutputFormat</sender>
+   <signal>activated(int)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveOutputFormat()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>182</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>64</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupSetFrameRange</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveSetFrameRange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>35</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>93</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinnerStartFrame</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveStartFrame()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>102</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinnerEndFrame</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveEndFrame()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>297</x>
+     <y>146</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>331</x>
+     <y>126</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkAntialiasedEdges</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveAntialiasedEdges()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>24</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkApplyShapeEffects</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveApplyShapeEffects()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>28</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkApplyLayerEffects</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveApplyLayerEffects()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>30</x>
+     <y>232</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkRenderAtHalfDimensions</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveRenderAtHalfDimensions()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>40</x>
+     <y>259</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkRenderAtHalfFramerate</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveRenderAtHalfFramerate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>28</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkReducedParticles</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveReducedParticles()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>333</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkExtraSmoothImages</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveExtraSmoothImages()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>306</x>
+     <y>213</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>333</x>
+     <y>217</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkUseNTSCSafeColours</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveUseNTSCSafeColours()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>333</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkDoNotPremultiplyAlpha</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveDoNotPremultiplyAlpha()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>257</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>333</x>
+     <y>284</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkVariableLineWidths</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveVariableLineWidths()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>279</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>333</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboRenderServer</sender>
+   <signal>activated(int)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveRenderServer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>234</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>275</x>
+     <y>1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editServer</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveServerIP()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>329</x>
+     <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinnerPort</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveServerPort()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>304</x>
+     <y>81</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>331</x>
+     <y>91</y>
     </hint>
    </hints>
   </connection>
@@ -481,5 +785,24 @@
   <slot>showOpenOutputDirectoryDialogue()</slot>
   <slot>saveSettings()</slot>
   <slot>showOpenAnimeStudioDialogue()</slot>
+  <slot>saveAnimeStudioPath()</slot>
+  <slot>saveOutputDirectory()</slot>
+  <slot>saveOutputFormat()</slot>
+  <slot>saveSetFrameRange()</slot>
+  <slot>saveStartFrame()</slot>
+  <slot>saveEndFrame()</slot>
+  <slot>saveAntialiasedEdges()</slot>
+  <slot>saveApplyShapeEffects()</slot>
+  <slot>saveApplyLayerEffects()</slot>
+  <slot>saveRenderAtHalfDimensions()</slot>
+  <slot>saveRenderAtHalfFramerate()</slot>
+  <slot>saveReducedParticles()</slot>
+  <slot>saveExtraSmoothImages()</slot>
+  <slot>saveUseNTSCSafeColours()</slot>
+  <slot>saveDoNotPremultiplyAlpha()</slot>
+  <slot>saveVariableLineWidths()</slot>
+  <slot>saveRenderServer()</slot>
+  <slot>saveServerIP()</slot>
+  <slot>saveServerPort()</slot>
  </slots>
 </ui>

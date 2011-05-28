@@ -58,6 +58,29 @@ private slots:
     void showOpenAnimeStudioDialogue();
     void showOpenOutputDirectoryDialogue();
 
+    void saveAnimeStudioPath();
+    void saveOutputDirectory();
+    void saveOutputFormat();
+
+    void saveSetFrameRange();
+    void saveStartFrame();
+    void saveEndFrame();
+
+    void saveAntialiasedEdges();
+    void saveApplyShapeEffects();
+    void saveApplyLayerEffects();
+    void saveRenderAtHalfDimensions();
+    void saveRenderAtHalfFramerate();
+    void saveReducedParticles();
+    void saveExtraSmoothImages();
+    void saveUseNTSCSafeColours();
+    void saveDoNotPremultiplyAlpha();
+    void saveVariableLineWidths();
+
+    void saveRenderServer();
+    void saveServerIP();
+    void saveServerPort();
+
 };
 
 #endif // PREFERENCES_H
