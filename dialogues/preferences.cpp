@@ -112,7 +112,7 @@ bool Preferences::loadSettings()
 {
     ui->editAnimeStudioPath->setText(settings.value("AnimeStudioPath", "").toString());
     ui->editOutputDirectory->setText(settings.value("OutputDirectory", "").toString());
-    ui->comboOutputFormat->setCurrentIndex(settings.value("OutputFormat", 0).toInt());
+    ui->comboOutputFormat->setCurrentIndex(settings.value("OutputFormat", 3).toInt());
 
     ui->groupSetFrameRange->setChecked(settings.value("SetFrameRange",false).toBool());
     ui->spinnerStartFrame->setValue(settings.value("StartFrame",0).toInt());
