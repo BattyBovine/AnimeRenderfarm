@@ -30,10 +30,13 @@ FORMS    += animerenderfarm.ui \
     dialogues/consoleoutput.ui \
     dialogues/rendermanager.ui
 
+
+
 win32:LIBS  += User32.lib \
     Ole32.lib
-
 win32:RC_FILE += resources/AnimeRenderfarm.rc
+
+
 
 macx:CONFIG += x86 ppc
 macx:ICON = resources/AnimeRenderfarm.icns
