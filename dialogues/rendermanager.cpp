@@ -32,27 +32,25 @@ RenderManager::RenderManager(QWidget *parent) :
 
     // Create a new render thread, and set the necessary options
     cRenderThread = new RenderThread(this);
-    cRenderThread->setExe(settings.value("AnimeStudioPath").toString());
-    cRenderThread->setOutputDirectory(settings.value("OutputDirectory").toString());
-    cRenderThread->setFormat(settings.value("OutputFormat").toInt());
-    cRenderThread->setSwitches(settings.value("AntialiasedEdges").toBool(),
-                               settings.value("ApplyShapeEffects").toBool(),
-                               settings.value("ApplyLayerEffects").toBool(),
-                               settings.value("RenderAtHalfDimensions").toBool(),
-                               settings.value("RenderAtHalfFramerate").toBool(),
-                               settings.value("ReducedParticles").toBool(),
-                               settings.value("ExtraSmoothImages").toBool(),
-                               settings.value("UseNTSCSafeColours").toBool(),
-                               settings.value("DoNotPremultiplyAlpha").toBool(),
-                               settings.value("VariableLineWidths").toBool());
+    cRenderThread->setExe(settings.value("AnimeStudioPath", "").toString());
+    cRenderThread->setOutputDirectory(settings.value("OutputDirectory", "").toString());
+    cRenderThread->setFormat(settings.value("OutputFormat", 3).toInt());
+    cRenderThread->setSwitches(settings.value("AntialiasedEdges", true).toBool(),
+                               settings.value("ApplyShapeEffects", true).toBool(),
+                               settings.value("ApplyLayerEffects", true).toBool(),
+                               settings.value("RenderAtHalfDimensions", false).toBool(),
+                               settings.value("RenderAtHalfFramerate", false).toBool(),
+                               settings.value("ReducedParticles", false).toBool(),
+                               settings.value("ExtraSmoothImages", true).toBool(),
+                               settings.value("UseNTSCSafeColours", false).toBool(),
+                               settings.value("DoNotPremultiplyAlpha", false).toBool(),
+                               settings.value("VariableLineWidths", true).toBool());
 
     // Connect the render thread's signals and slots to this object
     connect(cRenderThread, SIGNAL(renderComplete(QPair<QString,QString>)),
             this, SLOT(renderEnd(QPair<QString,QString>)));
     connect(cRenderThread, SIGNAL(renderProgress(int)),
             this, SLOT(progressUpdate(int)));
-//    connect(this, SIGNAL(renderCanceled(QList< QPair<QString,QString> >)),
-//            cRenderThread, SLOT(renderCancel()));
 
     // Default to a busy indicator
     ui->labelProgressInfo->setText(tr("Waiting for projects to render..."));
