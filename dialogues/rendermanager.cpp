@@ -133,7 +133,13 @@ void RenderManager::start()
 
     //Finally, begin the first render, and open the window
     renderStartNext();
+#ifdef Q_WS_MACX
+    // Open as a modal dialogue on Mac OS X, like a proper progress meter
     this->open();
+#else
+    // On other systems, show the usual dialogue, allowing the user to minimise the main window
+    this->show();
+#endif
 }
 
 
