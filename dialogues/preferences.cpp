@@ -106,6 +106,22 @@ void Preferences::showOpenOutputDirectoryDialogue()
         return;
 }
 
+void Preferences::toggleServerSettings(int index)
+{
+    // If the render server is set to "This Computer", disable server settings
+    if(index<=0) {
+        ui->labelServer->setEnabled(false);
+        ui->editServer->setEnabled(false);
+        ui->labelPort->setEnabled(false);
+        ui->spinnerPort->setEnabled(false);
+    } else {
+        ui->labelServer->setEnabled(true);
+        ui->editServer->setEnabled(true);
+        ui->labelPort->setEnabled(true);
+        ui->spinnerPort->setEnabled(true);
+    }
+}
+
 
 
 bool Preferences::loadSettings()
@@ -163,6 +179,8 @@ bool Preferences::saveSettings()
 
     return true;
 }
+
+
 
 void Preferences::saveAnimeStudioPath() {
     settings.setValue("AnimeStudioPath", ui->editAnimeStudioPath->text()); }

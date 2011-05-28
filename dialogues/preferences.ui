@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>336</width>
+    <width>380</width>
     <height>350</height>
    </rect>
   </property>
@@ -15,6 +15,12 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>380</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Render Options</string>
@@ -312,8 +318,8 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
           <widget class="QLabel" name="labelRenderServer">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -322,12 +328,15 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Render Server:</string>
+            <string>Server:</string>
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="1" colspan="3">
           <widget class="QComboBox" name="comboRenderServer">
+           <property name="currentIndex">
+            <number>-1</number>
+           </property>
            <item>
             <property name="text">
              <string>This PC</string>
@@ -340,32 +349,28 @@
            </item>
           </widget>
          </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="layoutServerSettings">
-         <item>
+         <item row="1" column="0">
           <widget class="QLabel" name="labelServer">
            <property name="text">
-            <string>Server:</string>
+            <string>Address:</string>
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="1">
           <widget class="QLineEdit" name="editServer">
            <property name="text">
             <string>127.0.0.1</string>
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="2">
           <widget class="QLabel" name="labelPort">
            <property name="text">
             <string>Port:</string>
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="3">
           <widget class="QSpinBox" name="spinnerPort">
            <property name="minimum">
             <number>1</number>
@@ -777,6 +782,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboRenderServer</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>Preferences</receiver>
+   <slot>toggleServerSettings(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>119</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>showOpenOutputDirectoryDialogue()</slot>
@@ -801,5 +822,6 @@
   <slot>saveRenderServer()</slot>
   <slot>saveServerIP()</slot>
   <slot>saveServerPort()</slot>
+  <slot>toggleServerSettings(int)</slot>
  </slots>
 </ui>

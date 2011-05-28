@@ -57,6 +57,7 @@ private slots:
     bool saveSettings();
     void showOpenAnimeStudioDialogue();
     void showOpenOutputDirectoryDialogue();
+    void toggleServerSettings(int);
 
     void saveAnimeStudioPath();
     void saveOutputDirectory();

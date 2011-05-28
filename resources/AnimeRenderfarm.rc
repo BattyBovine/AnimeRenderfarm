@@ -6,15 +6,10 @@ BEGIN
   BEGIN
     BLOCK "FFFF0000"
     BEGIN
-      VALUE "FileVersion", "0.1"
-      VALUE "ProductVersion", "0.1"
-      VALUE "CompanyName", "Batty Bovine Productions, LLC"
-      VALUE "FileDescription", "Anime Renderfarm"
-      VALUE "InternalName", "AnimeRenderfarm"
-      VALUE "LegalCopyright", "© 2011 Batty Bovine Productions, LLC. Some Rights Reserved."
-      VALUE "LegalTrademarks", ""
-      VALUE "OriginalFilename", "AnimeRenderfarm.exe"
       VALUE "ProductName", "Anime Renderfarm"
+      VALUE "CompanyName", "Batty Bovine Productions, LLC"
+      VALUE "ProductVersion", "0.1"
+      VALUE "LegalCopyright", "© 2011 Batty Bovine Productions, LLC. Some Rights Reserved."
     END
   END
   BLOCK "VarFileInfo"
