@@ -27,9 +27,6 @@ RenderManager::RenderManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Prevent the window from being vertically resized
-    this->setFixedHeight(this->height());
-
     // Create a new render thread, and set the necessary options
     cRenderThread = new RenderThread(this);
     cRenderThread->setExe(settings.value("AnimeStudioPath", "").toString());
