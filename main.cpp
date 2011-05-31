@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("Batty Bovine Productions, LLC");
     a.setOrganizationDomain("animerenderfarm.battybovine.com");
     a.setApplicationName("Anime Renderfarm");
-    a.setApplicationVersion("0.1");
+    a.setApplicationVersion("0.1.1");
 
     AnimeRenderfarm w;
     w.show();
