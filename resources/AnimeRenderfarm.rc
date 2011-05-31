@@ -8,7 +8,7 @@ BEGIN
     BEGIN
       VALUE "ProductName", "Anime Renderfarm"
       VALUE "CompanyName", "Batty Bovine Productions, LLC"
-      VALUE "ProductVersion", "0.1"
+      VALUE "ProductVersion", "0.1.1"
       VALUE "LegalCopyright", "© 2011 Batty Bovine Productions, LLC. Some Rights Reserved."
     END
   END
