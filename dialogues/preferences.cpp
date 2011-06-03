@@ -154,72 +154,72 @@ bool Preferences::loadSettings()
 
 bool Preferences::saveSettings()
 {
-    saveAnimeStudioPath();
-    saveOutputDirectory();
-    saveOutputFormat();
+    saveAnimeStudioPath(ui->editAnimeStudioPath->text());
+    saveOutputDirectory(ui->editOutputDirectory->text());
+    saveOutputFormat(ui->comboOutputFormat->currentIndex());
 
-    saveSetFrameRange();
-    saveStartFrame();
-    saveEndFrame();
+    saveSetFrameRange(ui->groupSetFrameRange->isChecked());
+    saveStartFrame(ui->spinnerStartFrame->value());
+    saveEndFrame(ui->spinnerEndFrame->value());
 
-    saveAntialiasedEdges();
-    saveApplyShapeEffects();
-    saveApplyLayerEffects();
-    saveRenderAtHalfDimensions();
-    saveRenderAtHalfFramerate();
-    saveReducedParticles();
-    saveExtraSmoothImages();
-    saveUseNTSCSafeColours();
-    saveDoNotPremultiplyAlpha();
-    saveVariableLineWidths();
+    saveAntialiasedEdges(ui->checkAntialiasedEdges->isChecked());
+    saveApplyShapeEffects(ui->checkApplyShapeEffects->isChecked());
+    saveApplyLayerEffects(ui->checkApplyLayerEffects->isChecked());
+    saveRenderAtHalfDimensions(ui->checkRenderAtHalfDimensions->isChecked());
+    saveRenderAtHalfFramerate(ui->checkRenderAtHalfFramerate->isChecked());
+    saveReducedParticles(ui->checkReducedParticles->isChecked());
+    saveExtraSmoothImages(ui->checkExtraSmoothImages->isChecked());
+    saveUseNTSCSafeColours(ui->checkUseNTSCSafeColours->isChecked());
+    saveDoNotPremultiplyAlpha(ui->checkDoNotPremultiplyAlpha->isChecked());
+    saveVariableLineWidths(ui->checkVariableLineWidths->isChecked());
 
-    saveRenderServer();
-    saveServerIP();
-    saveServerPort();
+    saveRenderServer(ui->comboRenderServer->currentIndex());
+    saveServerIP(ui->editServer->text());
+    saveServerPort(ui->spinnerPort->value());
 
     return true;
 }
 
 
 
-void Preferences::saveAnimeStudioPath() {
-    settings.setValue("AnimeStudioPath", ui->editAnimeStudioPath->text()); }
-void Preferences::saveOutputDirectory() {
-    settings.setValue("OutputDirectory", ui->editOutputDirectory->text()); }
-void Preferences::saveOutputFormat() {
-    settings.setValue("OutputFormat", ui->comboOutputFormat->currentIndex()); }
+void Preferences::saveAnimeStudioPath(QString in) {
+    settings.setValue("AnimeStudioPath", in); }
+void Preferences::saveOutputDirectory(QString in) {
+    settings.setValue("OutputDirectory", in); }
+void Preferences::saveOutputFormat(int in) {
+    settings.setValue("OutputFormat", in); }
 
-void Preferences::saveSetFrameRange() {
-    settings.setValue("SetFrameRange", ui->groupSetFrameRange->isChecked()); }
-void Preferences::saveStartFrame() {
-    settings.setValue("StartFrame", ui->spinnerStartFrame->value()); }
-void Preferences::saveEndFrame() {
-    settings.setValue("EndFrame", ui->spinnerEndFrame->value()); }
+void Preferences::saveSetFrameRange(bool in) {
+    settings.setValue("SetFrameRange", in); }
+void Preferences::saveStartFrame(int in) {
+    settings.setValue("StartFrame", in); }
+void Preferences::saveEndFrame(int in) {
+    settings.setValue("EndFrame", in); }
 
-void Preferences::saveAntialiasedEdges() {
-    settings.setValue("AntialiasedEdges", ui->checkAntialiasedEdges->isChecked()); }
-void Preferences::saveApplyShapeEffects() {
-    settings.setValue("ApplyShapeEffects", ui->checkApplyShapeEffects->isChecked()); }
-void Preferences::saveApplyLayerEffects() {
-    settings.setValue("ApplyLayerEffects", ui->checkApplyLayerEffects->isChecked()); }
-void Preferences::saveRenderAtHalfDimensions() {
-    settings.setValue("RenderAtHalfDimensions", ui->checkRenderAtHalfDimensions->isChecked()); }
-void Preferences::saveRenderAtHalfFramerate() {
-    settings.setValue("RenderAtHalfFramerate", ui->checkRenderAtHalfFramerate->isChecked()); }
-void Preferences::saveReducedParticles() {
-    settings.setValue("ReducedParticles", ui->checkReducedParticles->isChecked()); }
-void Preferences::saveExtraSmoothImages() {
-    settings.setValue("ExtraSmoothImages", ui->checkExtraSmoothImages->isChecked()); }
-void Preferences::saveUseNTSCSafeColours() {
-    settings.setValue("UseNTSCSafeColours", ui->checkUseNTSCSafeColours->isChecked()); }
-void Preferences::saveDoNotPremultiplyAlpha() {
-    settings.setValue("DoNotPremultiplyAlpha", ui->checkDoNotPremultiplyAlpha->isChecked()); }
-void Preferences::saveVariableLineWidths() {
-    settings.setValue("VariableLineWidths", ui->checkVariableLineWidths->isChecked()); }
+void Preferences::saveAntialiasedEdges(bool in) {
+    settings.setValue("AntialiasedEdges", in); }
+void Preferences::saveApplyShapeEffects(bool in) {
+    settings.setValue("ApplyShapeEffects", in); }
+void Preferences::saveApplyLayerEffects(bool in) {
+    settings.setValue("ApplyLayerEffects", in); }
+void Preferences::saveRenderAtHalfDimensions(bool in) {
+    settings.setValue("RenderAtHalfDimensions", in); }
+void Preferences::saveRenderAtHalfFramerate(bool in) {
+    settings.setValue("RenderAtHalfFramerate", in); }
+void Preferences::saveReducedParticles(bool in) {
+    settings.setValue("ReducedParticles", in); }
+void Preferences::saveExtraSmoothImages(bool in) {
+    settings.setValue("ExtraSmoothImages", in); }
+void Preferences::saveUseNTSCSafeColours(bool in) {
+    settings.setValue("UseNTSCSafeColours", in); }
+void Preferences::saveDoNotPremultiplyAlpha(bool in) {
+    settings.setValue("DoNotPremultiplyAlpha", in); }
+void Preferences::saveVariableLineWidths(bool in) {
+    settings.setValue("VariableLineWidths", in); }
 
-void Preferences::saveRenderServer() {
-    settings.setValue("RenderServer", ui->comboRenderServer->currentIndex()); }
-void Preferences::saveServerIP() {
-    settings.setValue("ServerIP", ui->editServer->text()); }
-void Preferences::saveServerPort() {
-    settings.setValue("ServerPort", ui->spinnerPort->value()); }
+void Preferences::saveRenderServer(int in) {
+    settings.setValue("RenderServer", in); }
+void Preferences::saveServerIP(QString in) {
+    settings.setValue("ServerIP", in); }
+void Preferences::saveServerPort(int in) {
+    settings.setValue("ServerPort", in); }

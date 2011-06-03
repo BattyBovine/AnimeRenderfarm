@@ -51,6 +51,28 @@ private:
 signals:
 
 public slots:
+    void saveAnimeStudioPath(QString);
+    void saveOutputDirectory(QString);
+    void saveOutputFormat(int);
+
+    void saveSetFrameRange(bool);
+    void saveStartFrame(int);
+    void saveEndFrame(int);
+
+    void saveAntialiasedEdges(bool);
+    void saveApplyShapeEffects(bool);
+    void saveApplyLayerEffects(bool);
+    void saveRenderAtHalfDimensions(bool);
+    void saveRenderAtHalfFramerate(bool);
+    void saveReducedParticles(bool);
+    void saveExtraSmoothImages(bool);
+    void saveUseNTSCSafeColours(bool);
+    void saveDoNotPremultiplyAlpha(bool);
+    void saveVariableLineWidths(bool);
+
+    void saveRenderServer(int);
+    void saveServerIP(QString);
+    void saveServerPort(int);
 
 private slots:
     bool loadSettings();
@@ -58,29 +80,6 @@ private slots:
     void showOpenAnimeStudioDialogue();
     void showOpenOutputDirectoryDialogue();
     void toggleServerSettings(int);
-
-    void saveAnimeStudioPath();
-    void saveOutputDirectory();
-    void saveOutputFormat();
-
-    void saveSetFrameRange();
-    void saveStartFrame();
-    void saveEndFrame();
-
-    void saveAntialiasedEdges();
-    void saveApplyShapeEffects();
-    void saveApplyLayerEffects();
-    void saveRenderAtHalfDimensions();
-    void saveRenderAtHalfFramerate();
-    void saveReducedParticles();
-    void saveExtraSmoothImages();
-    void saveUseNTSCSafeColours();
-    void saveDoNotPremultiplyAlpha();
-    void saveVariableLineWidths();
-
-    void saveRenderServer();
-    void saveServerIP();
-    void saveServerPort();
 
 };
 
