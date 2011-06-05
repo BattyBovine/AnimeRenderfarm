@@ -185,6 +185,12 @@ void AnimeRenderfarm::openPreferences()
     winPreferences->show();
 }
 
+void AnimeRenderfarm::openServerManager()
+{
+    ServerThread *st = new ServerThread(this);
+    st->listen(QHostAddress::Any, 26463);
+}
+
 void AnimeRenderfarm::openAboutApplication()
 {
     // Show an "About..." box at the user's request

@@ -21,6 +21,7 @@
 #include <QtGui/QApplication>
 #include "animerenderfarm.h"
 #include "dialogues/preferences.h"
+#include "objects/serverthread.h"
 
 bool cmdArgs(QStringList args)
 {
@@ -89,7 +90,8 @@ int main(int argc, char *argv[])
     // Handle command line arguments
     if(cmdArgs(a.arguments())) {
         // If the arguments indicate we want to run in server mode, do so
-        return 0;
+        ServerThread *st = new ServerThread();
+        st->listen(QHostAddress::Any, 26463);
     } else {
         // Otherwise, start the main window of the GUI interface
         AnimeRenderfarm w;

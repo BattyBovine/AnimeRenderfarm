@@ -37,6 +37,7 @@
 
 #include "dialogues/preferences.h"
 #include "dialogues/rendermanager.h"
+#include "objects/serverthread.h"
 
 #ifdef Q_WS_WIN
 #include <Windows.h>
@@ -92,6 +93,7 @@ private slots:
     void showOpenProjectsDialogue();
 
     void openPreferences();
+    void openServerManager();
     void openAboutApplication();
     void openAboutQt();
 
