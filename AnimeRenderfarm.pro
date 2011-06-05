@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     dialogues/consoleoutput.cpp \
     dialogues/rendermanager.cpp \
     objects/renderthread.cpp \
-    objects/serverthread.cpp
+    objects/serverthread.cpp \
+    dialogues/servermanager.cpp
 
 HEADERS  += animerenderfarm.h \
     subclasses/qprojectslistmodel.h \
@@ -25,20 +26,25 @@ HEADERS  += animerenderfarm.h \
     dialogues/consoleoutput.h \
     dialogues/rendermanager.h \
     objects/renderthread.h \
-    objects/serverthread.h
+    objects/serverthread.h \
+    dialogues/servermanager.h
 
 FORMS    += animerenderfarm.ui \
     dialogues/preferences.ui \
     dialogues/consoleoutput.ui \
-    dialogues/rendermanager.ui
+    dialogues/rendermanager.ui \
+    dialogues/servermanager.ui
 
 
 
-win32:LIBS  += User32.lib \
-    Ole32.lib
-win32:RC_FILE += resources/AnimeRenderfarm.rc
+win32 {
+    LIBS  += User32.lib Ole32.lib
+    RC_FILE += resources/AnimeRenderfarm.rc
+}
 
 
 
-macx:CONFIG += x86 ppc
-macx:ICON = resources/AnimeRenderfarm.icns
+macx {
+    CONFIG += x86 ppc
+    ICON = resources/AnimeRenderfarm.icns
+}

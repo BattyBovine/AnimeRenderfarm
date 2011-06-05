@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     if(cmdArgs(a.arguments())) {
         // If the arguments indicate we want to run in server mode, do so
         ServerThread *st = new ServerThread();
-        st->listen(QHostAddress::Any, 26463);
+        st->start();
     } else {
         // Otherwise, start the main window of the GUI interface
         AnimeRenderfarm w;

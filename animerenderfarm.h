@@ -37,7 +37,7 @@
 
 #include "dialogues/preferences.h"
 #include "dialogues/rendermanager.h"
-#include "objects/serverthread.h"
+#include "dialogues/servermanager.h"
 
 #ifdef Q_WS_WIN
 #include <Windows.h>
@@ -69,8 +69,9 @@ private:
 
     qProjectsListModel *listProjectsModel;
 
-    RenderManager *winRenderManager;
     Preferences *winPreferences;
+    RenderManager *winRenderManager;
+    ServerManager *winServerManager;
 
 #ifdef Q_WS_WIN
     unsigned int taskbarID;

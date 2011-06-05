@@ -1,23 +1,37 @@
 #ifndef SERVERTHREAD_H
 #define SERVERTHREAD_H
 
+#include <QThread>
 #include <QTcpServer>
+#include <QTcpSocket>
 
-class ServerThread : public QTcpServer
+#include <QTimer>
+
+class ServerThread : public QThread
 {
     Q_OBJECT
+
 public:
     explicit ServerThread(QObject *parent = 0);
     ~ServerThread();
     
 protected:
-    void incomingConnection(int);
+    void run();
 
 private:
+    QTcpServer *server;
+
+    QTimer *statustimer;
 
 signals:
+    void initServer();
+    void serverStatus(QString);
 
 public slots:
+
+private slots:
+    void startServer();
+    void trackStatus();
 
 };
 

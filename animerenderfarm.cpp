@@ -34,6 +34,7 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
     ui->setupUi(this);
 
     winRenderManager = NULL;
+    winServerManager = NULL;
     winPreferences = NULL;
 
     // Recover window size and position if the data exists, otherwise center the window
@@ -64,6 +65,8 @@ AnimeRenderfarm::~AnimeRenderfarm()
 {
     if(winRenderManager)
         winRenderManager->deleteLater();
+    if(winServerManager)
+        winServerManager->deleteLater();
     if(winPreferences)
         winPreferences->deleteLater();
 
@@ -187,8 +190,14 @@ void AnimeRenderfarm::openPreferences()
 
 void AnimeRenderfarm::openServerManager()
 {
-    ServerThread *st = new ServerThread(this);
-    st->listen(QHostAddress::Any, 26463);
+    // Create a new Server Manager window if the user tries to open a second one
+    if(winServerManager) {
+        if(winServerManager->isVisible())
+            return;
+        winServerManager->deleteLater();
+    }
+    winServerManager = new ServerManager(this);
+    winServerManager->show();
 }
 
 void AnimeRenderfarm::openAboutApplication()
