@@ -27,27 +27,55 @@ RenderManager::RenderManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Create a new render thread, and set the necessary options
-    cRenderThread = new RenderThread(this);
-    cRenderThread->setExe(settings.value("AnimeStudioPath", "").toString());
-    cRenderThread->setOutputDirectory(settings.value("OutputDirectory", "").toString());
-    cRenderThread->setFormat(settings.value("OutputFormat", 3).toInt());
-    cRenderThread->setSwitches(settings.value("AntialiasedEdges", true).toBool(),
-                               settings.value("ApplyShapeEffects", true).toBool(),
-                               settings.value("ApplyLayerEffects", true).toBool(),
-                               settings.value("RenderAtHalfDimensions", false).toBool(),
-                               settings.value("RenderAtHalfFramerate", false).toBool(),
-                               settings.value("ReducedParticles", false).toBool(),
-                               settings.value("ExtraSmoothImages", true).toBool(),
-                               settings.value("UseNTSCSafeColours", false).toBool(),
-                               settings.value("DoNotPremultiplyAlpha", false).toBool(),
-                               settings.value("VariableLineWidths", true).toBool());
+    cClientThread = NULL;
+    cRenderThread = NULL;
 
-    // Connect the render thread's signals and slots to this object
-    connect(cRenderThread, SIGNAL(renderComplete(QPair<QString,QString>)),
-            this, SLOT(renderEnd(QPair<QString,QString>)));
-    connect(cRenderThread, SIGNAL(renderProgress(int)),
-            this, SLOT(progressUpdate(int)));
+    // Create a new render thread, and set the necessary options
+    Preferences *prefsman = new Preferences(this);
+
+    if(prefsman->getRenderServer()>0) {
+        // If the render server is set to "Remote", start a new client thread and connect to it
+        cClientThread = new ClientThread(this);
+        cClientThread->setOutputDirectory(prefsman->getOutputDirectory());
+        cClientThread->setFormat(prefsman->getOutputFormat());
+        cClientThread->setSwitches(prefsman->getAntialiasedEdges(),
+                                   prefsman->getApplyShapeEffects(),
+                                   prefsman->getApplyLayerEffects(),
+                                   prefsman->getRenderAtHalfDimensions(),
+                                   prefsman->getRenderAtHalfFramerate(),
+                                   prefsman->getReducedParticles(),
+                                   prefsman->getExtraSmoothImages(),
+                                   prefsman->getUseNTSCSafeColours(),
+                                   prefsman->getDoNotPremultiplyAlpha(),
+                                   prefsman->getVariableLineWidths());
+        connect(cClientThread, SIGNAL(renderComplete(QPair<QString,QString>)),
+                this, SLOT(renderEnd(QPair<QString,QString>)));
+        connect(cClientThread, SIGNAL(renderProgress(QString,int)),
+                this, SLOT(progressUpdate(QString,int)));
+    } else {
+        // Otherwise, start a local render thread
+        cRenderThread = new RenderThread(this);
+        cRenderThread->setExe(prefsman->getAnimeStudioPath());
+        cRenderThread->setOutputDirectory(prefsman->getOutputDirectory());
+        cRenderThread->setFormat(prefsman->getOutputFormat());
+        cRenderThread->setSwitches(prefsman->getAntialiasedEdges(),
+                                   prefsman->getApplyShapeEffects(),
+                                   prefsman->getApplyLayerEffects(),
+                                   prefsman->getRenderAtHalfDimensions(),
+                                   prefsman->getRenderAtHalfFramerate(),
+                                   prefsman->getReducedParticles(),
+                                   prefsman->getExtraSmoothImages(),
+                                   prefsman->getUseNTSCSafeColours(),
+                                   prefsman->getDoNotPremultiplyAlpha(),
+                                   prefsman->getVariableLineWidths());
+        connect(cRenderThread, SIGNAL(renderComplete(QPair<QString,QString>)),
+                this, SLOT(renderEnd(QPair<QString,QString>)));
+        connect(cRenderThread, SIGNAL(renderProgress(QString,int)),
+                this, SLOT(progressUpdate(QString,int)));
+    }
+
+    // After this, we no longer need the preferences
+    prefsman->deleteLater();
 
     // Default to a busy indicator
     ui->labelProgressInfo->setText(tr("Waiting for projects to render..."));
@@ -63,11 +91,8 @@ RenderManager::RenderManager(QWidget *parent) :
 
 RenderManager::~RenderManager()
 {
-    // Reset the taskbar indicator before being destroyed
-#ifdef Q_WS_WIN
-    updateTaskbarState(TBPF_NOPROGRESS);
-#endif
-
+    if(cClientThread)
+        cClientThread->deleteLater();
     if(cRenderThread)
         cRenderThread->deleteLater();
 
@@ -91,6 +116,15 @@ void RenderManager::closeEvent(QCloseEvent *e)
     }
     // Otherwise, let other objects know we've been canceled, and accept the event
     emit renderCanceled(listProjects);
+
+    // Reset the taskbar indicator before destroying the window
+#ifdef Q_WS_WIN
+    updateTaskbarState(TBPF_NOPROGRESS);
+#endif
+
+    // Emit a signal to let other objects know we're closing
+    emit closing();
+
     e->accept();
 }
 
@@ -143,18 +177,20 @@ void RenderManager::start()
 
 void RenderManager::renderStartNext()
 {
-    // Set the progress label to show which file we're about to render
-    ui->labelProgressInfo->setText("Currently rendering "+listProjects.first().second+"...");
     // Set taskbar state to a standard progress indicator
 #ifdef Q_WS_WIN
     updateTaskbarState(TBPF_NORMAL);
 #endif
 
-    // Set the first project in the list as the next render...
-    cRenderThread->setProject(listProjects.first());
-
-    // Finally, start the render
-    cRenderThread->start();
+    // Set the first project in the list as the next render, then begin the render process on
+    // whatever interface we're using
+    if(cClientThread) {
+        cClientThread->setProject(listProjects.first());
+        cClientThread->start();
+    } else if(cRenderThread) {
+        cRenderThread->setProject(listProjects.first());
+        cRenderThread->start();
+    }
 }
 
 void RenderManager::renderEnd(QPair<QString,QString>)
@@ -174,8 +210,11 @@ void RenderManager::renderEnd(QPair<QString,QString>)
 
 
 
-void RenderManager::progressUpdate(int current)
+void RenderManager::progressUpdate(QString info, int current)
 {
+    // Set the progress label to show which file we're about to render
+    ui->labelProgressInfo->setText(info);
+
     // Set the current progress to all completed projects, plus the current project's progress
     updateTaskbarProgress((completecount*100)+current);
 }

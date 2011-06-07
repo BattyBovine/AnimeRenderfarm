@@ -29,7 +29,9 @@
 
 #include <QSettings>
 
+#include "objects/clientthread.h"
 #include "objects/renderthread.h"
+#include "dialogues/preferences.h"
 
 #ifdef Q_WS_WIN
 #include <Windows.h>
@@ -61,6 +63,7 @@ protected:
 private:
     Ui::RenderManager *ui;
 
+    ClientThread *cClientThread;
     RenderThread *cRenderThread;
     QList< QPair<QString,QString> > listProjects;
 
@@ -76,6 +79,8 @@ private:
     void updateTaskbarProgress(int);
 
 signals:
+    void closing();
+
     void renderFinished(QList< QPair<QString,QString> >);
     void renderCanceled(QList< QPair<QString,QString> >);
     void renderFailed(QString);
@@ -86,7 +91,7 @@ private slots:
     void renderStartNext();
     void renderEnd(QPair<QString,QString>);
 
-    void progressUpdate(int);
+    void progressUpdate(QString,int);
 
     void updateThreadPriority(int);
 };

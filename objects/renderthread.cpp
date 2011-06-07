@@ -17,7 +17,7 @@ RenderThread::RenderThread(QObject *parent) :
 RenderThread::~RenderThread()
 {
     if(renderprocess)
-        delete renderprocess;
+        renderprocess->deleteLater();
 }
 
 
@@ -113,8 +113,6 @@ void RenderThread::run()
     emit cli(exe, args);
 }
 
-
-
 void RenderThread::executeRenderCommand(QString program, QStringList arguments)
 {
     // Create a new process for the render job
@@ -128,10 +126,13 @@ void RenderThread::executeRenderCommand(QString program, QStringList arguments)
     connect(renderprocess, SIGNAL(readyReadStandardOutput()), this, SLOT(calculateProgress()));
     connect(renderprocess, SIGNAL(finished(int)), this, SLOT(renderFinished()));
 //    renderprocess->setProcessChannelMode(QProcess::MergedChannels);
+
     // Now start the process, and emit a signal saying we've done so
     renderprocess->start(program, arguments);
-    emit renderStarted(project);
+    emit renderProgress(tr("Currently rendering ")+project.second, 0);
 }
+
+
 
 void RenderThread::calculateProgress()
 {
@@ -142,7 +143,7 @@ void RenderThread::calculateProgress()
         while(!(out=renderprocess->readLine()).isEmpty()) {
             // If it says "Done!", we should emit a 100% completion
             if(out.contains("Done!")) {
-                emit renderProgress(100);
+                emit renderProgress(tr("Finished rendering ")+project.second, 100);
                 break;
             } else {
                 // Extract the current and total frames from the output
@@ -151,7 +152,8 @@ void RenderThread::calculateProgress()
                     // Convert to float, then get a percentage from that
                     float current = regex.cap(1).toFloat();
                     float total = regex.cap(2).toFloat();
-                    emit renderProgress(int((current/total)*100.0f));
+                    emit renderProgress(tr("Currently rendering ")+project.second,
+                                        int((current/total)*100.0f));
                 }
             }
         }

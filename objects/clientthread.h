@@ -1,22 +1,20 @@
-#ifndef RENDERTHREAD_H
-#define RENDERTHREAD_H
+#ifndef CLIENTTHREAD_H
+#define CLIENTTHREAD_H
 
 #include <QThread>
-#include <QProcess>
-#include <QTimer>
-#include <QDir>
-#include <QDesktopServices>
+#include <QTcpSocket>
 
-#include <QPair>
+#include <QMessageBox>
 
-class RenderThread : public QThread
+class ClientThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit RenderThread(QObject *parent = 0);
-    ~RenderThread();
+    explicit ClientThread(QObject *parent = 0);
+    ~ClientThread();
 
-    void setExe(QString);
+    void start();
+
     void setProject(QPair<QString,QString>);
     void setOutputDirectory(QString in);
     void setFormat(int in=3);
@@ -25,16 +23,13 @@ public:
                      bool hfps=false, bool fewpart=false, bool xsmooth=true,
                      bool ntsc=false, bool nopmult=false, bool varw=true);
 
-protected:
-    void run();
-
 private:
     bool isImageSequence();
     QString indexToFormat(int);
     QString extension();
 
-    QProcess *renderprocess;
-    QString exe;
+    QTcpSocket *socket;
+
     QPair<QString,QString> project;
     QString outputDirectory;
     QString format;
@@ -42,26 +37,18 @@ private:
     QString switchAA,switchShapeFX,switchLayerFX,switchHalfSize,switchHalfFPS,switchFewParticles,
         switchExtraSmooth,switchNTSCSafe,switchPremultiply,switchVariableWidths;
 
-    QTimer stdouttimer;
-
 signals:
-    void cli(QString,QStringList);
-
-    void renderStarted(QPair<QString,QString>);
+    void initClient(QString,int);
     void renderProgress(QString,int);
     void renderComplete(QPair<QString,QString>);
 
-    void renderWarning(QString);
-    void renderError(QString);
-
 public slots:
-    void renderCancel();
 
 private slots:
-    void executeRenderCommand(QString,QStringList);
-    void calculateProgress();
-    void renderFinished();
+    void startClient(QString,int);
+    void readServerData();
+    void connectionError(QAbstractSocket::SocketError);
 
 };
 
-#endif // RENDERTHREAD_H
+#endif // CLIENTTHREAD_H

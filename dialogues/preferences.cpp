@@ -36,10 +36,16 @@ Preferences::~Preferences()
     delete ui;
 }
 
-void Preferences::closeEvent(QCloseEvent *)
+
+void Preferences::closeEvent(QCloseEvent *e)
 {
     // Save settings when the window is closed
     this->saveSettings();
+
+    // Emit a signal to let other objects know we're closing
+    emit closing();
+
+    e->accept();
 }
 
 
@@ -223,3 +229,47 @@ void Preferences::saveServerIP(QString in) {
     settings.setValue("ServerIP", in); }
 void Preferences::saveServerPort(int in) {
     settings.setValue("ServerPort", in); }
+
+
+
+QString Preferences::getAnimeStudioPath() {
+    return settings.value("AnimeStudioPath", "").toString(); }
+QString Preferences::getOutputDirectory() {
+    return settings.value("OutputDirectory", "").toString(); }
+int Preferences::getOutputFormat() {
+    return settings.value("OutputFormat", 3).toInt(); }
+
+bool Preferences::getSetFrameRange() {
+    return settings.value("SetFrameRange",false).toBool(); }
+int Preferences::getStartFrame() {
+    return settings.value("StartFrame",0).toInt(); }
+int Preferences::getEndFrame() {
+    return settings.value("EndFrame",0).toInt(); }
+
+bool Preferences::getAntialiasedEdges() {
+    return settings.value("AntialiasedEdges",true).toBool(); }
+bool Preferences::getApplyShapeEffects() {
+    return settings.value("ApplyShapeEffects",true).toBool(); }
+bool Preferences::getApplyLayerEffects() {
+    return settings.value("ApplyLayerEffects",true).toBool(); }
+bool Preferences::getRenderAtHalfDimensions() {
+    return settings.value("RenderAtHalfDimensions",false).toBool(); }
+bool Preferences::getRenderAtHalfFramerate() {
+    return settings.value("RenderAtHalfFramerate",false).toBool(); }
+bool Preferences::getReducedParticles() {
+    return settings.value("ReducedParticles",false).toBool(); }
+bool Preferences::getExtraSmoothImages() {
+    return settings.value("ExtraSmoothImages",true).toBool(); }
+bool Preferences::getUseNTSCSafeColours() {
+    return settings.value("UseNTSCSafeColours",false).toBool(); }
+bool Preferences::getDoNotPremultiplyAlpha() {
+    return settings.value("DoNotPremultiplyAlpha",false).toBool(); }
+bool Preferences::getVariableLineWidths() {
+    return settings.value("VariableLineWidths",true).toBool(); }
+
+int Preferences::getRenderServer() {
+    return settings.value("RenderServer",0).toInt(); }
+QString Preferences::getServerIP() {
+    return settings.value("ServerIP","127.0.0.1").toString(); }
+int Preferences::getServerPort() {
+    return settings.value("ServerPort","26463").toInt(); }

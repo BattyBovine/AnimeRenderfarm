@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QNetworkSession>
 
 #include <QTimer>
 
@@ -20,8 +21,11 @@ protected:
 
 private:
     QTcpServer *server;
+    QTcpSocket *client;
 
     QTimer *statustimer;
+
+    void writeString(QTcpSocket*,QString);
 
 signals:
     void initServer();
@@ -30,6 +34,9 @@ signals:
 public slots:
 
 private slots:
+    void beginTransfer();
+    void cleanClientSocket();
+
     void startServer();
     void trackStatus();
 

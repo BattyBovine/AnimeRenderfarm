@@ -2,6 +2,7 @@
 #define SERVERMANAGER_H
 
 #include <QDialog>
+#include <QCloseEvent>
 
 #include "objects/serverthread.h"
 
@@ -16,6 +17,12 @@ class ServerManager : public QDialog
 public:
     explicit ServerManager(QWidget *parent = 0);
     ~ServerManager();
+
+protected:
+    void closeEvent(QCloseEvent*);
+
+signals:
+    void closing();
 
 private:
     Ui::ServerManager *ui;

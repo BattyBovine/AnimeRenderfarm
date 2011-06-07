@@ -22,6 +22,7 @@
 #define PREFERENCES_H
 
 #include <QDialog>
+#include <QCloseEvent>
 #include <QDesktopWidget>
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -41,6 +42,29 @@ public:
     explicit Preferences(QWidget *parent = 0);
     ~Preferences();
 
+    QString getAnimeStudioPath();
+    QString getOutputDirectory();
+    int getOutputFormat();
+
+    bool getSetFrameRange();
+    int getStartFrame();
+    int getEndFrame();
+
+    bool getAntialiasedEdges();
+    bool getApplyShapeEffects();
+    bool getApplyLayerEffects();
+    bool getRenderAtHalfDimensions();
+    bool getRenderAtHalfFramerate();
+    bool getReducedParticles();
+    bool getExtraSmoothImages();
+    bool getUseNTSCSafeColours();
+    bool getDoNotPremultiplyAlpha();
+    bool getVariableLineWidths();
+
+    int getRenderServer();
+    QString getServerIP();
+    int getServerPort();
+
 private:
     Ui::Preferences *ui;
 
@@ -49,6 +73,7 @@ private:
     QSettings settings;
 
 signals:
+    void closing();
 
 public slots:
     void saveAnimeStudioPath(QString);

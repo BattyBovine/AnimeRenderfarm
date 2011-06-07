@@ -33,10 +33,6 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    winRenderManager = NULL;
-    winServerManager = NULL;
-    winPreferences = NULL;
-
     // Recover window size and position if the data exists, otherwise center the window
     if(!settings.contains("Geometry") ||
        !settings.contains("State")) {
@@ -63,13 +59,6 @@ AnimeRenderfarm::AnimeRenderfarm(QWidget *parent) :
 
 AnimeRenderfarm::~AnimeRenderfarm()
 {
-    if(winRenderManager)
-        winRenderManager->deleteLater();
-    if(winServerManager)
-        winServerManager->deleteLater();
-    if(winPreferences)
-        winPreferences->deleteLater();
-
 #ifdef Q_WS_WIN
     if(taskbarInterface)
         taskbarInterface->Release();
@@ -178,26 +167,20 @@ void AnimeRenderfarm::showOpenProjectsDialogue()
 
 void AnimeRenderfarm::openPreferences()
 {
-    // Create a new settings window if the user tries to open a second one
-    if(winPreferences) {
-        if(winPreferences->isVisible())
-            return;
-        winPreferences->deleteLater();
-    }
+    // Create a new settings window, and destroy it when closed
     winPreferences = new Preferences(this);
     winPreferences->show();
+    connect(winPreferences, SIGNAL(closing()),
+            winPreferences, SLOT(deleteLater()));
 }
 
 void AnimeRenderfarm::openServerManager()
 {
-    // Create a new Server Manager window if the user tries to open a second one
-    if(winServerManager) {
-        if(winServerManager->isVisible())
-            return;
-        winServerManager->deleteLater();
-    }
+    // Create a new Server Manager window, and destroy it when closed
     winServerManager = new ServerManager(this);
     winServerManager->show();
+    connect(winServerManager, SIGNAL(closing()),
+            winServerManager, SLOT(deleteLater()));
 }
 
 void AnimeRenderfarm::openAboutApplication()
@@ -230,10 +213,6 @@ void AnimeRenderfarm::renderEnd(QList< QPair<QString,QString> > newlist)
     // Whether completed or canceled, set the new list and re-enable the projects list
     listProjectsModel->setListPairs(newlist);
     ui->listProjects->setEnabled(true);
-    if(winRenderManager) {
-        winRenderManager->deleteLater();
-        winRenderManager = NULL;
-    }
 }
 
 
@@ -295,19 +274,21 @@ void AnimeRenderfarm::renderProjects() {
 
     // Disable the projects list while the render is in progress, mainly as a formality
     ui->listProjects->setEnabled(false);
-    if(!winRenderManager) {
-        // Create a new Render Manager
-        winRenderManager = new RenderManager(this);
-        // Give the render manager the ID for this window, and the taskbar interface pointer
+
+    // Create a new Render Manager
+    winRenderManager = new RenderManager(this);
+    // Give the render manager the ID for this window, and the taskbar interface pointer
 #ifdef Q_WS_WIN
-        winRenderManager->initTaskbarInterface(this->winId(), taskbarInterface);
+    winRenderManager->initTaskbarInterface(this->winId(), taskbarInterface);
 #endif
-        // Connect our requisite signals and slots
-        connect(winRenderManager, SIGNAL(renderFinished(QList< QPair<QString,QString> >)),
-                this, SLOT(renderCompleted(QList< QPair<QString,QString> >)));
-        connect(winRenderManager, SIGNAL(renderCanceled(QList< QPair<QString,QString> >)),
-                this, SLOT(renderEnd(QList< QPair<QString,QString> >)));
-    }
+    // Connect our requisite signals and slots
+    connect(winRenderManager, SIGNAL(renderFinished(QList< QPair<QString,QString> >)),
+            this, SLOT(renderCompleted(QList< QPair<QString,QString> >)));
+    connect(winRenderManager, SIGNAL(renderCanceled(QList< QPair<QString,QString> >)),
+            this, SLOT(renderEnd(QList< QPair<QString,QString> >)));
+    connect(winRenderManager, SIGNAL(closing()),
+            winRenderManager, SLOT(deleteLater()));
+
     // Set our projects list, and begin
     winRenderManager->setProjects(listProjectsModel->getListPairs());
     winRenderManager->start();

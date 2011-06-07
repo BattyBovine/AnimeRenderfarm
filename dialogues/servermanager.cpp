@@ -14,10 +14,20 @@ ServerManager::ServerManager(QWidget *parent) :
 
 ServerManager::~ServerManager()
 {
-    if(serverproc)
+    if(serverproc) {
+        serverproc->terminate();
         serverproc->deleteLater();
+    }
 
     delete ui;
+}
+
+void ServerManager::closeEvent(QCloseEvent *e)
+{
+    // Emit a signal to let other objects know we're closing
+    emit closing();
+
+    e->accept();
 }
 
 
