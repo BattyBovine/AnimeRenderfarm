@@ -9,6 +9,7 @@ ServerManager::ServerManager(QWidget *parent) :
 
     ui->editServerStatus->setText("Preparing server...");
     serverproc = new ServerThread(this);
+    serverproc->setPort(26463);
     serverproc->start();
 }
 

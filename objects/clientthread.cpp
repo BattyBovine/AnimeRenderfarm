@@ -1,19 +1,15 @@
 #include "clientthread.h"
 
 ClientThread::ClientThread(QObject *parent) :
-    QThread(parent)
+    QThread(parent),
+    socket(NULL)
 {
-    socket = NULL;
-
-    connect(this, SIGNAL(initClient(QString,int)), this, SLOT(startClient(QString,int)));
 }
 
 ClientThread::~ClientThread()
 {
-    if(socket) {
-        socket->disconnectFromHost();
+    if(socket)
         socket->deleteLater();
-    }
 }
 
 
@@ -35,8 +31,8 @@ void ClientThread::setFormat(int in)
 
 void ClientThread::setFrameRange(int start, int end)
 {
-//    if(end>start)
-//        emit renderError("Start frame must be smaller than end frame");
+    if(end>start)
+        emit renderError("Start frame must be smaller than end frame");
     frameStart = start;
     frameEnd = end;
 }
@@ -56,27 +52,39 @@ void ClientThread::setSwitches(bool aa, bool sfx, bool lfx, bool hsize, bool hfp
     switchVariableWidths=(varw?"yes":"no");
 }
 
+void ClientThread::setServerIP(QString in)
+{
+    serverIP = in;
+}
+
+void ClientThread::setServerPort(quint16 in)
+{
+    serverPort = in;
+}
+
 
 
 void ClientThread::start()
 {
-//    emit initClient("192.168.169.150", 26463);
-
     socket = new QTcpSocket(this);
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readServerData()));
+    connect(socket, SIGNAL(readyRead()), this, SLOT(handleServerResponse()));
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(connectionError(QAbstractSocket::SocketError)));
     socket->abort();
-    socket->connectToHost("192.168.169.150", 26463);
+    socket->connectToHost(serverIP, serverPort);
 }
 
 
 
-void ClientThread::startClient(QString, int)
+void ClientThread::handleServerResponse()
 {
+    QString response = readString();
+
+    if(response=="project")
+        sendData(project.first+project.second);
 }
 
-void ClientThread::readServerData()
+QString ClientThread::readString()
 {
     quint16 blocksize = 0;
     QDataStream in(socket);
@@ -84,17 +92,52 @@ void ClientThread::readServerData()
 
     if(blocksize==0) {
         if(socket->bytesAvailable() < (int)sizeof(quint16))
-            return;
+            return NULL;
         in >> blocksize;
     }
 
     if(socket->bytesAvailable() < blocksize)
-        return;
+        return NULL;
 
     QString data;
     in >> data;
+    return data;
+}
 
-    emit renderProgress(data, 0);
+void ClientThread::sendData(QString filepath)
+{
+//    QByteArray block;
+//    QDataStream outstream(&block, QIODevice::WriteOnly);
+//    outstream.setVersion(QDataStream::Qt_4_0);
+
+//    QFile outfile(filepath);
+//    if(!outfile.open(QIODevice::ReadOnly))
+//        return;
+
+//    outstream << (qint64)outfile.size();
+//    outstream << outfile.readAll();
+
+//    socket->write(block);
+    QFile file(filepath);
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
+    out << (qint64)file.size();
+    out << file.readAll();
+
+    qint64 sent = 0;
+    while(sent < sizeof(data)) {
+        qint64 sentnow = socket->write(data);
+        if(sentnow >= 0) {
+            sent += sentnow;
+        } else {
+            emit renderError("Could not write data to server");
+            return;
+        }
+    }
 }
 
 
@@ -105,6 +148,7 @@ void ClientThread::connectionError(QAbstractSocket::SocketError e)
     case QAbstractSocket::RemoteHostClosedError:
         QMessageBox::information(NULL, tr("Connection Closed"),
                                  tr("The remote host closed the connection"));
+        emit renderCancel();
         break;
     case QAbstractSocket::ConnectionRefusedError:
         QMessageBox::critical(NULL, tr("Connection Refused"),

@@ -23,12 +23,10 @@
 
 RenderManager::RenderManager(QWidget *parent) :
     QDialog(parent,Qt::WindowCloseButtonHint),
-    ui(new Ui::RenderManager)
+    ui(new Ui::RenderManager),
+    cClientThread(NULL), cRenderThread(NULL)
 {
     ui->setupUi(this);
-
-    cClientThread = NULL;
-    cRenderThread = NULL;
 
     // Create a new render thread, and set the necessary options
     Preferences *prefsman = new Preferences(this);
@@ -48,6 +46,8 @@ RenderManager::RenderManager(QWidget *parent) :
                                    prefsman->getUseNTSCSafeColours(),
                                    prefsman->getDoNotPremultiplyAlpha(),
                                    prefsman->getVariableLineWidths());
+        cClientThread->setServerIP(prefsman->getServerIP());
+        cClientThread->setServerPort(prefsman->getServerPort());
         connect(cClientThread, SIGNAL(renderComplete(QPair<QString,QString>)),
                 this, SLOT(renderEnd(QPair<QString,QString>)));
         connect(cClientThread, SIGNAL(renderProgress(QString,int)),

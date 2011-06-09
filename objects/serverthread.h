@@ -6,7 +6,11 @@
 #include <QTcpSocket>
 #include <QNetworkSession>
 
-#include <QTimer>
+#include <QDesktopServices>
+#include <QFile>
+#include <QDir>
+
+#include <QCryptographicHash>
 
 class ServerThread : public QThread
 {
@@ -15,17 +19,26 @@ class ServerThread : public QThread
 public:
     explicit ServerThread(QObject *parent = 0);
     ~ServerThread();
+
+    void setPort(quint16);
     
 protected:
     void run();
 
 private:
+    void writeData(QTcpSocket*,QString);
+    void writeString(QTcpSocket*,QString);
+    QByteArray ServerThread::readData(QTcpSocket*);
+
     QTcpServer *server;
     QTcpSocket *client;
 
-    QTimer *statustimer;
+    quint16 port;
+    QString temppath;
 
-    void writeString(QTcpSocket*,QString);
+    QString filename;
+    qint64 filelen;
+    QString filehash;
 
 signals:
     void initServer();
@@ -35,6 +48,7 @@ public slots:
 
 private slots:
     void beginTransfer();
+    void getProjectFile();
     void cleanClientSocket();
 
     void startServer();
