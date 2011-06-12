@@ -107,10 +107,12 @@ void AnimeRenderfarm::keyPressEvent(QKeyEvent *e)
 {
     if(e->key() == Qt::Key_Delete ||
        e->key() == Qt::Key_Backspace) {
-        if(messageRemoveProjectsConfirm()) {
-            QModelIndexList indices;
-            while((indices = ui->listProjects->selectionModel()->selectedIndexes()).size()) {
-                listProjectsModel->removeRow(indices.first().row());
+        if(ui->listProjects->selectionModel()->selectedIndexes().size()>0) {
+            if(messageRemoveProjectsConfirm()) {
+                QModelIndexList indices;
+                while((indices = ui->listProjects->selectionModel()->selectedIndexes()).size()) {
+                    listProjectsModel->removeRow(indices.first().row());
+                }
             }
         }
     }
