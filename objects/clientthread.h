@@ -1,3 +1,23 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                         *
+ *  Anime Renderfarm - A remote batch renderer for Anime Studio            *
+ *  Copyright (C) 2011 Batty Bovine Productions                            *
+ *                                                                         *
+ *  This program is free software: you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation, either version 3 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #ifndef CLIENTTHREAD_H
 #define CLIENTTHREAD_H
 
@@ -7,6 +27,8 @@
 #include <QFile>
 
 #include <QMessageBox>
+
+#include "objects/tcpcommunicator.h"
 
 class ClientThread : public QThread
 {
@@ -28,14 +50,15 @@ public:
     void setServerPort(quint16 in=26463);
 
 private:
+    QString readString();
+
     bool isImageSequence();
     QString indexToFormat(int);
     QString extension();
 
-    QString readString();
-    void sendData(QString filepath);
-
     QTcpSocket *socket;
+
+    TcpCommunicator comm;
 
     QPair<QString,QString> project;
     QString outputDirectory;

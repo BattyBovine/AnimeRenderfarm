@@ -1,3 +1,23 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                         *
+ *  Anime Renderfarm - A remote batch renderer for Anime Studio            *
+ *  Copyright (C) 2011 Batty Bovine Productions                            *
+ *                                                                         *
+ *  This program is free software: you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation, either version 3 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #ifndef SERVERTHREAD_H
 #define SERVERTHREAD_H
 
@@ -12,6 +32,8 @@
 
 #include <QCryptographicHash>
 
+#include "objects/tcpcommunicator.h"
+
 class ServerThread : public QThread
 {
     Q_OBJECT
@@ -20,25 +42,23 @@ public:
     explicit ServerThread(QObject *parent = 0);
     ~ServerThread();
 
-    void setPort(quint16);
+    void setBindIP(QString in="");
+    void setBindPort(quint16);
     
 protected:
     void run();
 
 private:
-    void writeData(QTcpSocket*,QString);
-    void writeString(QTcpSocket*,QString);
-    QByteArray ServerThread::readData(QTcpSocket*);
-
     QTcpServer *server;
     QTcpSocket *client;
 
-    quint16 port;
+    TcpCommunicator comm;
+
+    QString bindip;
+    quint16 bindport;
     QString temppath;
 
     QString filename;
-    qint64 filelen;
-    QString filehash;
 
 signals:
     void initServer();
@@ -48,11 +68,13 @@ public slots:
 
 private slots:
     void beginTransfer();
+    void getProjectName();
     void getProjectFile();
-    void cleanClientSocket();
+
+    void cleanup();
 
     void startServer();
-    void trackStatus();
+//    void trackStatus();
 
 };
 

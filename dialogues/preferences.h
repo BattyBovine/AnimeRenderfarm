@@ -65,6 +65,9 @@ public:
     QString getServerIP();
     int getServerPort();
 
+    QString getBindIP();
+    int getBindPort();
+
 private:
     Ui::Preferences *ui;
 
@@ -98,6 +101,9 @@ public slots:
     void saveRenderServer(int);
     void saveServerIP(QString);
     void saveServerPort(int);
+
+    void saveBindIP(QString);
+    void saveBindPort(int);
 
 private slots:
     bool loadSettings();

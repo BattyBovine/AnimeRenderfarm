@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     objects/renderthread.cpp \
     objects/serverthread.cpp \
     dialogues/servermanager.cpp \
-    objects/clientthread.cpp
+    objects/clientthread.cpp \
+    objects/tcpcommunicator.cpp
 
 HEADERS  += animerenderfarm.h \
     subclasses/qprojectslistmodel.h \
@@ -29,7 +30,8 @@ HEADERS  += animerenderfarm.h \
     objects/renderthread.h \
     objects/serverthread.h \
     dialogues/servermanager.h \
-    objects/clientthread.h
+    objects/clientthread.h \
+    objects/tcpcommunicator.h
 
 FORMS    += animerenderfarm.ui \
     dialogues/preferences.ui \

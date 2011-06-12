@@ -7,10 +7,14 @@ ServerManager::ServerManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    Preferences *prefsman = new Preferences(this);
     ui->editServerStatus->setText("Preparing server...");
+
     serverproc = new ServerThread(this);
-    serverproc->setPort(26463);
+    serverproc->setBindIP(prefsman->getBindIP());
+    serverproc->setBindPort(prefsman->getBindPort());
     serverproc->start();
+    prefsman->deleteLater();
 }
 
 ServerManager::~ServerManager()

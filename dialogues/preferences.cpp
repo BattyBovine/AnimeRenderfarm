@@ -155,6 +155,9 @@ bool Preferences::loadSettings()
     ui->editServer->setText(settings.value("ServerIP","127.0.0.1").toString());
     ui->spinnerPort->setValue(settings.value("ServerPort","26463").toInt());
 
+    ui->editBindToAddress->setText(settings.value("BindIP","").toString());
+    ui->spinnerBindToPort->setValue(settings.value("BindPort","26463").toInt());
+
     return true;
 }
 
@@ -182,6 +185,9 @@ bool Preferences::saveSettings()
     saveRenderServer(ui->comboRenderServer->currentIndex());
     saveServerIP(ui->editServer->text());
     saveServerPort(ui->spinnerPort->value());
+
+    saveBindIP(ui->editBindToAddress->text());
+    saveBindPort(ui->spinnerBindToPort->value());
 
     return true;
 }
@@ -230,6 +236,11 @@ void Preferences::saveServerIP(QString in) {
 void Preferences::saveServerPort(int in) {
     settings.setValue("ServerPort", in); }
 
+void Preferences::saveBindIP(QString in) {
+    settings.setValue("BindIP", in); }
+void Preferences::saveBindPort(int in) {
+    settings.setValue("BindPort", in); }
+
 
 
 QString Preferences::getAnimeStudioPath() {
@@ -273,3 +284,8 @@ QString Preferences::getServerIP() {
     return settings.value("ServerIP","127.0.0.1").toString(); }
 int Preferences::getServerPort() {
     return settings.value("ServerPort","26463").toInt(); }
+
+QString Preferences::getBindIP() {
+    return settings.value("BindIP","").toString(); }
+int Preferences::getBindPort() {
+    return settings.value("BindPort","26463").toInt(); }

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>380</width>
+    <width>400</width>
     <height>350</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>380</width>
+    <width>400</width>
     <height>0</height>
    </size>
   </property>
@@ -35,18 +35,28 @@
       <attribute name="title">
        <string>Render Options</string>
       </attribute>
+      <attribute name="toolTip">
+       <string>Options to choose how projects are rendered by Anime Studio.</string>
+      </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">
           <widget class="QLabel" name="labelAnimeStudioPath">
+           <property name="toolTip">
+            <string>Locate the Anime Studio executable to use for rendering projects locally, or remotely from another client. If you're only going to render remotely, you may leave this blank.</string>
+           </property>
            <property name="text">
             <string>Anime Studio Path:</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="editAnimeStudioPath"/>
+          <widget class="QLineEdit" name="editAnimeStudioPath">
+           <property name="toolTip">
+            <string>Locate the Anime Studio executable to use for rendering projects locally, or remotely from another client. If you're only going to render remotely, you may leave this blank.</string>
+           </property>
+          </widget>
          </item>
          <item row="0" column="2">
           <widget class="QToolButton" name="buttonAnimeStudioPath">
@@ -55,6 +65,9 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Locate the Anime Studio executable to use for rendering projects locally, or remotely from another client. If you're only going to render remotely, you may leave this blank.</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -69,6 +82,13 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Select the folder to store completed projects. Keep in mind that image sequences will be place in their own subfolder. Leave blank to use the same directory as the project file.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>Output Folder:</string>
            </property>
@@ -82,6 +102,13 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Select the folder to store completed projects. Keep in mind that image sequences will be place in their own subfolder. Leave blank to use the same directory as the project file.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
           </widget>
          </item>
          <item row="1" column="2">
@@ -91,6 +118,13 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Select the folder to store completed projects. Keep in mind that image sequences will be place in their own subfolder. Leave blank to use the same directory as the project file.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>...</string>
@@ -105,6 +139,9 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>Select what format to render the project to.</string>
+           </property>
            <property name="text">
             <string>Output Format:</string>
            </property>
@@ -112,6 +149,9 @@
          </item>
          <item row="2" column="1" colspan="2">
           <widget class="QComboBox" name="comboOutputFormat">
+           <property name="toolTip">
+            <string>Select what format to render the project to.</string>
+           </property>
            <property name="currentIndex">
             <number>3</number>
            </property>
@@ -151,6 +191,9 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupSetFrameRange">
+         <property name="toolTip">
+          <string>Select a range of frames to render for each project. It's highly recommended that you do not use this option normally, and instead set the start and end points in your project file. However, if you need to re-render only part of a project, this option may be useful.</string>
+         </property>
          <property name="title">
           <string>Set frame range</string>
          </property>
@@ -169,6 +212,9 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="toolTip">
+             <string>First frame of the completed render.</string>
+            </property>
             <property name="text">
              <string>Start frame:</string>
             </property>
@@ -178,7 +224,11 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="spinnerStartFrame"/>
+           <widget class="QSpinBox" name="spinnerStartFrame">
+            <property name="toolTip">
+             <string>First frame of the completed render.</string>
+            </property>
+           </widget>
           </item>
           <item row="0" column="2">
            <widget class="QLabel" name="labelEndFrame">
@@ -187,6 +237,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Last frame of the completed render.</string>
             </property>
             <property name="text">
              <string>End frame:</string>
@@ -197,7 +250,11 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QSpinBox" name="spinnerEndFrame"/>
+           <widget class="QSpinBox" name="spinnerEndFrame">
+            <property name="toolTip">
+             <string>Last frame of the completed render.</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -206,6 +263,9 @@
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
           <widget class="QCheckBox" name="checkAntialiasedEdges">
+           <property name="toolTip">
+            <string>Smooth jagged edges of lines and fills.</string>
+           </property>
            <property name="text">
             <string>Antialiased edges</string>
            </property>
@@ -219,6 +279,9 @@
          </item>
          <item row="0" column="1">
           <widget class="QCheckBox" name="checkReducedParticles">
+           <property name="toolTip">
+            <string>Render only the minimum amount of particles. Useful for test renders.</string>
+           </property>
            <property name="text">
             <string>Reduced particles</string>
            </property>
@@ -226,6 +289,9 @@
          </item>
          <item row="1" column="0">
           <widget class="QCheckBox" name="checkApplyShapeEffects">
+           <property name="toolTip">
+            <string>Render shape effects, such as shading and image textures.</string>
+           </property>
            <property name="text">
             <string>Apply shape effects</string>
            </property>
@@ -236,6 +302,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QCheckBox" name="checkExtraSmoothImages">
+           <property name="toolTip">
+            <string>Perform additional smoothing on embedded bitmap images.</string>
+           </property>
            <property name="text">
             <string>Extra-smooth images</string>
            </property>
@@ -246,6 +315,9 @@
          </item>
          <item row="2" column="0">
           <widget class="QCheckBox" name="checkApplyLayerEffects">
+           <property name="toolTip">
+            <string>Render layer effects, such as drop shadow and noisy edges.</string>
+           </property>
            <property name="text">
             <string>Apply layer effects</string>
            </property>
@@ -256,6 +328,9 @@
          </item>
          <item row="2" column="1">
           <widget class="QCheckBox" name="checkUseNTSCSafeColours">
+           <property name="toolTip">
+            <string>Use a colour palette safe for NTSC broadcast. Not recommended; this should normally be done in post-production.</string>
+           </property>
            <property name="text">
             <string>Use NTSC-safe colours</string>
            </property>
@@ -263,6 +338,9 @@
          </item>
          <item row="3" column="0">
           <widget class="QCheckBox" name="checkRenderAtHalfDimensions">
+           <property name="toolTip">
+            <string>Render at half the project's defined resolution. Useful for test renders.</string>
+           </property>
            <property name="text">
             <string>Render at half dimensions</string>
            </property>
@@ -270,6 +348,9 @@
          </item>
          <item row="3" column="1">
           <widget class="QCheckBox" name="checkDoNotPremultiplyAlpha">
+           <property name="toolTip">
+            <string>Do not pre-compute colour intensity based on alpha value.</string>
+           </property>
            <property name="text">
             <string>Do not premultiply alpha</string>
            </property>
@@ -277,6 +358,9 @@
          </item>
          <item row="4" column="0">
           <widget class="QCheckBox" name="checkRenderAtHalfFramerate">
+           <property name="toolTip">
+            <string>Render at half the project's defined frame rate. Useful for test renders.</string>
+           </property>
            <property name="text">
             <string>Render at half frame rate</string>
            </property>
@@ -286,6 +370,9 @@
           <widget class="QCheckBox" name="checkVariableLineWidths">
            <property name="enabled">
             <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>Render variable line widths; applies only to SWF output.</string>
            </property>
            <property name="text">
             <string>Variable line widths</string>
@@ -316,74 +403,167 @@
       <attribute name="title">
        <string>Server Options</string>
       </attribute>
+      <attribute name="toolTip">
+       <string>Options for rendering projects remotely, or using this computer for remote rendering.</string>
+      </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0">
-          <widget class="QLabel" name="labelRenderServer">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Server:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" colspan="3">
-          <widget class="QComboBox" name="comboRenderServer">
-           <property name="currentIndex">
-            <number>-1</number>
-           </property>
-           <item>
-            <property name="text">
-             <string>This PC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Remote Server</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="labelServer">
-           <property name="text">
-            <string>Address:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="editServer">
-           <property name="text">
-            <string>127.0.0.1</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="labelPort">
-           <property name="text">
-            <string>Port:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QSpinBox" name="spinnerPort">
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>65535</number>
-           </property>
-           <property name="value">
-            <number>26462</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="toolTip">
+          <string>Choose the server to use when rendering projects.</string>
+         </property>
+         <property name="title">
+          <string>Remote Server</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="0">
+             <widget class="QLabel" name="labelRenderServer">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Select whether to render locally, or to upload project files to a remote server for rendering.</string>
+              </property>
+              <property name="text">
+               <string>Server:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="3">
+             <widget class="QComboBox" name="comboRenderServer">
+              <property name="toolTip">
+               <string>Select whether to render locally, or to upload project files to a remote server for rendering.</string>
+              </property>
+              <property name="currentIndex">
+               <number>-1</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>This PC</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Remote Server</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="labelServer">
+              <property name="toolTip">
+               <string>Set the IP address or hostname of the remote render server to connect to.</string>
+              </property>
+              <property name="text">
+               <string>Server Address:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="editServer">
+              <property name="toolTip">
+               <string>Set the IP address or hostname of the remote render server to connect to.</string>
+              </property>
+              <property name="text">
+               <string>127.0.0.1</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="labelPort">
+              <property name="toolTip">
+               <string>Set what port to connect to on the remote render server.</string>
+              </property>
+              <property name="text">
+               <string>Server Port:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QSpinBox" name="spinnerPort">
+              <property name="toolTip">
+               <string>Set what port to connect to on the remote render server.</string>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>65535</number>
+              </property>
+              <property name="value">
+               <number>26463</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="toolTip">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Allow other clients on a network to use this computer as a render server.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="title">
+          <string>This Server</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <item row="0" column="0">
+             <widget class="QLabel" name="labelBindToAddress">
+              <property name="toolTip">
+               <string>Select which local IP address to bind the server process to. Leave blank to bind to all available interfaces.</string>
+              </property>
+              <property name="text">
+               <string>Bind To Address:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="editBindToAddress">
+              <property name="toolTip">
+               <string>Select which local IP address to bind the server process to. Leave blank to bind to all available interfaces.</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="labelBindToPort">
+              <property name="toolTip">
+               <string>Select which port to bind the server process to. Set to 0 to select one at random.</string>
+              </property>
+              <property name="text">
+               <string>Bind To Port:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QSpinBox" name="spinnerBindToPort">
+              <property name="toolTip">
+               <string>Select which port to bind the server process to. Set to 0 to select one at random.</string>
+              </property>
+              <property name="maximum">
+               <number>65535</number>
+              </property>
+              <property name="value">
+               <number>26463</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <spacer name="verticalSpacer">
@@ -393,7 +573,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>196</height>
+           <height>0</height>
           </size>
          </property>
         </spacer>
@@ -741,8 +921,8 @@
    <slot>saveRenderServer(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>234</x>
-     <y>47</y>
+     <x>119</x>
+     <y>69</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -757,8 +937,8 @@
    <slot>saveServerIP(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>70</x>
-     <y>79</y>
+     <x>176</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>329</x>
@@ -773,8 +953,8 @@
    <slot>saveServerPort(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>356</x>
-     <y>86</y>
+     <x>366</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>331</x>
@@ -789,11 +969,43 @@
    <slot>toggleServerSettings(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>109</x>
-     <y>48</y>
+     <x>204</x>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editBindToAddress</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveBindIP(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>153</x>
+     <y>341</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinnerBindToPort</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Preferences</receiver>
+   <slot>saveBindPort(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>342</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>280</x>
      <y>331</y>
     </hint>
    </hints>
@@ -823,5 +1035,7 @@
   <slot>saveServerIP(QString)</slot>
   <slot>saveServerPort(int)</slot>
   <slot>toggleServerSettings(int)</slot>
+  <slot>saveBindIP(QString)</slot>
+  <slot>saveBindPort(int)</slot>
  </slots>
 </ui>

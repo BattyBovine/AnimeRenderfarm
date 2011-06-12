@@ -1,3 +1,23 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                         *
+ *  Anime Renderfarm - A remote batch renderer for Anime Studio            *
+ *  Copyright (C) 2011 Batty Bovine Productions                            *
+ *                                                                         *
+ *  This program is free software: you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation, either version 3 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #include "clientthread.h"
 
 ClientThread::ClientThread(QObject *parent) :
@@ -78,66 +98,15 @@ void ClientThread::start()
 
 void ClientThread::handleServerResponse()
 {
-    QString response = readString();
+    QString response = comm.readData(socket);
 
-    if(response=="project")
-        sendData(project.first+project.second);
-}
+    // Send the project filename when requested
+    if(response=="filename") {
+        comm.writeData(socket, project.second.toUtf8()); return; }
 
-QString ClientThread::readString()
-{
-    quint16 blocksize = 0;
-    QDataStream in(socket);
-    in.setVersion(QDataStream::Qt_4_0);
-
-    if(blocksize==0) {
-        if(socket->bytesAvailable() < (int)sizeof(quint16))
-            return NULL;
-        in >> blocksize;
-    }
-
-    if(socket->bytesAvailable() < blocksize)
-        return NULL;
-
-    QString data;
-    in >> data;
-    return data;
-}
-
-void ClientThread::sendData(QString filepath)
-{
-//    QByteArray block;
-//    QDataStream outstream(&block, QIODevice::WriteOnly);
-//    outstream.setVersion(QDataStream::Qt_4_0);
-
-//    QFile outfile(filepath);
-//    if(!outfile.open(QIODevice::ReadOnly))
-//        return;
-
-//    outstream << (qint64)outfile.size();
-//    outstream << outfile.readAll();
-
-//    socket->write(block);
-    QFile file(filepath);
-    if(!file.open(QIODevice::ReadOnly))
-        return;
-
-    QByteArray data;
-    QDataStream out(&data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_0);
-    out << (qint64)file.size();
-    out << file.readAll();
-
-    qint64 sent = 0;
-    while(sent < sizeof(data)) {
-        qint64 sentnow = socket->write(data);
-        if(sentnow >= 0) {
-            sent += sentnow;
-        } else {
-            emit renderError("Could not write data to server");
-            return;
-        }
-    }
+    // After that, send the full project file
+    if(response=="project") {
+        comm.writeFile(socket, project.first+project.second); return; }
 }
 
 

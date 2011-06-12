@@ -5,6 +5,7 @@
 #include <QCloseEvent>
 
 #include "objects/serverthread.h"
+#include "dialogues/preferences.h"
 
 namespace Ui {
     class ServerManager;
