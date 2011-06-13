@@ -118,8 +118,8 @@ void ServerThread::getProjectName()
         QDir path; path.mkpath(temppath);
         // ...and get ready to receive the actual file
         connect(client, SIGNAL(readyRead()), this, SLOT(getProjectFile()));
+        comm.writeData(client, "project");
     }
-    comm.writeData(client, "project");
 }
 
 void ServerThread::getProjectFile()
@@ -136,7 +136,33 @@ void ServerThread::getProjectFile()
     infile.write(data);
     infile.close();
 
-    QList< QPair<QString,QString> > embeds = processEmbeddedFiles(temppath+projectname);
+    embedlist = processEmbeddedFiles(temppath+projectname);
+
+    if(client->disconnect(SIGNAL(readyRead()))) {
+        if(!embedlist.isEmpty()) {
+            connect(client, SIGNAL(readyRead()), this, SLOT(getEmbeddedFile()));
+            comm.writeData(client, "embed:"+embedlist.first().first.toUtf8());
+        }
+    }
+}
+
+void ServerThread::getEmbeddedFile()
+{
+    // Read the data from the client; if there is none prepared, wait
+    QByteArray data = comm.readData(client);
+    if(data.isNull())
+        return;
+
+    // Save the embedded file to our temporary directory with its original filename
+    QFile infile(temppath+embedlist.first().second);
+    if(!infile.open(QIODevice::WriteOnly))
+        return;
+    infile.write(data);
+    infile.close();
+
+    embedlist.removeFirst();
+    if(!embedlist.isEmpty())
+        comm.writeData(client, "embed:"+embedlist.first().first.toUtf8());
 }
 
 

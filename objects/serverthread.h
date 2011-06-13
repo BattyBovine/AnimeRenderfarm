@@ -73,8 +73,10 @@ private slots:
     void beginTransfer();
     void getProjectName();
     void getProjectFile();
+    void getEmbeddedFile();
 
     QList< QPair<QString,QString> > processEmbeddedFiles(QString);
+
     void cleanup();
 
 };
