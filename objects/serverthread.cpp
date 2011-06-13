@@ -88,7 +88,7 @@ void ServerThread::startServer()
 void ServerThread::beginTransfer()
 {
     // If the server already has an active connection, tell it we're busy right now
-    if(client && client->isValid()) {
+    if(client && client->isValid() && client->isOpen()) {
         QTcpSocket *cl = server->nextPendingConnection();
         comm.writeData(cl, "busy");
         cl->deleteLater();
@@ -100,23 +100,23 @@ void ServerThread::beginTransfer()
     connect(client, SIGNAL(disconnected()), this, SLOT(cleanup()));
     // Send a request for the project file
     connect(client, SIGNAL(readyRead()), this, SLOT(getProjectName()));
-    comm.writeData(client, "filename");
+    comm.writeData(client, "projectname");
 }
 
 void ServerThread::getProjectName()
 {
     // Read the data from the client; if there is none prepared, wait
-    filename = comm.readData(client);
-    if(filename.isNull())
+    projectname = comm.readData(client);
+    if(projectname.isNull())
         return;
 
-    // Reconnect the readyRead() signal, and request the project file
-    if(disconnect(SIGNAL(readyRead()))) {
-        // Update our temp path to include a new directory for our rendered project
-        temppath += QCryptographicHash::hash(filename.toUtf8(), QCryptographicHash::Sha1).toHex();
+    // If the readyRead() signal is disconnected properly...
+    if(client->disconnect(SIGNAL(readyRead()))) {
+        // ...update our temp path to include a new directory for our rendered project...
+        temppath += QCryptographicHash::hash(projectname.toUtf8(), QCryptographicHash::Sha1).toHex();
         temppath += QDir::separator();
         QDir path; path.mkpath(temppath);
-
+        // ...and get ready to receive the actual file
         connect(client, SIGNAL(readyRead()), this, SLOT(getProjectFile()));
     }
     comm.writeData(client, "project");
@@ -129,16 +129,64 @@ void ServerThread::getProjectFile()
     if(data.isNull())
         return;
 
-    QFile infile(temppath+filename);
-    if(!infile.open(QFile::WriteOnly))
+    // Save the file to our temporary directory with the given project name
+    QFile infile(temppath+projectname);
+    if(!infile.open(QIODevice::WriteOnly))
         return;
     infile.write(data);
     infile.close();
+
+    QList< QPair<QString,QString> > embeds = processEmbeddedFiles(temppath+projectname);
 }
 
 
 
-void ServerThread::cleanup() {
+QList< QPair<QString,QString> > ServerThread::processEmbeddedFiles(QString filepath)
+{
+    QFile in(filepath);
+    if(!in.open(QIODevice::ReadOnly))
+        return QList< QPair<QString,QString> >();
+    QTextStream intext(&in);
+
+    // First, we're going to get the original file, and collect and replace the embed paths
+    embedlist.clear();
+    QStringList inlist;
+    while(!intext.atEnd()) {
+        QString line = intext.readLine();
+        QRegExp regex("(image|audio_file)\\s+\"(.*)\"");
+        if(regex.indexIn(line)>=0) {
+            if(!regex.cap(2).isEmpty()) {
+                // The files will be represented by a QString pair
+                QPair<QString,QString> fnames;
+                // The first in the pair will be the full path as embedded into the project file
+                fnames.first = regex.cap(2);
+                // The second in the pair will be the filename only
+                // (separators are always '/' in project files)
+                fnames.second = fnames.first.mid(fnames.first.lastIndexOf('/')+1);
+                // This new, file-name only path will be the new path of the file
+                line.replace(fnames.first, fnames.second);
+                if(!embedlist.contains(fnames))
+                    embedlist << fnames;
+            }
+        }
+        inlist << line;
+    }
+    in.close();
+
+    // Next, we re-save the old file using our QStringList containing the lines
+    QFile out(filepath);
+    if(!out.open(QIODevice::WriteOnly))
+        return embedlist;
+    QTextStream outtext(&out);
+    foreach(QString ln, inlist)
+        outtext << ln << endl;
+    out.close();
+
+    return embedlist;
+}
+
+void ServerThread::cleanup()
+{
     // At this point, we will no longer need the client pointer
     client->deleteLater();
     client = NULL;
@@ -146,5 +194,5 @@ void ServerThread::cleanup() {
     temppath = QDir::toNativeSeparators(QDesktopServices::storageLocation(
         QDesktopServices::TempLocation)) + QDir::separator();
     // Set the filename to a null string
-    filename = QString::null;
+    projectname = QString::null;
 }

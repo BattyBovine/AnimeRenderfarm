@@ -100,13 +100,18 @@ void ClientThread::handleServerResponse()
 {
     QString response = comm.readData(socket);
 
-    // Send the project filename when requested
-    if(response=="filename") {
+    // Send the project name when requested
+    if(response=="projectname") {
         comm.writeData(socket, project.second.toUtf8()); return; }
 
     // After that, send the full project file
     if(response=="project") {
         comm.writeFile(socket, project.first+project.second); return; }
+
+    // If the server sends us a request for an embedded file, retrieve it and send it
+    if(response.startsWith("embed:")) {
+        return; // ...eventually, anyway...
+    }
 }
 
 

@@ -25,14 +25,14 @@ public:
                      bool hfps=false, bool fewpart=false, bool xsmooth=true,
                      bool ntsc=false, bool nopmult=false, bool varw=true);
 
+    static bool isImageSequence(QString);
+    static QString indexToFormat(int);
+    static QString extension(QString);
+
 protected:
     void run();
 
 private:
-    bool isImageSequence();
-    QString indexToFormat(int);
-    QString extension();
-
     QProcess *renderprocess;
     QString exe;
     QPair<QString,QString> project;

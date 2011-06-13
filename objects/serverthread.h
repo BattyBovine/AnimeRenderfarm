@@ -58,7 +58,8 @@ private:
     quint16 bindport;
     QString temppath;
 
-    QString filename;
+    QString projectname;
+    QList< QPair<QString,QString> > embedlist;
 
 signals:
     void initServer();
@@ -67,14 +68,14 @@ signals:
 public slots:
 
 private slots:
+    void startServer();
+
     void beginTransfer();
     void getProjectName();
     void getProjectFile();
 
+    QList< QPair<QString,QString> > processEmbeddedFiles(QString);
     void cleanup();
-
-    void startServer();
-//    void trackStatus();
 
 };
 

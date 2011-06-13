@@ -48,7 +48,7 @@ void RenderThread::setOutputDirectory(QString in)
 
 void RenderThread::setFormat(int in)
 {
-    format = indexToFormat(in);
+    format = RenderThread::indexToFormat(in);
 }
 
 void RenderThread::setFrameRange(int start, int end)
@@ -94,13 +94,13 @@ void RenderThread::run()
 
     // Compile the final output directory, and create it if it doesn't exist
     QString outdir = (outputDirectory.isEmpty()?(project.first):(outputDirectory+sep))+
-            (isImageSequence()?filename+sep:"");
+            (RenderThread::isImageSequence(format)?filename+sep:"");
     QDir dirpath; dirpath.mkpath(outdir);   // This is just silly.
 
     // Set all of the arguments based on the configuration settings we now have
     QStringList args;
     args << "-r" << project.first+project.second << "-v" <<
-            "-f" << format << "-o" << outdir+filename+extension();
+            "-f" << format << "-o" << outdir+filename+RenderThread::extension(format);
     if(frameStart>=0 && frameEnd>=0)
         args << "-start" << QString::number(frameStart) << "-end" << QString::number(frameEnd);
     args << "-aa" << switchAA << "-shapefx" << switchShapeFX << "-layerfx" << switchLayerFX <<
@@ -182,9 +182,9 @@ void RenderThread::renderFinished()
 
 
 
-bool RenderThread::isImageSequence()
+bool RenderThread::isImageSequence(QString fmt)
 {
-    return (format=="JPEG" || format=="TGA" || format=="BMP" || format=="PNG");
+    return (fmt=="JPEG" || fmt=="TGA" || fmt=="BMP" || fmt=="PNG");
 }
 QString RenderThread::indexToFormat(int index)
 {
@@ -204,19 +204,19 @@ QString RenderThread::indexToFormat(int index)
         return "SWF";
     }
 }
-QString RenderThread::extension()
+QString RenderThread::extension(QString fmt)
 {
-    if(format=="JPEG")
+    if(fmt=="JPEG")
         return ".jpg";
-    if(format=="BMP")
+    if(fmt=="BMP")
         return ".bmp";
-    if(format=="TGA")
+    if(fmt=="TGA")
         return ".tga";
-    if(format=="PNG")
+    if(fmt=="PNG")
         return ".png";
-    if(format=="QT")
+    if(fmt=="QT")
         return ".mov";
-    if(format=="SWF")
+    if(fmt=="SWF")
         return ".swf";
 
     return "";
