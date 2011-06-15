@@ -22,12 +22,13 @@
 
 ServerThread::ServerThread(QObject *parent) :
     QThread(parent),
-    server(NULL), client(NULL), bindport(26463)
+    server(NULL), client(NULL), renderproc(NULL), bindport(26463)
 {
     temppath = QDir::toNativeSeparators(QDesktopServices::storageLocation(
         QDesktopServices::TempLocation)) + QDir::separator();
 
     connect(this, SIGNAL(initServer()), this, SLOT(startServer()));
+    connect(this, SIGNAL(renderStart()), this, SLOT(startRenderThread()));
     connect(this, SIGNAL(serverStatus(QString)), parent, SLOT(getStatus(QString)));
 }
 
@@ -113,7 +114,8 @@ void ServerThread::getProjectName()
     // If the readyRead() signal is disconnected properly...
     if(client->disconnect(SIGNAL(readyRead()))) {
         // ...update our temp path to include a new directory for our rendered project...
-        temppath += QCryptographicHash::hash(projectname.toUtf8(), QCryptographicHash::Sha1).toHex();
+        temppath += QCryptographicHash::hash(projectname.toUtf8(),
+                                             QCryptographicHash::Sha1).toHex();
         temppath += QDir::separator();
         QDir path; path.mkpath(temppath);
         // ...and get ready to receive the actual file
@@ -139,7 +141,10 @@ void ServerThread::getProjectFile()
     embedlist = processEmbeddedFiles(temppath+projectname);
 
     if(client->disconnect(SIGNAL(readyRead()))) {
-        if(!embedlist.isEmpty()) {
+        if(embedlist.isEmpty()) {
+            connect(client, SIGNAL(readyRead()), this, SLOT(getCommandLine()));
+            comm.writeData(client, "cmd");
+        } else {
             connect(client, SIGNAL(readyRead()), this, SLOT(getEmbeddedFile()));
             comm.writeData(client, "embed:"+embedlist.first().first.toUtf8());
         }
@@ -161,8 +166,38 @@ void ServerThread::getEmbeddedFile()
     infile.close();
 
     embedlist.removeFirst();
-    if(!embedlist.isEmpty())
-        comm.writeData(client, "embed:"+embedlist.first().first.toUtf8());
+
+    if(client->disconnect(SIGNAL(readyRead()))) {
+        if(embedlist.isEmpty()) {
+            connect(client, SIGNAL(readyRead()), this, SLOT(getCommandLine()));
+            comm.writeData(client, "cmd");
+        } else {
+            connect(client, SIGNAL(readyRead()), this, SLOT(getEmbeddedFile()));
+            comm.writeData(client, "embed:"+embedlist.first().first.toUtf8());
+        }
+    }
+}
+
+void ServerThread::getCommandLine()
+{
+    // Read the data from the client; if there is none prepared, wait
+    QString data = comm.readData(client);
+    if(data.isNull())
+        return;
+
+    QStringList cmd = data.split(":");
+
+    emit renderStart();
+}
+
+void ServerThread::startRenderThread()
+{
+//    renderproc = new RenderThread(this);
+//    renderproc->setExe(exe);
+//    renderproc->setCmd(cmd);
+//    connect(renderproc, SIGNAL(renderComplete(QPair<QString,QString>)),
+//            this, SLOT(cleanup()));
+//    renderproc->start();
 }
 
 
@@ -179,7 +214,7 @@ QList< QPair<QString,QString> > ServerThread::processEmbeddedFiles(QString filep
     QStringList inlist;
     while(!intext.atEnd()) {
         QString line = intext.readLine();
-        QRegExp regex("(image|audio_file)\\s+\"(.*)\"");
+        QRegExp regex("(image|audio_file|external_model)\\s+\"(.*)\"");
         if(regex.indexIn(line)>=0) {
             if(!regex.cap(2).isEmpty()) {
                 // The files will be represented by a QString pair
@@ -193,6 +228,11 @@ QList< QPair<QString,QString> > ServerThread::processEmbeddedFiles(QString filep
                 line.replace(fnames.first, fnames.second);
                 if(!embedlist.contains(fnames))
                     embedlist << fnames;
+                if(fnames.first.endsWith(".obj")) {
+                    fnames.first.replace(".obj", ".mtl");
+                    fnames.second.replace(".obj", ".mtl");
+                    embedlist << fnames;
+                }
             }
         }
         inlist << line;
@@ -213,12 +253,15 @@ QList< QPair<QString,QString> > ServerThread::processEmbeddedFiles(QString filep
 
 void ServerThread::cleanup()
 {
-    // At this point, we will no longer need the client pointer
+    // At this point, we will no longer need the client or render pointers
     client->deleteLater();
     client = NULL;
+    renderproc->deleteLater();
+    renderproc = NULL;
     // Reset the temporary path to the root of the user's temporary location
     temppath = QDir::toNativeSeparators(QDesktopServices::storageLocation(
         QDesktopServices::TempLocation)) + QDir::separator();
     // Set the filename to a null string
     projectname = QString::null;
+    embedlist.clear();
 }

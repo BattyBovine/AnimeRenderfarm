@@ -74,6 +74,9 @@ RenderManager::RenderManager(QWidget *parent) :
                 this, SLOT(progressUpdate(QString,int)));
     }
 
+    // Close the dialogue when finished
+    connect(this, SIGNAL(renderFinished(QList<QPair<QString,QString> >)), this, SLOT(close()));
+
     // After this, we no longer need the preferences
     prefsman->deleteLater();
 
@@ -114,7 +117,7 @@ void RenderManager::closeEvent(QCloseEvent *e)
             return;
         }
     }
-    // Otherwise, let other objects know we've been canceled, and accept the event
+    // Otherwise, let other objects know we've been canceled
     emit renderCanceled(listProjects);
 
     // Reset the taskbar indicator before destroying the window
@@ -125,6 +128,7 @@ void RenderManager::closeEvent(QCloseEvent *e)
     // Emit a signal to let other objects know we're closing
     emit closing();
 
+    // Accept the event
     e->accept();
 }
 

@@ -25,9 +25,13 @@ public:
                      bool hfps=false, bool fewpart=false, bool xsmooth=true,
                      bool ntsc=false, bool nopmult=false, bool varw=true);
 
+    static QStringList generateCommand(QString,QString,QString,int,int,QString,QString,QString,
+                                       QString,QString,QString,QString,QString,QString,QString);
+
     static bool isImageSequence(QString);
     static QString indexToFormat(int);
     static QString extension(QString);
+    static QString boolToString(bool);
 
 protected:
     void run();
@@ -35,9 +39,10 @@ protected:
 private:
     QProcess *renderprocess;
     QString exe;
+    QStringList cmd;
     QPair<QString,QString> project;
-    QString outputDirectory;
-    QString format;
+    QString outputPath;
+    int format;
     int frameStart, frameEnd;
     QString switchAA,switchShapeFX,switchLayerFX,switchHalfSize,switchHalfFPS,switchFewParticles,
         switchExtraSmooth,switchNTSCSafe,switchPremultiply,switchVariableWidths;

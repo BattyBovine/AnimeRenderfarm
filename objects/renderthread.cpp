@@ -1,10 +1,9 @@
 #include "renderthread.h"
 
 RenderThread::RenderThread(QObject *parent) :
-    QThread(parent)
+    QThread(parent),
+    renderprocess(NULL)
 {
-    renderprocess = NULL;
-
     // Set options to defaults in case they are somehow not set earlier
     setFormat();
     setFrameRange();
@@ -43,12 +42,12 @@ void RenderThread::setProject(QPair<QString,QString> in)
 
 void RenderThread::setOutputDirectory(QString in)
 {
-    outputDirectory = in;
+    outputPath = in;
 }
 
 void RenderThread::setFormat(int in)
 {
-    format = RenderThread::indexToFormat(in);
+    format = in;
 }
 
 void RenderThread::setFrameRange(int start, int end)
@@ -62,16 +61,16 @@ void RenderThread::setFrameRange(int start, int end)
 void RenderThread::setSwitches(bool aa, bool sfx, bool lfx, bool hsize, bool hfps,
                                bool fewpart, bool xsmooth, bool ntsc, bool nopmult, bool varw)
 {
-    switchAA=(aa?"yes":"no");
-    switchShapeFX=(sfx?"yes":"no");
-    switchLayerFX=(lfx?"yes":"no");
-    switchHalfSize=(hsize?"yes":"no");
-    switchHalfFPS=(hfps?"yes":"no");
-    switchFewParticles=(fewpart?"yes":"no");
-    switchExtraSmooth=(xsmooth?"yes":"no");
-    switchNTSCSafe=(ntsc?"yes":"no");
-    switchPremultiply=(!nopmult?"yes":"no");    // This option is weird.
-    switchVariableWidths=(varw?"yes":"no");
+    switchAA = boolToString(aa);
+    switchShapeFX = boolToString(sfx);
+    switchLayerFX = boolToString(lfx);
+    switchHalfSize = boolToString(hsize);
+    switchHalfFPS = boolToString(hfps);
+    switchFewParticles = boolToString(fewpart);
+    switchExtraSmooth = boolToString(xsmooth);
+    switchNTSCSafe = boolToString(ntsc);
+    switchPremultiply = boolToString(!nopmult); // This option is weird.
+    switchVariableWidths = boolToString(varw);
 }
 
 
@@ -81,9 +80,10 @@ void RenderThread::run()
     // Check for any possible conditions, and emit errors for each one
     if(exe.isEmpty()) {
         emit renderError("Anime Studio executable not configured"); return; }
+
     if(project.first.isEmpty()||project.second.isEmpty()) {
         emit renderError("Project file not set properly"); return; }
-    if(outputDirectory.isEmpty())
+    if(outputPath.isEmpty())
         emit renderWarning("Output directory not configured; defaulting to project location");
 
     // Get our separator now, to avoid multiple function calls
@@ -93,21 +93,17 @@ void RenderThread::run()
     QString filename = project.second.mid(0,project.second.lastIndexOf("."));
 
     // Compile the final output directory, and create it if it doesn't exist
-    QString outdir = (outputDirectory.isEmpty()?(project.first):(outputDirectory+sep))+
-            (RenderThread::isImageSequence(format)?filename+sep:"");
+    QString outdir = (outputPath.isEmpty()?(project.first):(outputPath+sep))+
+            (isImageSequence(indexToFormat(format))?filename+sep:"");
     QDir dirpath; dirpath.mkpath(outdir);   // This is just silly.
 
     // Set all of the arguments based on the configuration settings we now have
-    QStringList args;
-    args << "-r" << project.first+project.second << "-v" <<
-            "-f" << format << "-o" << outdir+filename+RenderThread::extension(format);
-    if(frameStart>=0 && frameEnd>=0)
-        args << "-start" << QString::number(frameStart) << "-end" << QString::number(frameEnd);
-    args << "-aa" << switchAA << "-shapefx" << switchShapeFX << "-layerfx" << switchLayerFX <<
-            "-halfsize" << switchHalfSize <<"-halffps" << switchHalfFPS <<
-            "-fewparticles" << switchFewParticles << "-extrasmooth" << switchExtraSmooth <<
-            "-ntscsafe" << switchNTSCSafe << "-premultiply" << switchPremultiply <<
-            "-variablewidths" << switchVariableWidths;
+    QStringList args = generateCommand(project.first+project.second, indexToFormat(format),
+                                       outdir+filename+extension(indexToFormat(format)),
+                                       frameStart,frameEnd,switchAA,switchShapeFX,switchLayerFX,
+                                       switchHalfSize,switchHalfFPS,switchFewParticles,
+                                       switchExtraSmooth,switchNTSCSafe,switchPremultiply,
+                                       switchVariableWidths);
 
     // Finally, emit the signal to begin the render
     emit cli(exe, args);
@@ -118,18 +114,39 @@ void RenderThread::executeRenderCommand(QString program, QStringList arguments)
     // Create a new process for the render job
     if(!renderprocess)
         renderprocess = new QProcess(this);
-//    renderprocess->setStandardOutputFile(QDir::toNativeSeparators(
-//        QDesktopServices::storageLocation(QDesktopServices::TempLocation))+
-//        QDir::separator()+project.second+".log");
 
     // Get regular progress updates from the process, and have it emit a signal when finished
     connect(renderprocess, SIGNAL(readyReadStandardOutput()), this, SLOT(calculateProgress()));
     connect(renderprocess, SIGNAL(finished(int)), this, SLOT(renderFinished()));
-//    renderprocess->setProcessChannelMode(QProcess::MergedChannels);
 
     // Now start the process, and emit a signal saying we've done so
     renderprocess->start(program, arguments);
     emit renderProgress(tr("Currently rendering ")+project.second, 0);
+}
+
+QStringList RenderThread::generateCommand(QString projpath, QString format, QString out,
+                                          int start, int end, QString aa, QString shapefx,
+                                          QString layerfx, QString halfsize, QString halffps,
+                                          QString fewparticles, QString extrasmooth,
+                                          QString ntscsafe, QString premultiply,
+                                          QString variablewidths)
+{
+    QStringList args;
+    args << "-r" << projpath << "-v" << "-f" << format << "-o" << out;
+    if(start>=0 && end>=0)
+        args << "-start" << QString::number(start) << "-end" << QString::number(end);
+    args << "-aa" << aa <<
+            "-shapefx" << shapefx <<
+            "-layerfx" << layerfx <<
+            "-halfsize" << halfsize <<
+            "-halffps" << halffps <<
+            "-fewparticles" << fewparticles <<
+            "-extrasmooth" << extrasmooth <<
+            "-ntscsafe" << ntscsafe <<
+            "-premultiply" << premultiply <<
+            "-variablewidths" << variablewidths;
+
+    return args;
 }
 
 
@@ -206,18 +223,22 @@ QString RenderThread::indexToFormat(int index)
 }
 QString RenderThread::extension(QString fmt)
 {
-    if(fmt=="JPEG")
+    if(fmt.trimmed()=="JPEG")
         return ".jpg";
-    if(fmt=="BMP")
+    if(fmt.trimmed()=="BMP")
         return ".bmp";
-    if(fmt=="TGA")
+    if(fmt.trimmed()=="TGA")
         return ".tga";
-    if(fmt=="PNG")
+    if(fmt.trimmed()=="PNG")
         return ".png";
-    if(fmt=="QT")
+    if(fmt.trimmed()=="QT")
         return ".mov";
-    if(fmt=="SWF")
+    if(fmt.trimmed()=="SWF")
         return ".swf";
 
     return "";
+}
+QString RenderThread::boolToString(bool in)
+{
+    return (in?"yes":"no");
 }

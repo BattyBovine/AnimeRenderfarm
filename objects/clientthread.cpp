@@ -41,12 +41,12 @@ void ClientThread::setProject(QPair<QString,QString> in)
 
 void ClientThread::setOutputDirectory(QString in)
 {
-    outputDirectory = in;
+    outputPath = in;
 }
 
 void ClientThread::setFormat(int in)
 {
-    format = indexToFormat(in);
+    format = in;
 }
 
 void ClientThread::setFrameRange(int start, int end)
@@ -60,16 +60,16 @@ void ClientThread::setFrameRange(int start, int end)
 void ClientThread::setSwitches(bool aa, bool sfx, bool lfx, bool hsize, bool hfps,
                                bool fewpart, bool xsmooth, bool ntsc, bool nopmult, bool varw)
 {
-    switchAA=(aa?"yes":"no");
-    switchShapeFX=(sfx?"yes":"no");
-    switchLayerFX=(lfx?"yes":"no");
-    switchHalfSize=(hsize?"yes":"no");
-    switchHalfFPS=(hfps?"yes":"no");
-    switchFewParticles=(fewpart?"yes":"no");
-    switchExtraSmooth=(xsmooth?"yes":"no");
-    switchNTSCSafe=(ntsc?"yes":"no");
-    switchPremultiply=(!nopmult?"yes":"no");    // This option is weird.
-    switchVariableWidths=(varw?"yes":"no");
+    switchAA = RenderThread::boolToString(aa);
+    switchShapeFX = RenderThread::boolToString(sfx);
+    switchLayerFX = RenderThread::boolToString(lfx);
+    switchHalfSize = RenderThread::boolToString(hsize);
+    switchHalfFPS = RenderThread::boolToString(hfps);
+    switchFewParticles = RenderThread::boolToString(fewpart);
+    switchExtraSmooth = RenderThread::boolToString(xsmooth);
+    switchNTSCSafe = RenderThread::boolToString(ntsc);
+    switchPremultiply = RenderThread::boolToString(!nopmult);   // This option is weird.
+    switchVariableWidths = RenderThread::boolToString(varw);
 }
 
 void ClientThread::setServerIP(QString in)
@@ -103,6 +103,7 @@ void ClientThread::handleServerResponse()
     if(response=="projectname") {
         // Send the project name when requested
         comm.writeData(socket, project.second.toUtf8());
+        emit renderProgress(tr("Uploading %1 to the server").arg(project.second), 0);
         return;
     } else if(response=="project") {
         // After that, send the full project file
@@ -110,8 +111,26 @@ void ClientThread::handleServerResponse()
         return;
     } else if(response.startsWith("embed:")) {
         // If the server sends us a request for an embedded file, send it
-        QString file = response.mid(response.indexOf(":")+1,response.length());
-        comm.writeFile(socket, file);
+        QString filepath = response.mid(response.indexOf(":")+1,response.length());
+        QString file = response.mid(response.lastIndexOf("/")+1,response.length());
+        emit renderProgress(tr("Uploading embedded file %1 to the server")
+                            .arg(file), 0);
+        if(QFile::exists(filepath))
+            comm.writeFile(socket, filepath);
+        else
+            comm.writeData(socket, "");
+        return;
+    } else if(response=="cmd") {
+        // Now send the command line string -- without the executable, of course
+        QString cmdline = RenderThread::generateCommand("*}PRJ{*",
+                                                        RenderThread::indexToFormat(format),
+                                                        "@)RND(@",frameStart,frameEnd,
+                                                        switchAA,switchShapeFX,switchLayerFX,
+                                                        switchHalfSize,switchHalfFPS,
+                                                        switchFewParticles,switchExtraSmooth,
+                                                        switchNTSCSafe,switchPremultiply,
+                                                        switchVariableWidths).join(":");
+        comm.writeData(socket, cmdline.toUtf8());
         return;
     }
 }
@@ -137,48 +156,4 @@ void ClientThread::connectionError(QAbstractSocket::SocketError e)
                               tr("The following error occurred when connecting to the server: %1")
                               .arg(socket->errorString()));
     }
-}
-
-
-
-bool ClientThread::isImageSequence()
-{
-    return (format=="JPEG" || format=="TGA" || format=="BMP" || format=="PNG");
-}
-
-QString ClientThread::indexToFormat(int index)
-{
-    switch(index) {
-    case 0:
-        return "JPEG";
-    case 1:
-        return "BMP";
-    case 2:
-        return "TGA";
-    case 3:
-    default:
-        return "PNG";
-    case 4:
-        return "QT";
-    case 5:
-        return "SWF";
-    }
-}
-
-QString ClientThread::extension()
-{
-    if(format=="JPEG")
-        return ".jpg";
-    if(format=="BMP")
-        return ".bmp";
-    if(format=="TGA")
-        return ".tga";
-    if(format=="PNG")
-        return ".png";
-    if(format=="QT")
-        return ".mov";
-    if(format=="SWF")
-        return ".swf";
-
-    return "";
 }

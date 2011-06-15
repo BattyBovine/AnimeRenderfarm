@@ -29,6 +29,7 @@
 #include <QMessageBox>
 
 #include "objects/tcpcommunicator.h"
+#include "objects/renderthread.h"
 
 class ClientThread : public QThread
 {
@@ -61,8 +62,8 @@ private:
     TcpCommunicator comm;
 
     QPair<QString,QString> project;
-    QString outputDirectory;
-    QString format;
+    QString outputPath;
+    int format;
     int frameStart, frameEnd;
     QString switchAA,switchShapeFX,switchLayerFX,switchHalfSize,switchHalfFPS,switchFewParticles,
         switchExtraSmooth,switchNTSCSafe,switchPremultiply,switchVariableWidths;
