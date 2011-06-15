@@ -69,8 +69,6 @@ signals:
     void initServer();
     void serverStatus(QString);
 
-    void renderStart();
-
 public slots:
 
 private slots:
@@ -80,8 +78,6 @@ private slots:
     void getProjectName();
     void getProjectFile();
     void getEmbeddedFile();
-    void getCommandLine();
-
     void startRenderThread();
 
     QList< QPair<QString,QString> > processEmbeddedFiles(QString);

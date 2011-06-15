@@ -38,8 +38,6 @@ public:
     explicit ClientThread(QObject *parent = 0);
     ~ClientThread();
 
-    void start();
-
     void setProject(QPair<QString,QString>);
     void setOutputDirectory(QString in);
     void setFormat(int in=3);
@@ -49,6 +47,9 @@ public:
                      bool ntsc=false, bool nopmult=false, bool varw=true);
     void setServerIP(QString in="127.0.0.1");
     void setServerPort(quint16 in=26463);
+
+protected:
+    void run();
 
 private:
     QString readString();
@@ -65,12 +66,13 @@ private:
     QString outputPath;
     int format;
     int frameStart, frameEnd;
-    QString switchAA,switchShapeFX,switchLayerFX,switchHalfSize,switchHalfFPS,switchFewParticles,
+    bool switchAA,switchShapeFX,switchLayerFX,switchHalfSize,switchHalfFPS,switchFewParticles,
         switchExtraSmooth,switchNTSCSafe,switchPremultiply,switchVariableWidths;
     QString serverIP;
     quint16 serverPort;
 
 signals:
+    void initSocket();
     void initClient(QString,int);
     void renderProgress(QString,int);
     void renderComplete(QPair<QString,QString>);
@@ -80,6 +82,7 @@ signals:
 public slots:
 
 private slots:
+    void buildSocket();
     void handleServerResponse();
     void connectionError(QAbstractSocket::SocketError);
 

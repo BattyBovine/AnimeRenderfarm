@@ -1,12 +1,31 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                         *
+ *  Anime Renderfarm - A remote batch renderer for Anime Studio            *
+ *  Copyright (C) 2011 Batty Bovine Productions                            *
+ *                                                                         *
+ *  This program is free software: you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation, either version 3 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #include "tcpcommunicator.h"
 
-TcpCommunicator::TcpCommunicator() :
+TcpCommunicator::TcpCommunicator(QObject *parent) :
+    QObject(parent),
     data(NULL), size(0)
 {
-}
-
-TcpCommunicator::~TcpCommunicator()
-{
+    connect(this, SIGNAL(beginWriteRaw(QTcpSocket*,QByteArray)),
+            this, SLOT(writeRaw(QTcpSocket*,QByteArray)));
 }
 
 
@@ -66,9 +85,16 @@ void TcpCommunicator::writeData(QTcpSocket *sock, QByteArray data)
     out << (qint64)data.size();
     out << data;
 
+    emit beginWriteRaw(sock, block);
+}
+
+
+
+void TcpCommunicator::writeRaw(QTcpSocket *sock, QByteArray raw)
+{
     qint64 sent = 0;
-    while(sent < sizeof(block)) {
-        qint64 sentnow = sock->write(block);
+    while(sent < sizeof(raw)) {
+        qint64 sentnow = sock->write(raw);
         if(sentnow >= 0)
             sent += sentnow;
         else

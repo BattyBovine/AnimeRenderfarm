@@ -28,7 +28,6 @@ ServerThread::ServerThread(QObject *parent) :
         QDesktopServices::TempLocation)) + QDir::separator();
 
     connect(this, SIGNAL(initServer()), this, SLOT(startServer()));
-    connect(this, SIGNAL(renderStart()), this, SLOT(startRenderThread()));
     connect(this, SIGNAL(serverStatus(QString)), parent, SLOT(getStatus(QString)));
 }
 
@@ -138,11 +137,12 @@ void ServerThread::getProjectFile()
     infile.write(data);
     infile.close();
 
+//    comm.writeData(client, "processembed");
     embedlist = processEmbeddedFiles(temppath+projectname);
 
     if(client->disconnect(SIGNAL(readyRead()))) {
         if(embedlist.isEmpty()) {
-            connect(client, SIGNAL(readyRead()), this, SLOT(getCommandLine()));
+            connect(client, SIGNAL(readyRead()), this, SLOT(startRenderThread()));
             comm.writeData(client, "cmd");
         } else {
             connect(client, SIGNAL(readyRead()), this, SLOT(getEmbeddedFile()));
@@ -169,7 +169,7 @@ void ServerThread::getEmbeddedFile()
 
     if(client->disconnect(SIGNAL(readyRead()))) {
         if(embedlist.isEmpty()) {
-            connect(client, SIGNAL(readyRead()), this, SLOT(getCommandLine()));
+            connect(client, SIGNAL(readyRead()), this, SLOT(startRenderThread()));
             comm.writeData(client, "cmd");
         } else {
             connect(client, SIGNAL(readyRead()), this, SLOT(getEmbeddedFile()));
@@ -178,7 +178,7 @@ void ServerThread::getEmbeddedFile()
     }
 }
 
-void ServerThread::getCommandLine()
+void ServerThread::startRenderThread()
 {
     // Read the data from the client; if there is none prepared, wait
     QString data = comm.readData(client);
@@ -187,17 +187,34 @@ void ServerThread::getCommandLine()
 
     QStringList cmd = data.split(":");
 
-    emit renderStart();
-}
+    if(!renderproc)
+        renderproc = new RenderThread(this);
+    Preferences *prefsman = new Preferences();
+    renderproc->setExe(prefsman->getAnimeStudioPath());
+    prefsman->deleteLater();
+    renderproc->setOutputDirectory(temppath+"out"+QDir::separator());
+    renderproc->setFormat(cmd.at(0).toInt());
+    renderproc->setFrameRange(cmd.at(1).toInt(), cmd.at(2).toInt());
+    renderproc->setSwitches((cmd.at(3).toInt())==0?false:true,
+                            (cmd.at(4).toInt())==0?false:true,
+                            (cmd.at(5).toInt())==0?false:true,
+                            (cmd.at(6).toInt())==0?false:true,
+                            (cmd.at(7).toInt())==0?false:true,
+                            (cmd.at(8).toInt())==0?false:true,
+                            (cmd.at(9).toInt())==0?false:true,
+                            (cmd.at(10).toInt())==0?false:true,
+                            (cmd.at(11).toInt())==0?false:true,
+                            (cmd.at(12).toInt())==0?false:true);
+    connect(renderproc, SIGNAL(renderComplete(QPair<QString,QString>)),
+            this, SLOT(cleanup()));
 
-void ServerThread::startRenderThread()
-{
-//    renderproc = new RenderThread(this);
-//    renderproc->setExe(exe);
-//    renderproc->setCmd(cmd);
-//    connect(renderproc, SIGNAL(renderComplete(QPair<QString,QString>)),
-//            this, SLOT(cleanup()));
-//    renderproc->start();
+    QPair<QString,QString> renderproject;
+    renderproject.first = temppath;
+    renderproject.second = projectname;
+    renderproc->setProject(renderproject);
+    renderproc->start();
+
+    comm.writeData(client, QString("rendering:"+projectname+":0").toUtf8());
 }
 
 

@@ -36,6 +36,10 @@ RenderManager::RenderManager(QWidget *parent) :
         cClientThread = new ClientThread(this);
         cClientThread->setOutputDirectory(prefsman->getOutputDirectory());
         cClientThread->setFormat(prefsman->getOutputFormat());
+        if(prefsman->getSetFrameRange())
+            cClientThread->setFrameRange(prefsman->getStartFrame(), prefsman->getEndFrame());
+        else
+            cClientThread->setFrameRange();
         cClientThread->setSwitches(prefsman->getAntialiasedEdges(),
                                    prefsman->getApplyShapeEffects(),
                                    prefsman->getApplyLayerEffects(),
@@ -58,6 +62,10 @@ RenderManager::RenderManager(QWidget *parent) :
         cRenderThread->setExe(prefsman->getAnimeStudioPath());
         cRenderThread->setOutputDirectory(prefsman->getOutputDirectory());
         cRenderThread->setFormat(prefsman->getOutputFormat());
+        if(prefsman->getSetFrameRange())
+            cRenderThread->setFrameRange(prefsman->getStartFrame(), prefsman->getEndFrame());
+        else
+            cRenderThread->setFrameRange();
         cRenderThread->setSwitches(prefsman->getAntialiasedEdges(),
                                    prefsman->getApplyShapeEffects(),
                                    prefsman->getApplyLayerEffects(),
@@ -74,11 +82,11 @@ RenderManager::RenderManager(QWidget *parent) :
                 this, SLOT(progressUpdate(QString,int)));
     }
 
-    // Close the dialogue when finished
-    connect(this, SIGNAL(renderFinished(QList<QPair<QString,QString> >)), this, SLOT(close()));
-
     // After this, we no longer need the preferences
     prefsman->deleteLater();
+
+    // Close the dialogue when finished
+    connect(this, SIGNAL(renderFinished(QList<QPair<QString,QString> >)), this, SLOT(close()));
 
     // Default to a busy indicator
     ui->labelProgressInfo->setText(tr("Waiting for projects to render..."));

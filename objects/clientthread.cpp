@@ -24,6 +24,7 @@ ClientThread::ClientThread(QObject *parent) :
     QThread(parent),
     socket(NULL)
 {
+    connect(this, SIGNAL(initSocket()), this, SLOT(buildSocket()));
 }
 
 ClientThread::~ClientThread()
@@ -60,16 +61,16 @@ void ClientThread::setFrameRange(int start, int end)
 void ClientThread::setSwitches(bool aa, bool sfx, bool lfx, bool hsize, bool hfps,
                                bool fewpart, bool xsmooth, bool ntsc, bool nopmult, bool varw)
 {
-    switchAA = RenderThread::boolToString(aa);
-    switchShapeFX = RenderThread::boolToString(sfx);
-    switchLayerFX = RenderThread::boolToString(lfx);
-    switchHalfSize = RenderThread::boolToString(hsize);
-    switchHalfFPS = RenderThread::boolToString(hfps);
-    switchFewParticles = RenderThread::boolToString(fewpart);
-    switchExtraSmooth = RenderThread::boolToString(xsmooth);
-    switchNTSCSafe = RenderThread::boolToString(ntsc);
-    switchPremultiply = RenderThread::boolToString(!nopmult);   // This option is weird.
-    switchVariableWidths = RenderThread::boolToString(varw);
+    switchAA = aa;
+    switchShapeFX = sfx;
+    switchLayerFX = lfx;
+    switchHalfSize = hsize;
+    switchHalfFPS = hfps;
+    switchFewParticles = fewpart;
+    switchExtraSmooth = xsmooth;
+    switchNTSCSafe = ntsc;
+    switchPremultiply = !nopmult;   // This option is weird.
+    switchVariableWidths = varw;
 }
 
 void ClientThread::setServerIP(QString in)
@@ -84,7 +85,13 @@ void ClientThread::setServerPort(quint16 in)
 
 
 
-void ClientThread::start()
+void ClientThread::run()
+{
+    emit initSocket();
+    this->exec();
+}
+
+void ClientThread::buildSocket()
 {
     socket = new QTcpSocket(this);
     connect(socket, SIGNAL(readyRead()), this, SLOT(handleServerResponse()));
@@ -109,6 +116,8 @@ void ClientThread::handleServerResponse()
         // After that, send the full project file
         comm.writeFile(socket, project.first+project.second);
         return;
+    } else if(response=="processembed") {
+        emit renderProgress(tr("Checking for required embedded files..."), 0);
     } else if(response.startsWith("embed:")) {
         // If the server sends us a request for an embedded file, send it
         QString filepath = response.mid(response.indexOf(":")+1,response.length());
@@ -121,17 +130,28 @@ void ClientThread::handleServerResponse()
             comm.writeData(socket, "");
         return;
     } else if(response=="cmd") {
-        // Now send the command line string -- without the executable, of course
-        QString cmdline = RenderThread::generateCommand("*}PRJ{*",
-                                                        RenderThread::indexToFormat(format),
-                                                        "@)RND(@",frameStart,frameEnd,
-                                                        switchAA,switchShapeFX,switchLayerFX,
-                                                        switchHalfSize,switchHalfFPS,
-                                                        switchFewParticles,switchExtraSmooth,
-                                                        switchNTSCSafe,switchPremultiply,
-                                                        switchVariableWidths).join(":");
-        comm.writeData(socket, cmdline.toUtf8());
+        // Now send the command line options, converting booleans to integer strings
+        QStringList cmdopts;
+        cmdopts << QString::number(format)
+                << QString::number(frameStart)
+                << QString::number(frameEnd)
+                << QString::number(switchAA?1:0)
+                << QString::number(switchShapeFX?1:0)
+                << QString::number(switchLayerFX?1:0)
+                << QString::number(switchHalfSize?1:0)
+                << QString::number(switchHalfFPS?1:0)
+                << QString::number(switchFewParticles?1:0)
+                << QString::number(switchExtraSmooth?1:0)
+                << QString::number(switchNTSCSafe?1:0)
+                << QString::number(switchPremultiply?1:0)
+                << QString::number(switchVariableWidths?1:0);
+
+        QString cmdstring = cmdopts.join(":");
+        comm.writeData(socket, cmdstring.toUtf8());
         return;
+    } else if(response.startsWith("rendering:")) {
+        QStringList resplist = response.split(":");
+        emit renderProgress(tr("Rendering %1...").arg(resplist.at(1)), resplist.at(2).toInt());
     }
 }
 
